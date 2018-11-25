@@ -4,6 +4,8 @@
 #include "MultiPackerAssetEditor/MultiPackerEditorThumbnail.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include <EdGraph/EdGraphPin.h>
+#include <UObject/UObjectGlobals.h>
+#include <GraphEditorSettings.h>
 
 #define LOCTEXT_NAMESPACE "MultiPackerOutputEdNode"
 
@@ -38,6 +40,11 @@ bool UMultiPackerOutputNode::CanUserDeleteNode() const
 FText UMultiPackerOutputNode::GetNodeTitle(ENodeTitleType::Type TitleType) const
 {
 	return FText::FromString("Output Texture");
+}
+
+FLinearColor UMultiPackerOutputNode::GetNodeTitleColor() const
+{
+	return GetDefault<UGraphEditorSettings>()->ResultNodeTitleColor;
 }
 
 void UMultiPackerOutputNode::SetGenericGraphNode(UMultiPackerOutputNodeBase* InNode)

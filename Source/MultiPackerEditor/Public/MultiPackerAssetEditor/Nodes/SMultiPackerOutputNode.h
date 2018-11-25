@@ -1,6 +1,7 @@
 /* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #pragma once
 
+#include "SGraphNode.h"
 #include "MultiPackerAssetEditor/Nodes/MultiPackerOutputNode.h"
 
 class SMultiPackerOutputNode : public SGraphNode
@@ -13,7 +14,7 @@ public:
 
 
 	//~ Begin SGraphNode Interface
-	virtual void UpdateGraphNode() override;
+	//virtual void UpdateGraphNode() override;
 	virtual void CreatePinWidgets() override;
 	virtual void AddPin(const TSharedRef<SGraphPin>& PinToAdd) override;
 	// 	virtual void OnDragEnter(const FGeometry& MyGeometry, const FDragDropEvent& DragDropEvent) override;
@@ -25,7 +26,7 @@ public:
 	// 	virtual void AddPin(const TSharedRef<SGraphPin>& PinToAdd) override;
 	//~ End SGraphNode Interface
 
-	virtual FSlateColor GetBackgroundColor() const;
+	//virtual FSlateColor GetBackgroundColor() const;
 
 	virtual EVisibility GetDragOverMarkerVisibility() const;
 
@@ -37,6 +38,8 @@ public:
 	virtual const FSlateBrush* GetNameIcon() const;
 
 protected:
+	virtual TSharedRef<SWidget> CreateNodeContentArea() override;
+
 	TSharedPtr<SBorder> NodeBody;
 	TSharedPtr<SHorizontalBox> OutputPinBox;
 

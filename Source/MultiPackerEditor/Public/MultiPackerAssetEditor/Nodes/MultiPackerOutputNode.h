@@ -29,6 +29,7 @@ public:
 private:
 	UMultiPackerEdGraph* GetGenericGraphEdGraph() const;
 	FText GetNodeTitle(ENodeTitleType::Type TitleType) const;
+	virtual FLinearColor GetNodeTitleColor() const override;
 	UObject* GetNodeAssetObject(UObject* Outer) const;
 	UObject* GetThumbnailAssetObject() const;
 	static UEdGraphPin* PinDefault;

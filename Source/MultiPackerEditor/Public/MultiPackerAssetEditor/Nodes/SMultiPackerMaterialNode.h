@@ -14,7 +14,7 @@ public:
 
 
 	//~ Begin SGraphNode Interface
-	virtual void UpdateGraphNode() override;
+	//virtual void UpdateGraphNode() override;
 	virtual void CreatePinWidgets() override;
 	virtual void AddPin(const TSharedRef<SGraphPin>& PinToAdd) override;
 	// 	virtual void OnDragEnter(const FGeometry& MyGeometry, const FDragDropEvent& DragDropEvent) override;
@@ -39,6 +39,7 @@ public:
 	virtual const FSlateBrush* GetNameIcon() const;
 
 protected:
+	virtual TSharedRef<SWidget> CreateNodeContentArea() override;
 	TSharedPtr<SBorder> NodeBody;
 	TSharedPtr<SHorizontalBox> OutputPinBox;
 

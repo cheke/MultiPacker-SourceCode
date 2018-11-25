@@ -8,6 +8,7 @@
 #include "GraphEditorActions.h"
 #include "EdGraphNode_Comment.h"
 #include "Runtime/Launch/Resources/Version.h"
+#include "MultiPackerEditorTypes.h"
 
 #define LOCTEXT_NAMESPACE "MultiPackerAssetSchema"
 
@@ -276,7 +277,59 @@ const FPinConnectionResponse UMultiPackerAssetGraphSchema::CanCreateConnection(c
 
 FLinearColor UMultiPackerAssetGraphSchema::GetPinTypeColor(const FEdGraphPinType& PinType) const
 {
-	return FColor::White;
+#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION <= 18)
+	if (PinType.PinCategory == UMultiPackerEditorTypes::PinCategory_RGB)
+	{
+		return FLinearColor::White;
+	}
+	else if (PinType.PinCategory == UMultiPackerEditorTypes::PinCategory_Red)
+	{
+		return FLinearColor::Red;
+	}
+	else if (PinType.PinCategory == UMultiPackerEditorTypes::PinCategory_Green)
+	{
+		return FLinearColor::Green;
+	}
+	else if (PinType.PinCategory == UMultiPackerEditorTypes::PinCategory_Blue)
+	{
+		return FLinearColor::Blue;
+	}
+	else if (PinType.PinCategory == UMultiPackerEditorTypes::PinCategory_Alpha)
+	{
+		return FLinearColor::Gray;
+	}
+	else if (PinType.PinCategory == UMultiPackerEditorTypes::PinCategory_RGBA)
+	{
+		return FLinearColor::White;
+	}
+#endif
+#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION > 18)
+	if (PinType.PinCategory == FName(*UMultiPackerEditorTypes::PinCategory_RGB))
+	{
+		return FLinearColor::White;
+	}
+	else if (PinType.PinCategory == FName(*UMultiPackerEditorTypes::PinCategory_Red))
+	{
+		return FLinearColor::Red;
+	}
+	else if (PinType.PinCategory == FName(*UMultiPackerEditorTypes::PinCategory_Green))
+	{
+		return FLinearColor::Green;
+	}
+	else if (PinType.PinCategory == FName(*UMultiPackerEditorTypes::PinCategory_Blue))
+	{
+		return FLinearColor::Blue;
+	}
+	else if (PinType.PinCategory == FName(*UMultiPackerEditorTypes::PinCategory_Alpha))
+	{
+		return FLinearColor::Gray;
+	}
+	else if (PinType.PinCategory == FName(*UMultiPackerEditorTypes::PinCategory_RGBA))
+	{
+		return FLinearColor::White;
+	}
+#endif
+	return FLinearColor::White;
 }
 
 void UMultiPackerAssetGraphSchema::BreakNodeLinks(UEdGraphNode& TargetNode) const

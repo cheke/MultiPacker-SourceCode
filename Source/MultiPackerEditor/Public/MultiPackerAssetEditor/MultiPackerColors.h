@@ -28,7 +28,7 @@ namespace MultiPackerColors
 	{
 		const FLinearColor Diff(0.9f, 0.2f, 0.15f);
 		const FLinearColor Hover(1.0f, 0.7f, 0.0f);
-		const FLinearColor Default(0.02f, 0.02f, 0.02f);
+		const FLinearColor Default(0.08f, 0.08f, 0.08f);
 		const FLinearColor SingleNode(0.02f, 0.02f, 0.02f);
 	}
 	
