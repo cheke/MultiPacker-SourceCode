@@ -27,9 +27,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "TextureNode")
 	UTexture* TextureInput;
 
-	//This option is Individual for the node, for a global usage go to Output Settings and change the Channel
+	//This option is Individual for the node, the size of the Tile has a several impact on performance
 	UPROPERTY(EditAnywhere, Category = "TextureNode")
 		bool SDF = false;
+
+	UPROPERTY(EditAnywhere, Category = "TextureNode", meta = (ClampMin = "1", ClampMax = "64", UIMin = "1", UIMax = "64", EditCondition = SDF))
+		int32 SDF_Radius = 64;
 
 	//This option is Individual for the node and do some changes on the Texture to get a better result
 	UPROPERTY(EditAnywhere, Category = "TextureNode")

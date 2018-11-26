@@ -22,9 +22,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "MaterialNode")
 		UMaterialInterface* MaterialBaseInput;
 
-	//This option is Individual for the node, for a global usage go to Output Settings and change the Channel
+	//This option is Individual for the node, the size of the Tile has a several impact on performance
 	UPROPERTY(EditAnywhere, Category = "MaterialNode")
 		bool SDF = false;
+
+	UPROPERTY(EditAnywhere, Category = "MaterialNode", meta = (ClampMin = "1", ClampMax = "64", UIMin = "1", UIMax = "64", EditCondition = SDF))
+		int32 SDF_Radius = 64;
 	
 	//Materials can be splitted to get Individual Textures from there, this work for every numprint
 	UPROPERTY(EditDefaultsOnly, Category = "MaterialNode|Tiled Options")

@@ -39,7 +39,8 @@ void UTilePointer::GetPointerFromRT()
 
 void UTilePointer::InitializeSDFFloatArray()
 {
-	TileDataFloat.Reserve(TileDimension);
+	TileDataFloat.Empty(TileDimension);
+	//TileDataFloat.Reserve(TileDimension);
 	for (uint32 pixels = 0; pixels < TileDimension; ++pixels)
 	{
 		TileDataFloat.Add(TileData[pixels].R > 18 ? (TileData[pixels].R / 255.0f) : 0.0f);
@@ -281,54 +282,43 @@ void UTilePointer::UpdateTextureCanvas()
 	TileTexture->UpdateResource();
 }
 
-void UTilePointer::SDFGenParallel()
+void UTilePointer::SDFGenParallel(uint16 Radius, uint16 V_size, uint16 H_size)
 {
+	//variables to set: MaxRadius VSize HSize
 	InitializeSDFFloatArray();
 	ClearTextureCanvas();
-	ParallelFor(128, [&TileData = TileData, TileDataFloat = TileDataFloat, CurlDistArray = CurlDistArray](int32 px)
+
+	ParallelFor(H_size, [&TileData = TileData, &TileDataFloat = TileDataFloat, Radius = Radius, V_size = V_size, H_size = H_size](int32 px)
 	{
-		const uint8 MaxRadius = 64;
-		const uint8 MinRadius = 10;
-		const float FMaxRadius = 64.0f;
-		const float RadiusM = MaxRadius - 0.5f;
-		float mindist = 64.0f;
-		uint8 startX;
-		uint8 endX;
-		uint8 startY;
-		uint8 endY;
+
+		const uint8 MaxRadius = Radius;
+		const float FMaxRadius = MaxRadius * 1.0f;
+		float mindist = FMaxRadius;
+		uint16 startX;
+		uint16 endX;
+		uint16 startY;
+		uint16 endY;
 		float startSample;
 		float FcurSample;
 		float curdist = 0.0f;
 		float output = 0.0f;
-		startX = (px - MaxRadius) < 0 ? px : MaxRadius;
-		endX = (px + MaxRadius) < 128 ? MaxRadius : (128 - px);
-		int16 TileDataNum = px - 128;
-		int8 PixelXFloat;
-		int8 PixelXDist;
-		int8 mPixelXFloat;
-		int8 mPixelXDist;
-		int16 TilecurNum = 0;
-		int16 curDistNum = 0;
-		for (uint8 py = 0; py < 128; ++py)
+		for (int32 py = 0; py < V_size; ++py)
 		{
-			TileDataNum += 128;
-			startSample = TileDataFloat[TileDataNum];
-
-			mindist = 10.0f;
-			startY = (py - MinRadius) < 0 ? py : MinRadius;
-			endY = (py + MinRadius) < 128 ? MinRadius : (128 - py);
-			mPixelXFloat = -startX + px;
-			mPixelXDist = -startX + 64;
-			for (int8 sdfY = -startY; sdfY < endY; ++sdfY)
+			mindist = FMaxRadius;
+			startX = (px - MaxRadius) < 0 ? px : MaxRadius;
+			endX = (px + MaxRadius) < H_size ? MaxRadius : (H_size - px);
+			startY = (py - MaxRadius) < 0 ? py : MaxRadius;
+			endY = (py + MaxRadius) < V_size ? MaxRadius : (V_size - py);
+			startSample = TileDataFloat[px + (py * H_size)];
+			for (int32 sdfX = -startX; sdfX < endX; ++sdfX)
 			{
-				TilecurNum = ((py + sdfY) * 128);
-				curDistNum = ((sdfY + 64) * 128);
-				for (int8 sdfX = -startX; sdfX < endX; ++sdfX)
+				const int32 PixelXFloat = sdfX + px;
+				for (int32 sdfY = -startY; sdfY < endY; ++sdfY)
 				{
-					FcurSample = TileDataFloat[mPixelXFloat + TilecurNum];// ((py + sdfY) * 128)];
+					FcurSample = TileDataFloat[PixelXFloat + ((py + sdfY) * H_size)];
 					if (FcurSample != startSample)
 					{
-						curdist = CurlDistArray[mPixelXDist + curDistNum];// ((sdfY + 64) * 128)];
+						curdist = sqrtf( FVector2D::DotProduct( FVector2D(sdfX, sdfY), FVector2D(sdfX, sdfY) ) );
 						mindist = FMath::Min(mindist, curdist);
 						if (mindist == 0.0f)
 						{
@@ -336,46 +326,17 @@ void UTilePointer::SDFGenParallel()
 							sdfX = endX;
 						}
 					}
-					++mPixelXFloat;
-					++mPixelXDist;
 				}
 			}
-			if(mindist > 9.0f)
-			{
-				mindist = FMaxRadius;
-				startY = (py - MaxRadius) < 0 ? py : MaxRadius;
-				endY = (py + MaxRadius) < 128 ? MaxRadius : (128 - py);
-				PixelXFloat = -startX + px;
-				PixelXDist = -startX + 64;
-				for (int8 sdfY = -startY; sdfY < endY; ++sdfY)
-				{
-					TilecurNum = ((py + sdfY) * 128);
-					curDistNum = ((sdfY + 64) * 128);
-					for (int8 sdfX = -startX; sdfX < endX; ++sdfX)
-					{
-						FcurSample = TileDataFloat[PixelXFloat + TilecurNum];// ((py + sdfY) * 128)];
-						if (FcurSample != startSample)
-						{
-							curdist = CurlDistArray[PixelXDist + curDistNum];// ((sdfY + 64) * 128)];
-							mindist = FMath::Min(mindist, curdist);
-							if (mindist == 0.0f)
-							{
-								sdfY = endY;
-								sdfX = endX;
-							}
-						}
-						++PixelXFloat;
-						++PixelXDist;
-					}
-				}
-			}
-			output = (mindist - 0.5f) / RadiusM;
+			output = (mindist - 0.5f) / (MaxRadius - 0.5f);
+			output *= startSample == 0.0f ? -1.0f : 1.0f;
 			output = (output + 1.0f) * 0.5f;
 			output *= startSample < 0.1f ? -1.0f : 1.0f;
-			const uint32 number = (px + py * 128);
+			const uint32 number = (px + py * H_size);
 			TileData[number].R = TileData[number].G = TileData[number].B = TileData[number].A = uint8(output * 255.0f);
 		}
 	});
+
 	UpdateTextureCanvas();
 }
 

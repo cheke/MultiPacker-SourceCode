@@ -32,7 +32,7 @@ public:
 	void FromChannelToTexture(EChannelSelectionInput Channel);
 	void ChangeResolution(uint16 new_width, uint16 new_height, UTilePointer* InTile);
 	void GenerateAndSetArrayTilesOnRenderTarget(UObject* InWorldContextObject, UTextureRenderTarget2D* OutputTexture, TArray<UTilePointer*> TileArray, uint16 Width, uint16 Height);
-	void SDFGenParallel();
+	void SDFGenParallel(uint16 Radius, uint16 V_size, uint16 H_size);
 	void GenerateThumbnailFromTile(UTilePointer* Tile);
 	TArray<FColor> GetColorArray();
 	UTexture2D* FillTextureOutput(UObject* Outer, const FString Name, EObjectFlags Flags);

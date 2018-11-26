@@ -236,8 +236,8 @@ void UMultiPackerTextureEdNode::ProcessTiles()
 	{
 		for (UTilePointer* Tile : ArrayTiles)
 		{
-			Tile->ChangeResolution(128, 128, Tile);
-			Tile->SDFGenParallel();
+			//Tile->ChangeResolution(128, 128, Tile);
+			Tile->SDFGenParallel(GenericGraphNode->SDF_Radius, GetTileSize().Y, GetTileSize().X);
 		}
 	}
 	//Tile Size Final
