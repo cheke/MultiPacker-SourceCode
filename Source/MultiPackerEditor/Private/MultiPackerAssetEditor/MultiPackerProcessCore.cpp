@@ -511,8 +511,16 @@ void UMultiPackerProcessCore::ProcessNodes(UMultiPacker* Graph)
 		}
 		SaveTextureFromTile(Output[multipleTextures], AddName, AssetToolsModule);
 	}
-	BaseInput->NodeOutput->SetThumnailOutput(BaseInput->TextureOutput[0], BaseInput->RectangleTiles);
-
+	//search the Outputnode
+	UMultiPackerEdGraph* EdGraph = Cast<UMultiPackerEdGraph>(BaseInput->EdGraph);
+	for (uint16 num = 0; num < EdGraph->Nodes.Num(); ++num)
+	{
+		UMultiPackerOutputNode* OutputNode = Cast<UMultiPackerOutputNode>(EdGraph->Nodes[num]);
+		if (OutputNode != nullptr)
+		{
+			OutputNode->SetArrayThumnailOutput(BaseInput->TextureOutput);
+		}
+	}
 	if (BaseInput->SaveMaterialCollection)
 		CreateMaterialCollection(TextureOutputSizeHorizontal, TextureOutputSizeVertical, AssetToolsModule, ContentBrowserModule);
 

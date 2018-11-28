@@ -8,6 +8,7 @@
 class FAssetThumbnail;
 class UMultiPackerOutputNodeBase;
 class UMultiPackerEdGraph;
+class UTexture2D;
 
 UCLASS(MinimalAPI)
 class UMultiPackerOutputNode : public UEdGraphNode
@@ -17,21 +18,24 @@ public:
 	UPROPERTY(VisibleAnywhere, instanced, Category = "MultiPacker")
 	UMultiPackerOutputNodeBase* MultiPackerNode;
 
-	TSharedPtr<class FAssetThumbnail> AssetThumbnail;
-
 	void SetGenericGraphNode(UMultiPackerOutputNodeBase* InNode);
-	void ProcessThumbnail(UTexture2D* Input);
-	FText GetDescription() const;
+	void ProcessArrayThumbnail();
 	void AllocateDefaultPins() override;
 	void NodeConnectionListChanged() override;
 	bool CanUserDeleteNode()const override;
 
+	void SetArrayThumnailOutput(TArray<UTexture2D*> Input);
+	int GetNumTexturesArray();
+	TSharedRef<SWidget> GetThumbnailByNum(int Num);
+	bool IsThumbRectangled(int Num);
 private:
 	UMultiPackerEdGraph* GetGenericGraphEdGraph() const;
-	FText GetNodeTitle(ENodeTitleType::Type TitleType) const;
 	virtual FLinearColor GetNodeTitleColor() const override;
-	UObject* GetNodeAssetObject(UObject* Outer) const;
-	UObject* GetThumbnailAssetObject() const;
 	static UEdGraphPin* PinDefault;
 	bool NodeOutput = false;
+	//OutputAssets
+	UPROPERTY()
+	TArray<UTexture2D*> ArrayTextureOutput;
+	TArray<bool> ArrayRectangled;
+	TArray<TSharedPtr<class FAssetThumbnail>> ArrayAssetThumbnail;
 };

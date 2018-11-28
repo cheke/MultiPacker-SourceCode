@@ -12,11 +12,10 @@ public:
 
 		void Construct(const FArguments& InArgs, UMultiPackerOutputNode* InNode);
 
-
 	//~ Begin SGraphNode Interface
 	//virtual void UpdateGraphNode() override;
-	virtual void CreatePinWidgets() override;
-	virtual void AddPin(const TSharedRef<SGraphPin>& PinToAdd) override;
+	void CreatePinWidgets() override;
+	void AddPin(const TSharedRef<SGraphPin>& PinToAdd) override;
 	// 	virtual void OnDragEnter(const FGeometry& MyGeometry, const FDragDropEvent& DragDropEvent) override;
 	// 	virtual FReply OnDragOver(const FGeometry& MyGeometry, const FDragDropEvent& DragDropEvent) override;
 	// 	virtual FReply OnDrop(const FGeometry& MyGeometry, const FDragDropEvent& DragDropEvent) override;
@@ -25,26 +24,19 @@ public:
 	// 	virtual void SetOwner(const TSharedRef<SGraphPanel>& OwnerPanel) override;
 	// 	virtual void AddPin(const TSharedRef<SGraphPin>& PinToAdd) override;
 	//~ End SGraphNode Interface
+	
+	EVisibility GetDragOverMarkerVisibility() const;
 
-	//virtual FSlateColor GetBackgroundColor() const;
-
-	virtual EVisibility GetDragOverMarkerVisibility() const;
-
-	virtual FText GetDescription() const;
-	virtual EVisibility GetDescriptionVisibility() const;
-
-	virtual float GetThumbnailSizeX();
-
-	virtual const FSlateBrush* GetNameIcon() const;
+	FText GetDescription() const;
+	EVisibility GetDescriptionVisibility() const;
+	
+	const FSlateBrush* GetNameIcon() const;
 
 protected:
-	virtual TSharedRef<SWidget> CreateNodeContentArea() override;
-
+	TSharedRef<SWidget> CreateNodeContentArea() override;
+	TSharedRef<SWrapBox> CreateThumbnailContentArea();
 	TSharedPtr<SBorder> NodeBody;
 	TSharedPtr<SHorizontalBox> OutputPinBox;
 
 	UMultiPackerOutputNode* EdActorNode;
-
-private:
-	void BuildThumbnailWidget();
 };

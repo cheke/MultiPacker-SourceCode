@@ -42,9 +42,8 @@ void UMultiPackerEdGraph::RebuildGenericGraph()
 				}
 				else
 				{
-					UMultiPackerOutputNodeBase* ONode = OutputNode->MultiPackerNode;
-					OutputNode->ProcessThumbnail( G->TextureOutput.Num() > 0 ? G->TextureOutput[0] : NULL);
-					G->NodeOutput = ONode;
+					OutputNode->ProcessArrayThumbnail();
+					G->NodeOutput = OutputNode->MultiPackerNode;
 					continue;
 				}
 			}

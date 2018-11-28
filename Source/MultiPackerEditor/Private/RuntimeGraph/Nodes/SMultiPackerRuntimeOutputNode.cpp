@@ -65,8 +65,7 @@ EVisibility SMultiPackerRuntimeOutputNode::GetDragOverMarkerVisibility() const
 
 FText SMultiPackerRuntimeOutputNode::GetDescription() const
 {
-	UMultiPackerOutputNode* MyNode = CastChecked<UMultiPackerOutputNode>(GraphNode);
-	return MyNode ? MyNode->GetDescription() : FText::GetEmpty();
+	return  FText::FromString("Material");
 }
 
 EVisibility SMultiPackerRuntimeOutputNode::GetDescriptionVisibility() const

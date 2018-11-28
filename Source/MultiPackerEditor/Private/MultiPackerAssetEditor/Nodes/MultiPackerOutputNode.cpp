@@ -6,6 +6,8 @@
 #include <EdGraph/EdGraphPin.h>
 #include <UObject/UObjectGlobals.h>
 #include <GraphEditorSettings.h>
+#include <Engine/Texture2D.h>
+#include "AssetThumbnail.h"
 
 #define LOCTEXT_NAMESPACE "MultiPackerOutputEdNode"
 
@@ -37,9 +39,27 @@ bool UMultiPackerOutputNode::CanUserDeleteNode() const
 {
 	return NodeOutput;
 }
-FText UMultiPackerOutputNode::GetNodeTitle(ENodeTitleType::Type TitleType) const
+
+void UMultiPackerOutputNode::SetArrayThumnailOutput(TArray<UTexture2D*> Input)
 {
-	return FText::FromString("Output Texture");
+	ArrayTextureOutput = Input;
+	ProcessArrayThumbnail();
+}
+
+int UMultiPackerOutputNode::GetNumTexturesArray()
+{
+	return ArrayTextureOutput.Num();
+}
+
+TSharedRef<SWidget> UMultiPackerOutputNode::GetThumbnailByNum(int Num)
+{
+	//something inside me say this is a bomb waiting to explode
+	return ArrayAssetThumbnail[Num].Get()->MakeThumbnailWidget();
+}
+
+bool UMultiPackerOutputNode::IsThumbRectangled(int Num)
+{
+	return ArrayRectangled[Num];
 }
 
 FLinearColor UMultiPackerOutputNode::GetNodeTitleColor() const
@@ -52,30 +72,17 @@ void UMultiPackerOutputNode::SetGenericGraphNode(UMultiPackerOutputNodeBase* InN
 	MultiPackerNode = InNode;
 }
 
-FText UMultiPackerOutputNode::GetDescription() const
+void UMultiPackerOutputNode::ProcessArrayThumbnail()
 {
-	return FText::FromString("Texture");
+	ArrayAssetThumbnail.Empty(ArrayTextureOutput.Num());
+	ArrayRectangled.Empty(ArrayTextureOutput.Num());
+	for (UTexture2D* Texture : ArrayTextureOutput)
+	{
+		FAssetData ValueAsset = FAssetData(Texture);
+		bool TextureRectangled = Texture->GetSurfaceWidth() != Texture->GetSurfaceHeight() ? true : false;
+		ArrayRectangled.Add(TextureRectangled);
+		ArrayAssetThumbnail.Add(MakeShareable(new FAssetThumbnail(ValueAsset, TextureRectangled ? 64 : 128, 128, FMultiPackerEditorThumbnail::Get())));
+	}
 }
-
-UObject* UMultiPackerOutputNode::GetThumbnailAssetObject() const
-{
-	return MultiPackerNode->TextureInput;
-}
-
-UObject* UMultiPackerOutputNode::GetNodeAssetObject(UObject* Outer) const
-{
-	return  MultiPackerNode->TextureInput;
-}
-
-void UMultiPackerOutputNode::ProcessThumbnail(UTexture2D* Input)
-{
-	if(Input)
-		MultiPackerNode->TextureInput = Input;
-
-	//UTexture* C = MultiPackerNode->TextureInput;
-	FAssetData ValueAsset = FAssetData(MultiPackerNode->TextureInput);
-	AssetThumbnail = MakeShareable(new FAssetThumbnail(ValueAsset, MultiPackerNode->Thumbnailrectangled ? 256 : 128, 128, FMultiPackerEditorThumbnail::Get()));
-}
-
 
 #undef LOCTEXT_NAMESPACE

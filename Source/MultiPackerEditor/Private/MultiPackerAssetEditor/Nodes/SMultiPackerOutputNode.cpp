@@ -6,18 +6,15 @@
 #include "SGraphPin.h"
 #include "GraphEditor.h"
 #include <GraphEditorSettings.h>
-
-void SMultiPackerOutputNode::BuildThumbnailWidget()
-{
-	EdActorNode->ProcessThumbnail(EdActorNode->MultiPackerNode->TextureInput);
-}
+#include <Widgets/SBoxPanel.h>
+#include <Widgets/Layout/SWrapBox.h>
 
 //////////////////////////////////////////////////////////////////////////
 void SMultiPackerOutputNode::Construct(const FArguments& InArgs, UMultiPackerOutputNode* InNode)
 {
 	GraphNode = InNode;
 	EdActorNode = InNode;
-	BuildThumbnailWidget();
+	EdActorNode->ProcessArrayThumbnail();
 	UpdateGraphNode();
 }
 
@@ -34,7 +31,6 @@ void SMultiPackerOutputNode::CreatePinWidgets()
 void SMultiPackerOutputNode::AddPin(const TSharedRef<SGraphPin>& PinToAdd)
 {
 	PinToAdd->SetOwner(SharedThis(this));
-		
 	if (PinToAdd->GetDirection() == EEdGraphPinDirection::EGPD_Input)
 	{
 		FMargin Padding = Settings->GetInputPinPadding();
@@ -60,8 +56,7 @@ EVisibility SMultiPackerOutputNode::GetDragOverMarkerVisibility() const
 
 FText SMultiPackerOutputNode::GetDescription() const
 {
-	UMultiPackerOutputNode* MyNode = CastChecked<UMultiPackerOutputNode>(GraphNode);
-	return MyNode ? MyNode->GetDescription() : FText::GetEmpty();
+	return  FText::FromString("Texture");
 }
 
 EVisibility SMultiPackerOutputNode::GetDescriptionVisibility() const
@@ -85,7 +80,6 @@ TSharedRef<SWidget> SMultiPackerOutputNode::CreateNodeContentArea()
 			SNew(SHorizontalBox)
 			+ SHorizontalBox::Slot()
 			.HAlign(HAlign_Left)
-			.FillWidth(1.0f)
 			[
 				// LEFT
 				SAssignNew(LeftNodeBox, SVerticalBox)
@@ -101,19 +95,35 @@ TSharedRef<SWidget> SMultiPackerOutputNode::CreateNodeContentArea()
 				.HAlign(HAlign_Right)
 				.VAlign(VAlign_Center)
 				[
-					SNew(SBox)
-					.WidthOverride(GetThumbnailSizeX())
-					.HeightOverride(128)
-					[
-						EdActorNode->AssetThumbnail->MakeThumbnailWidget()
-					]
+					CreateThumbnailContentArea()
 				]
 			]
 		];
-	
 }
 
-float SMultiPackerOutputNode::GetThumbnailSizeX()
+TSharedRef<SWrapBox> SMultiPackerOutputNode::CreateThumbnailContentArea()
 {
-	return EdActorNode->MultiPackerNode->Thumbnailrectangled ? 256 : 128;
+	//Get The Size of the Matrix to set Thumbnails
+	int ArrayTexturesNum = EdActorNode->GetNumTexturesArray();
+	int MatrixSize = FMath::CeilToInt(FMath::Sqrt(ArrayTexturesNum));//get the number of columns and rows
+	TSharedRef<SWrapBox> WrapSlot = SNew(SWrapBox)
+		+ SWrapBox::Slot()
+		.HAlign(HAlign_Left)
+		.VAlign(VAlign_Top);
+	WrapSlot->SetWrapWidth((128 + 5) * MatrixSize);
+	for (int Thumb = 0; Thumb < ArrayTexturesNum; ++Thumb) 
+	{
+		WrapSlot->AddSlot()
+			[
+				SNew(SBox)
+				.Padding(5.0f)
+				.MaxDesiredWidth(128.0f)
+				.MaxDesiredHeight(EdActorNode->IsThumbRectangled(Thumb) ? 64.0f : 128.0f)
+				.VAlign(VAlign_Center)
+				[
+					EdActorNode->GetThumbnailByNum(Thumb)
+				]
+			];
+	}
+	return WrapSlot;
 }
