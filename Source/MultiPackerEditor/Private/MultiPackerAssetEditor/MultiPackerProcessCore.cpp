@@ -458,6 +458,7 @@ void UMultiPackerProcessCore::SaveDataBase(FString TargetName, FAssetToolsModule
 	NewDataBase->TextureOutput = BaseInput->TextureOutput;
 	NewDataBase->TileMap = TileMap;
 	NewDataBase->TileSize = TileSize;
+	NewDataBase->MaterialCollection = BaseInput->MaterialCollection;
 	BaseInput->DataBase->MarkPackageDirty();
 }
 
@@ -641,9 +642,8 @@ TArray<FString> UMultiPackerProcessCore::TexturePackageName(FString Prefix, FStr
 		TextureName = TextureName.Append(TextureNum);
 	if (TextureName.Contains("/"))
 		TextureName = TextureName.Mid(TextureName.Find("/", ESearchCase::IgnoreCase, ESearchDir::FromEnd) + 1);
-
-	FString NewPackageName = TEXT("/Game/") + (importDirectory == "" ? "Textures/" : importDirectory + "/") + TextureName;
-
+	int index = 0;//needs a int obligatory
+	FString NewPackageName = TEXT("/Game/") + (importDirectory == "" ? "Textures/" : importDirectory.FindLastChar(*TEXT("/"), index) ? importDirectory : importDirectory + "/") + TextureName;
 	FString Name;
 	FString PackageName;
 	AssetToolsModule.Get().CreateUniqueAssetName(NewPackageName, TextureName, PackageName, Name);
