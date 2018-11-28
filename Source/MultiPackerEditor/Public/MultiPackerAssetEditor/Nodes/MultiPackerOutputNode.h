@@ -15,10 +15,6 @@ class UMultiPackerOutputNode : public UEdGraphNode
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(VisibleAnywhere, instanced, Category = "MultiPacker")
-	UMultiPackerOutputNodeBase* MultiPackerNode;
-
-	void SetGenericGraphNode(UMultiPackerOutputNodeBase* InNode);
 	void ProcessArrayThumbnail();
 	void AllocateDefaultPins() override;
 	void NodeConnectionListChanged() override;

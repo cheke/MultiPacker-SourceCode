@@ -5,7 +5,7 @@
 #include "MultiPackerImageCore.h"
 #include "MultiPackerMatNode.generated.h"
 
-class UMultiPackerOutputNodeBase;
+//class UMultiPackerOutputNodeBase;
 class UMultiPacker;
 class UMaterialInterface;
 class UTilePointer;
@@ -57,7 +57,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "MaterialNode|Non Square Size", meta = (ClampMin = "1", ClampMax = "8096", UIMin = "1", UIMax = "8096", EditCondition = RectangleSize))
 		int32 SizeHorizontal = 32;
 	
-	UMultiPackerOutputNodeBase* ParentNode;
+	//UMultiPackerOutputNodeBase* ParentNode;
 	int32 NumTiles = 1;
 	//from multipackerOutput error collector
 	bool CompareSizes(int32 Vertical, int32 Horizontal);

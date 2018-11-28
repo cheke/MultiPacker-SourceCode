@@ -3,7 +3,6 @@
 #include "Graph/MultiPacker.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Graph/MultiPackerTextureNode.h"
-#include "Graph/MultiPackerOutputNodeBase.h"
 #include "Graph/MultiPackerMatNode.h"
 #include "MultiPackerSettings.h"
 #include <UObject/UObjectGlobals.h>
@@ -12,7 +11,6 @@
 UMultiPacker::UMultiPacker()
 {
 	NodeType = UMultiPackerTextureNode::StaticClass();
-	MPNodeType = UMultiPackerOutputNodeBase::StaticClass();
 	MatNodeType = UMultiPackerMatNode::StaticClass();
 #if WITH_EDITORONLY_DATA
 	EdGraph = nullptr;
@@ -33,18 +31,6 @@ UMultiPacker::~UMultiPacker()
 
 void UMultiPacker::ClearGraph()
 {
-	for (int i = 0; i < TexNodes.Num(); ++i)
-	{
-		UMultiPackerTextureNode* Node = TexNodes[i];
-
-		Node->ParentNode= nullptr;
-	}
-	for (int i = 0; i < MatNodes.Num(); ++i)
-	{
-		UMultiPackerMatNode* Node = MatNodes[i];
-
-		Node->ParentNode = nullptr;
-	}
 	TexNodes.Reset();
 	MatNodes.Reset();
 }
@@ -53,10 +39,6 @@ void UMultiPacker::ClearGraph()
  void UMultiPacker::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
  {
  	FName PropertyName = (PropertyChangedEvent.Property != nullptr) ? PropertyChangedEvent.Property->GetFName() : NAME_None;
- 	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPacker, RectangleTiles)))
- 	{
-		NodeOutput->RectangleTiles = RectangleTiles;
-	}
 	uint32 SizeOut = (uint32)0;
 	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPacker, TextureTileSizeOutput)))
 	{

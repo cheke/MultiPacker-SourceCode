@@ -8,7 +8,6 @@
 #include "MultiPackerAssetEditor/Nodes/MultiPackerOutputNode.h"
 #include "Graph/MultiPackerMatNode.h"
 #include "Graph/MultiPackerTextureNode.h"
-#include "Graph/MultiPackerOutputNodeBase.h"
 #include "MultiPackerAssetEditor/MultiPackerProcessCore.h"
 #include "MultiPackerAssetEditor/MultiPackerEdGraph.h"
 #include "Engine/Engine.h"
@@ -481,12 +480,8 @@ void FMultiPackerAssetEditor::CreateEdGraph()
 	{
 		EditingGraph->EdGraph = CastChecked<UMultiPackerEdGraph>(FBlueprintEditorUtils::CreateNewGraph(EditingGraph, NAME_None, UMultiPackerEdGraph::StaticClass(), UMultiPackerAssetGraphSchema::StaticClass()));
 		EditingGraph->EdGraph->bAllowDeletion = false;
-
-		UMultiPackerOutputNodeBase* NewNode = NewObject<UMultiPackerOutputNodeBase>(EditingGraph, EditingGraph->MPNodeType);
-		EditingGraph->NodeOutput = NewNode;
 		FGraphNodeCreator<UMultiPackerOutputNode> NodeCreator(*EditingGraph->EdGraph);
 		UMultiPackerOutputNode* GraphMultiNodeOutput = NodeCreator.CreateNode(true);
-		GraphMultiNodeOutput->SetGenericGraphNode(Cast<UMultiPackerOutputNodeBase>(NewNode));
 		NodeCreator.Finalize();
 		// Give the schema a chance to fill out any required nodes (like the results node)
 		const UEdGraphSchema* Schema = EditingGraph->EdGraph->GetSchema();

@@ -10,7 +10,6 @@
 // Forward Declarations
 class UMultiPackerTextureNode;
 class UMultiPackerMatNode;
-class UMultiPackerOutputNodeBase;
 class UMultiPackerDataBase;
 class UTextureRenderTarget2D;
 class UTexture;
@@ -133,9 +132,7 @@ public:
 
 	TArray<UMultiPackerTextureNode*> TexNodes;
 	TArray<UMultiPackerMatNode*> MatNodes;
-	UMultiPackerOutputNodeBase* NodeOutput;
 	TSubclassOf<UMultiPackerTextureNode> NodeType;
-	TSubclassOf<UMultiPackerOutputNodeBase> MPNodeType;
 	TSubclassOf<UMultiPackerMatNode> MatNodeType;
 	EObjectFlags Flags;
 

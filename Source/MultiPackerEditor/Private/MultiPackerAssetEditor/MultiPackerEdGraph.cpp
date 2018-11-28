@@ -7,7 +7,6 @@
 #include "MultiPackerAssetEditor/Nodes/MultiPackerMaterialNode.h"
 #include "MultiPackerAssetEditor/MultiPackerEditorThumbnail.h"
 #include "Graph/MultiPackerTextureNode.h"
-#include "Graph/MultiPackerOutputNodeBase.h"
 
 UMultiPackerEdGraph::UMultiPackerEdGraph()
 {
@@ -32,7 +31,7 @@ void UMultiPackerEdGraph::RebuildGenericGraph()
 			{
 				UMultiPackerOutputNode* OutputNode = Cast<UMultiPackerOutputNode>(Nodes[i]);
 
-				if (OutputNode == nullptr || OutputNode->MultiPackerNode == nullptr)
+				if (OutputNode == nullptr )
 				{
 					UMultiPackerMaterialNode* MatNode = Cast<UMultiPackerMaterialNode>(Nodes[i]);
 					if (MatNode == nullptr || MatNode->MultiPackerMatNode == nullptr)
@@ -43,7 +42,6 @@ void UMultiPackerEdGraph::RebuildGenericGraph()
 				else
 				{
 					OutputNode->ProcessArrayThumbnail();
-					G->NodeOutput = OutputNode->MultiPackerNode;
 					continue;
 				}
 			}

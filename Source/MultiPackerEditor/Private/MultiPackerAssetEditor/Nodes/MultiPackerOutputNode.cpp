@@ -67,11 +67,6 @@ FLinearColor UMultiPackerOutputNode::GetNodeTitleColor() const
 	return GetDefault<UGraphEditorSettings>()->ResultNodeTitleColor;
 }
 
-void UMultiPackerOutputNode::SetGenericGraphNode(UMultiPackerOutputNodeBase* InNode)
-{
-	MultiPackerNode = InNode;
-}
-
 void UMultiPackerOutputNode::ProcessArrayThumbnail()
 {
 	ArrayAssetThumbnail.Empty(ArrayTextureOutput.Num());

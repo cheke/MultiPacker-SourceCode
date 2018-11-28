@@ -6,7 +6,6 @@
 #include "MultiPackerTextureNode.generated.h"
 
 class UMultiPacker;
-class UMultiPackerOutputNodeBase;
 class UTextureRenderTarget2D;
 class UTilePointer;
 class UTexture;
@@ -20,7 +19,6 @@ class MULTIPACKERRUNTIME_API UMultiPackerTextureNode : public UObject
 public:
 	UMultiPackerTextureNode();
 	virtual ~UMultiPackerTextureNode();
-	UMultiPackerOutputNodeBase* ParentNode;
 	TArray<UTilePointer*> BaseTile;
 
 	//Here you set the Texture to be processed by the Node Parameters
