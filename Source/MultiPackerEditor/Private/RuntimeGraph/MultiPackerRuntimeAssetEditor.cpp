@@ -363,8 +363,9 @@ FVector2D FMultiPackerRuntimeAssetEditor::GetAssetDropGridLocation() const
 	float ZoomAmount = 1.0f;
 	ViewportWidget->GetViewLocation(ViewLocation, ZoomAmount);
 	FVector2D GridLocation = PanelCoord / ZoomAmount + ViewLocation;
-	GridLocation.Y = GridLocation.Y - (AssetDropTarget->ArrayObjectNum * 185);
 
+	GridLocation.Y = GridLocation.Y - (AssetDropTarget->GetRow() * 200);
+	GridLocation.X = GridLocation.X - (AssetDropTarget->GetColumn() * 250);
 	return GridLocation;
 }
 

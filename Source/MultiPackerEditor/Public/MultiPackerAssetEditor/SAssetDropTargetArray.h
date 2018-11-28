@@ -30,7 +30,9 @@ public:
 
 		void Construct(const FArguments& InArgs);
 	
-	uint8 ArrayObjectNum;
+	uint8 GetRow();
+	uint8 GetColumn();
+
 protected:
 	FReply OnDropped(TSharedPtr<FDragDropOperation> DragDropOperation);
 	virtual bool OnAllowDrop(TSharedPtr<FDragDropOperation> DragDropOperation) const override;
@@ -39,6 +41,10 @@ private:
 	TArray<UObject*> GetDroppedObject(TSharedPtr<FDragDropOperation> DragDropOperation, bool& bOutRecognizedEvent) const;
 	
 private:
+	uint8 ArrayObjectNum;
+	uint8 ArrayObjectDropTotal;
+	uint8 ColumnAssetDrop = 0;
+	uint8 RowAssetDrop = 0;
 	/** Delegate to call when an asset is dropped */
 	FOnAssetDropped OnAssetDropped;
 	/** Delegate to call to check validity of the asset */

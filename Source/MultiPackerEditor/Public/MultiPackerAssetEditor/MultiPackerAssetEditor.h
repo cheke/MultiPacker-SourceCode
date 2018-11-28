@@ -120,7 +120,7 @@ private:
 	TSharedPtr<FUICommandList> GraphEditorCommands;
 
 	TSharedPtr<SMultiPackerAssetEditorDrop> AssetDropTarget;
-
+	
 	/**
 	* Called when a node's title is committed for a rename
 	*

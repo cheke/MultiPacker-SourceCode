@@ -21,13 +21,27 @@ void SAssetDropTargetArray::Construct(const FArguments& InArgs)
 		]);
 }
 
+uint8 SAssetDropTargetArray::GetRow()
+{
+	return RowAssetDrop;
+}
+
+uint8 SAssetDropTargetArray::GetColumn()
+{
+	return ColumnAssetDrop;
+}
+
 FReply SAssetDropTargetArray::OnDropped(TSharedPtr<FDragDropOperation> DragDropOperation)
 {
 	bool bUnused;
 	TArray<UObject*> Objects = GetDroppedObject(DragDropOperation, bUnused);
 	ArrayObjectNum = 0;
+	ArrayObjectDropTotal = Objects.Num();
+	int MatrixSize = FMath::CeilToInt(FMath::Sqrt(ArrayObjectDropTotal));//get the number of columns and rows
 	for (UObject* Object :Objects)
 	{
+		ColumnAssetDrop = ArrayObjectNum / MatrixSize;
+		RowAssetDrop = ArrayObjectNum - (ColumnAssetDrop * MatrixSize);
 		OnAssetDropped.ExecuteIfBound(Object);
 		ArrayObjectNum++;
 	}
