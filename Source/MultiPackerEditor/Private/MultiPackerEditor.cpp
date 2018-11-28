@@ -18,6 +18,7 @@
 #include <Modules/ModuleManager.h>
 #include "DetailsProperty/FChannelDatabaseCustomization.h"
 #include "DetailsProperty/FLayerDatabaseCustomization.h"
+#include "DetailsProperty/FTileCopyCustomization.h"
 #include "RuntimeGraph/Nodes/MultiPackerRuntimeOutputNode.h"
 #include "RuntimeGraph/Nodes/SMultiPackerRuntimeOutputNode.h"
 #include "RuntimeGraph/Nodes/MultiPackerRuntimeMaterialNode.h"
@@ -149,8 +150,10 @@ void FMultiPackerEditor::StartupModule()
 	/////LayerDatabase
 	RegisterAssetTypeAction(AssetTools, MakeShareable(new FMultiPackerLayerDatabaseAssetTypeActions(MultiPackerAssetCategoryBit)));
 
+	//Custom Property Details
 	RegisterCustomPropertyTypeLayout("ChannelDatabase", FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FChannelDatabaseCustomizationLayout::MakeInstance));
 	RegisterCustomPropertyTypeLayout("LayerDatabase", FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FLayerDatabaseCustomizationLayout::MakeInstance));
+	RegisterCustomPropertyTypeLayout("TileCopy", FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FTileCopyCustomizationLayout::MakeInstance));
 	CompileMaterials();
 }
 

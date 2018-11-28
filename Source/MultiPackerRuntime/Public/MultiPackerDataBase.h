@@ -6,6 +6,7 @@
 
 class UTextureRenderTarget2D;
 class UMaterialInstanceDynamic;
+class UMaterialParameterCollection;
 class UTexture;
 
 UCLASS()
@@ -30,6 +31,8 @@ public:
 		EChannelTextureSave ChannelMethod;
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "OutputData")
 		TArray<UTexture2D*> TextureOutput;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "OutputData")
+		UMaterialParameterCollection* MaterialCollection;
 
 	//Extremelly caution modifing this manually, can broke refences
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "OutputData")

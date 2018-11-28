@@ -45,7 +45,7 @@ void FLayerStyleEditorToolkit::NotifyPostChange(const FPropertyChangedEvent& Pro
 	StyleAsset->LayerBase.ColorOutline = StyleAsset->ColorOutline;
 	StyleAsset->LayerBase.OutlineThresold = StyleAsset->OutlineThresold;
 	StyleAsset->LayerBase.SDFThresold = StyleAsset->SDFThresold;
-	Material = UMultiPackerImageCore::SetDataBaseLayer(Material, StyleAsset->LayerBase, "");
+	StyleAsset->Material = UMultiPackerImageCore::SetDataBaseLayer(StyleAsset->Material, StyleAsset->LayerBase, "");
 }
 
 /* FLayerStyleEditorToolkit interface
@@ -113,12 +113,12 @@ void FLayerStyleEditorToolkit::CreateInternalWidgets()
 	Args.bHideSelectionTip = true;
 	Args.NotifyHook = this;
 
-	Material = UMultiPackerImageCore::CreateMaterial(EMultiPackerImageLayer::EMCE_Option1, NULL, StyleAsset->LayerBase, StyleAsset->LayerBase, StyleAsset->LayerBase);
+	StyleAsset->Material = UMultiPackerImageCore::CreateMaterial(EMultiPackerImageLayer::EMCE_Option1, NULL, StyleAsset->LayerBase, StyleAsset->LayerBase, StyleAsset->LayerBase);
 	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
 	PropertyWidget = PropertyModule.CreateDetailView(Args);
 	PropertyWidget->SetObject(StyleAsset);
 
-	PreviewUIViewport = SNew(SLayerStyleEditor, Material);
+	PreviewUIViewport = SNew(SLayerStyleEditor, StyleAsset->Material);
 }
 
 /* FAssetEditorToolkit interface

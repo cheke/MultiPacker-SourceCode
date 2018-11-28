@@ -126,11 +126,6 @@ FLayerDatabase UMultiPackerImageCore::ProcessStyle(FLayerDatabase InLayer, UMult
 	}
 	NewLayerBase.UseColor = InLayer.UseColor;
 	NewLayerBase.Outline = InLayer.Outline;
-// 	if (InLayer.ColorInterior != FLinearColor(0, 0, 0, 0)) { NewLayerBase.ColorInterior = InLayer.ColorInterior; }
-// 	if (InLayer.ColorOutline != FLinearColor(0, 0, 0, 0)) { NewLayerBase.ColorOutline = InLayer.ColorOutline; }
-// 	if (InLayer.EdgeSoftness != 0.0f) { NewLayerBase.EdgeSoftness = InLayer.EdgeSoftness; }
-// 	if (InLayer.OutlineThresold != 0.5f) { NewLayerBase.OutlineThresold = InLayer.OutlineThresold; }
-// 	if (InLayer.SDFThresold != 0.5f) { NewLayerBase.SDFThresold = InLayer.SDFThresold; }
 	NewLayerBase.ColorInterior = InStyle->ColorInterior;
 	NewLayerBase.ColorOutline = InStyle->ColorOutline;
 	NewLayerBase.EdgeSoftness = InStyle->LayerBase.EdgeSoftness;

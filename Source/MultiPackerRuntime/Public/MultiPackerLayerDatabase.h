@@ -2,7 +2,10 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "MultiPackerImageCore.h"
+#include "TileUtils/TileCopy.h"
 #include "MultiPackerLayerDatabase.generated.h"
+
+class UMaterialInstanceDynamic;
 
 UCLASS()
 class MULTIPACKERRUNTIME_API UMultiPackerLayerDatabase : public UObject
@@ -23,4 +26,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Appearance")
 		float SDFThresold = 0.5;
+
+	UPROPERTY(EditAnywhere, Category = "GetNodesToClipboard")
+		UTileCopy* Button;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* Material;
 };

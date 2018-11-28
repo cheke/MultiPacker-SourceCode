@@ -1,4 +1,4 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
 
 #include "DetailsProperty/FLayerDatabaseCustomization.h"
 #include "DetailsProperty/FChannelDatabaseCustomization.h"

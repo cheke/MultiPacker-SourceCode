@@ -13,7 +13,7 @@ class IToolkitHost;
 class SDockTab;
 class SLayerStyleEditor;
 class UMultiPackerLayerDatabase;
-class UMaterialInstanceDynamic;
+//class UMaterialInstanceDynamic;
 
 /**
 * Implements an Editor toolkit for textures.
@@ -92,7 +92,7 @@ private:
 	UMultiPackerLayerDatabase* StyleAsset;
 
 	//UMaterial* Material;
-	UMaterialInstanceDynamic* Material;
+	//UMaterialInstanceDynamic* Material;
 	/** Pointer to the style set to use for toolkits. */
 	//TSharedRef<ISlateStyle> Style;
 
