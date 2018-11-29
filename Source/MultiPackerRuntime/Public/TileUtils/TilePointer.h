@@ -22,6 +22,9 @@ public:
 		uint16 TileHeight;
 
 	UPROPERTY()
+		FVector2D TilePadding;
+
+	UPROPERTY()
 		FTileDatabase TileDatabase;
 	//From an Input RenderTarget fill the TileData and convert it to a Texture
 	void GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTileWidth, uint16 InTileHeight);

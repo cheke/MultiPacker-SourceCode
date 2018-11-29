@@ -43,7 +43,7 @@ public:
 	void ProcessNodes(UMultiPacker* Graph);
 	TArray<UTilePointer*> GetTilesFromNodes();
 	TArray<UTilePointer*> TileBinPack(TArray<UTilePointer*> InputTiles, uint16 SizeVertical, uint16 SizeHorizontal, uint16 Masks);
-	FRectSizePadding GetSizePaddingWithoutPadding(FRectSizePadding InPadding);
+	FRectSizePadding GetSizePaddingWithoutPadding(FRectSizePadding InPadding, FVector2D InTilePadding);
 	//code usefull
 	uint16 GetNumberOfMasks();
 	void GetOutputTileNumbers(uint16 Tiles);

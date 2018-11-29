@@ -541,7 +541,7 @@ TArray<UTilePointer*> UMultiPackerProcessCore::GetTilesFromNodes()
 		{
 			if (BaseNode->PinConnected() && BaseNode->IsObjectValid())
 			{
-				A_Output.Append(BaseNode->GetTiles(Tile_Size));
+				A_Output.Append(BaseNode->GetTiles(Tile_Size, BaseNode->OverridePadding ? BaseNode->TilePadding : BaseInput->TilePadding));
 			}
 		}
 	}
@@ -557,8 +557,8 @@ TArray<UTilePointer*> UMultiPackerProcessCore::TileBinPack(TArray<UTilePointer*>
 	for (UTilePointer* Tile : InputTiles)
 	{
 		//New Size With Padding
-		uint16 NewTileWidth = Tile->TileWidth + (BaseInput->TilePadding.Y * 2);
-		uint16 NewTileHeight = Tile->TileHeight + (BaseInput->TilePadding.X * 2);
+		uint16 NewTileWidth = Tile->TileWidth + (Tile->TilePadding.Y * 2);
+		uint16 NewTileHeight = Tile->TileHeight + (Tile->TilePadding.X * 2);
 		for (uint16 Textures = 0; Textures < A_BinPack.Num(); ++Textures)
 		{
 			Tile->TileDatabase.SizeAndPadding = A_BinPack[Textures]->Insert(NewTileWidth, NewTileHeight, BaseInput->RectangleMethod);
@@ -578,7 +578,7 @@ TArray<UTilePointer*> UMultiPackerProcessCore::TileBinPack(TArray<UTilePointer*>
 			Tile->TileDatabase.Frame = lastIndex;//"trasitional value layer, later its ok" / Masks;
 		}
 		//get out the padding from the data to get the new real position
-		Tile->TileDatabase.SizeAndPadding = GetSizePaddingWithoutPadding(Tile->TileDatabase.SizeAndPadding);
+		Tile->TileDatabase.SizeAndPadding = GetSizePaddingWithoutPadding(Tile->TileDatabase.SizeAndPadding, Tile->TilePadding);
 	}
 	TArray<UTilePointer*> TileBinPack;
 	bool bAlpha = BaseInput->Alpha;
@@ -614,12 +614,12 @@ TArray<UTilePointer*> UMultiPackerProcessCore::TileBinPack(TArray<UTilePointer*>
 	return Tiletexture;
 }
 
-FRectSizePadding UMultiPackerProcessCore::GetSizePaddingWithoutPadding(FRectSizePadding InPadding)
+FRectSizePadding UMultiPackerProcessCore::GetSizePaddingWithoutPadding(FRectSizePadding InPadding, FVector2D InTilePadding)
 {
-	InPadding.height = InPadding.height - (BaseInput->TilePadding.X * 2);
-	InPadding.width = InPadding.width - (BaseInput->TilePadding.Y * 2);
-	InPadding.x = InPadding.x + BaseInput->TilePadding.X;
-	InPadding.y = InPadding.y + BaseInput->TilePadding.Y;
+	InPadding.height = InPadding.height - (InTilePadding.X * 2);
+	InPadding.width = InPadding.width - (InTilePadding.Y * 2);
+	InPadding.x = InPadding.x + InTilePadding.X;
+	InPadding.y = InPadding.y + InTilePadding.Y;
 	return InPadding;
 }
 

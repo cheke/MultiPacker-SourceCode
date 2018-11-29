@@ -2,6 +2,7 @@
 #include "MultiPackerAssetEditor/Nodes/MultiPackerBaseNode.h"
 #include "MultiPackerAssetEditor/MultiPackerEdGraph.h"
 #include "MultiPackerBaseEnums.h"
+#include "TileUtils/TilePointer.h"
 
 #define LOCTEXT_NAMESPACE "MultiPackerBaseNode"
 
@@ -31,12 +32,16 @@ FTileThumbDatabase UMultiPackerBaseNode::GetTileThumbDatabase(uint16 num)
 	return NewTileData;
 }
 
-TArray<UTilePointer*> UMultiPackerBaseNode::GetTiles(const uint16 size)
+TArray<UTilePointer*> UMultiPackerBaseNode::GetTiles(const uint16 size, FVector2D InTilePadding)
 {
 	if (SizeTile != size || TilesNeedProcess())
 	{
 		SizeTile = size;
 		ProcessTiles();
+	}
+	for (UTilePointer* Tile : Tiles)
+	{
+		Tile->TilePadding = InTilePadding;
 	}
 	return Tiles;
 }

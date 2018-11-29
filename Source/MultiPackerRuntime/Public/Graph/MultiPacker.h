@@ -50,6 +50,7 @@ public:
 	//Padding for every Tile, This allows to get out the blur border of the nearest tile
 	//The Padding X work for right and left, and Y for up and down, Advice: control the values will be doubled.
 	//EveryTime will be applied if you like to not have Padding set to 0
+	//You can override this setting individual on every node
 	UPROPERTY(EditDefaultsOnly, Category = "TextureSizeOutput|Tiled Options", meta = (EditCondition = RectangleTiles))
 		FVector2D TilePadding;
 
