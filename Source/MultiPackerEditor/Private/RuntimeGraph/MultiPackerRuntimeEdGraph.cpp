@@ -3,7 +3,6 @@
 #include "EdGraph/EdGraphPin.h"
 #include "RuntimeGraph/Nodes/MultiPackerRuntimeOutputNode.h"
 #include "RuntimeGraph/Nodes/MultiPackerRuntimeMaterialNode.h"
-#include "MultiPackerRuntimeOutputNodeBase.h"
 #include "MultiPackerAssetEditor/MultiPackerEditorThumbnail.h"
 #include "MultiPackerRuntimeGraph.h"
 
@@ -27,7 +26,7 @@ void UMultiPackerRuntimeEdGraph::RebuildGenericGraph()
 		{
 			UMultiPackerRuntimeOutputNode* OutNode = Cast<UMultiPackerRuntimeOutputNode>(Nodes[i]);
 
-			if (OutNode == nullptr || OutNode->MultiPackerNode == nullptr)
+			if (OutNode == nullptr)
 			{
 				UMultiPackerRuntimeMaterialNode* MaterialNode = Cast<UMultiPackerRuntimeMaterialNode>(Nodes[i]);
 				if (MaterialNode == nullptr || MaterialNode->MultiPackerRuntimeMatNode == nullptr)
@@ -48,17 +47,11 @@ void UMultiPackerRuntimeEdGraph::RebuildGenericGraph()
 
 						if (ChildEdNode == nullptr)
 							continue;
-
-						UMultiPackerRuntimeOutputNodeBase* ChildNode = ChildEdNode->MultiPackerNode;
-
-						ChildNode->ChildrenMatNodes.Add(MatNode);
 					}
 				}
 			}
 			else
 			{
-				UMultiPackerRuntimeOutputNodeBase* ONode = OutNode->MultiPackerNode;
-				G->NodeOutput = ONode;
 				continue;
 			}
 		}

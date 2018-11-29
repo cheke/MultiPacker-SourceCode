@@ -8,16 +8,12 @@
 #include "GraphEditor.h"
 #include <GraphEditorSettings.h>
 
-void SMultiPackerRuntimeOutputNode::BuildThumbnailWidget()
-{
-	EdActorNode->ProcessThumbnail(EdActorNode->MultiPackerNode->TextureInput);
-}
 //////////////////////////////////////////////////////////////////////////
 void SMultiPackerRuntimeOutputNode::Construct(const FArguments& InArgs, UMultiPackerRuntimeOutputNode* InNode)
 {
 	GraphNode = InNode;
 	EdActorNode = InNode;
-	BuildThumbnailWidget();
+	EdActorNode->SetThumnailOutput(nullptr);
 	UpdateGraphNode();
 }
 
@@ -106,7 +102,7 @@ TSharedRef<SWidget> SMultiPackerRuntimeOutputNode::CreateNodeContentArea()
 				.VAlign(VAlign_Center)
 				[
 					SNew(SBox)
-					.WidthOverride(GetThumbnailSizeX())
+					.WidthOverride(128)
 					.HeightOverride(128)
 					[
 						EdActorNode->AssetThumbnail->MakeThumbnailWidget()
@@ -114,10 +110,4 @@ TSharedRef<SWidget> SMultiPackerRuntimeOutputNode::CreateNodeContentArea()
 				]
 			]
 		];
-}
-
-float SMultiPackerRuntimeOutputNode::GetThumbnailSizeX()
-{
-	EdActorNode->ProcessThumbnail(EdActorNode->MultiPackerNode->TextureInput);
-	return EdActorNode->MultiPackerNode->Thumbnailrectangled ? 256 : 128;
 }

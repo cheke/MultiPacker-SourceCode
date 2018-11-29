@@ -8,7 +8,6 @@
 
 // Forward Declarations
 class UMultiPackerRuntimeMatNode;
-class UMultiPackerRuntimeOutputNodeBase;
 class UMultiPackerDataBase;
 class UTextureRenderTarget2D;
 class UMaterialInstanceDynamic;
@@ -46,8 +45,6 @@ public:
 		TArray<UTextureRenderTarget2D*>  RenderTargetPages;
 
 	TArray<UMultiPackerRuntimeMatNode*> MatNodes;
-	UMultiPackerRuntimeOutputNodeBase* NodeOutput;
-	TSubclassOf<UMultiPackerRuntimeOutputNodeBase> MPNodeType;
 	TSubclassOf<UMultiPackerRuntimeMatNode> MatNodeType;
 
 	UFUNCTION(BlueprintCallable, Category = BinPack, meta = (WorldContext = "WorldContextObject", UnsafeDuringActorConstruction = "true"))

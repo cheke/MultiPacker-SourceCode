@@ -6,31 +6,21 @@
 #include "MultiPackerRuntimeOutputNode.generated.h"
 
 class UMultiPackerRuntimeEdGraph;
-class UMultiPackerRuntimeOutputNodeBase;
 class FAssetThumbnail;
+class UTexture2D;
 
 UCLASS(MinimalAPI)
 class UMultiPackerRuntimeOutputNode : public UEdGraphNode
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(VisibleAnywhere, instanced, Category = "MultiPacker")
-	UMultiPackerRuntimeOutputNodeBase* MultiPackerNode;
-
 	TSharedPtr<class FAssetThumbnail> AssetThumbnail;
 
-	void SetGenericGraphNode(UMultiPackerRuntimeOutputNodeBase* InNode);
-	void ProcessThumbnail(UTexture2D* Input);
-	FText GetDescription() const;
+	void SetThumnailOutput(UTexture2D* Input);
 	void AllocateDefaultPins() override;
 	void NodeConnectionListChanged() override;
 	bool CanUserDeleteNode()const override;
 
 private:
-	UMultiPackerRuntimeEdGraph* GetGenericGraphEdGraph() const;
-	FText GetNodeTitle(ENodeTitleType::Type TitleType) const;
-	UObject* GetNodeAssetObject(UObject* Outer) const;
-	UObject* GetThumbnailAssetObject() const;
-	static UEdGraphPin* PinDefault;
-	bool NodeOutput = false;
+	UTexture2D* TextureInput;
 };

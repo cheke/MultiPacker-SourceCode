@@ -4,6 +4,8 @@
 #include "MultiPackerAssetEditor/MultiPackerEditorThumbnail.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include <EdGraph/EdGraphPin.h>
+#include <Engine/Texture2D.h>
+#include "RuntimeGraph/MultiPackerRuntimeEdGraph.h"
 
 #define LOCTEXT_NAMESPACE "MultiPackerOutputEdNode"
 
@@ -23,50 +25,22 @@ void UMultiPackerRuntimeOutputNode::AllocateDefaultPins()
 void UMultiPackerRuntimeOutputNode::NodeConnectionListChanged()
 {
 	Super::NodeConnectionListChanged();
-	GetGenericGraphEdGraph()->MultiPackerNode = true;
-}
-
-UMultiPackerRuntimeEdGraph* UMultiPackerRuntimeOutputNode::GetGenericGraphEdGraph() const
-{
-	return Cast<UMultiPackerRuntimeEdGraph>(GetGraph());
+	Cast<UMultiPackerRuntimeEdGraph>(GetGraph())->MultiPackerNode = true;
 }
 
 bool UMultiPackerRuntimeOutputNode::CanUserDeleteNode() const
 {
-	return NodeOutput;
+	return false;
 }
-FText UMultiPackerRuntimeOutputNode::GetNodeTitle(ENodeTitleType::Type TitleType) const
+
+void UMultiPackerRuntimeOutputNode::SetThumnailOutput(UTexture2D* Input)
 {
-	return FText::FromString("Output Texture");
+	if (Input == nullptr)
+		Input = TextureInput;
+
+	if (Input)
+		TextureInput = Input;
+
+	AssetThumbnail = MakeShareable(new FAssetThumbnail(TextureInput, 128, 128, FMultiPackerEditorThumbnail::Get()));
 }
-
-void UMultiPackerRuntimeOutputNode::SetGenericGraphNode(UMultiPackerRuntimeOutputNodeBase* InNode)
-{
-	MultiPackerNode = InNode;
-}
-
-FText UMultiPackerRuntimeOutputNode::GetDescription() const
-{
-	return FText::FromString("Texture");
-}
-
-UObject* UMultiPackerRuntimeOutputNode::GetThumbnailAssetObject() const
-{
-	return MultiPackerNode->TextureInput;
-}
-
-UObject* UMultiPackerRuntimeOutputNode::GetNodeAssetObject(UObject* Outer) const
-{
-	return  MultiPackerNode->TextureInput;
-}
-
-void UMultiPackerRuntimeOutputNode::ProcessThumbnail(UTexture2D* Input)
-{
-	if(Input)
-		MultiPackerNode->TextureInput = Input;
-
-	AssetThumbnail = MakeShareable(new FAssetThumbnail(MultiPackerNode->TextureInput, MultiPackerNode->Thumbnailrectangled ? 256 : 128, 128, FMultiPackerEditorThumbnail::Get()));
-}
-
-
 #undef LOCTEXT_NAMESPACE

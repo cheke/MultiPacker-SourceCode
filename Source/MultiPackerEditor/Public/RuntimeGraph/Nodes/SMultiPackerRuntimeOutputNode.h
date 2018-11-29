@@ -33,8 +33,6 @@ public:
 	virtual FText GetDescription() const;
 	virtual EVisibility GetDescriptionVisibility() const;
 
-	virtual float GetThumbnailSizeX();
-
 	virtual const FSlateBrush* GetNameIcon() const;
 
 protected:
@@ -44,6 +42,4 @@ protected:
 
 	UMultiPackerRuntimeOutputNode* EdActorNode;
 
-private:
-	void BuildThumbnailWidget();
 };

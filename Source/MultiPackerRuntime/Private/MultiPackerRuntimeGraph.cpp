@@ -1,7 +1,6 @@
 /* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
 
 #include "MultiPackerRuntimeGraph.h"
-#include "MultiPackerRuntimeOutputNodeBase.h"
 #include "MultiPackerRuntimeMatNode.h"
 #include "Kismet/KismetRenderingLibrary.h"
 #include <CanvasItem.h>
@@ -16,7 +15,6 @@
 
 UMultiPackerRuntimeGraph::UMultiPackerRuntimeGraph()
 {
-	MPNodeType = UMultiPackerRuntimeOutputNodeBase::StaticClass();
 	MatNodeType = UMultiPackerRuntimeMatNode::StaticClass();
 #if WITH_EDITORONLY_DATA
 	EdGraph = nullptr;
@@ -98,10 +96,6 @@ void UMultiPackerRuntimeGraph::ClearGraph()
 		Node->ParentNode = nullptr;
 	}
 	MatNodes.Reset();
-	if (!(NodeOutput == NULL))
-	{
-		NodeOutput->ChildrenMatNodes.Reset();
-	}
 }
 
  #if WITH_EDITOR

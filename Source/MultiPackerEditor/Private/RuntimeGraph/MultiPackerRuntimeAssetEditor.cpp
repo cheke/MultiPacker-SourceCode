@@ -432,11 +432,8 @@ void FMultiPackerRuntimeAssetEditor::CreateEdGraph()
 		EditingGraph->EdGraph = CastChecked<UMultiPackerRuntimeEdGraph>(FBlueprintEditorUtils::CreateNewGraph(EditingGraph, NAME_None, UMultiPackerRuntimeEdGraph::StaticClass(), UMultiPackerRuntimeAssetGraphSchema::StaticClass()));
 		EditingGraph->EdGraph->bAllowDeletion = false;
 
-		UMultiPackerRuntimeOutputNodeBase* NewNode = NewObject<UMultiPackerRuntimeOutputNodeBase>(EditingGraph, EditingGraph->MPNodeType);
-		EditingGraph->NodeOutput = NewNode;
 		FGraphNodeCreator<UMultiPackerRuntimeOutputNode> NodeCreator(*EditingGraph->EdGraph);
 		UMultiPackerRuntimeOutputNode* GraphMultiNodeOutput = NodeCreator.CreateNode(true);
-		GraphMultiNodeOutput->SetGenericGraphNode(Cast<UMultiPackerRuntimeOutputNodeBase>(NewNode));
 		NodeCreator.Finalize();
 		// Give the schema a chance to fill out any required nodes (like the results node)
 		const UEdGraphSchema* Schema = EditingGraph->EdGraph->GetSchema();
