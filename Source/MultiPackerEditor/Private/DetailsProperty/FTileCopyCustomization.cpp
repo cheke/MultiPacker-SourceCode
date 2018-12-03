@@ -11,7 +11,9 @@
 #include <Engine/Texture2D.h>
 #include <Materials/MaterialParameterCollection.h>
 #include "Materials/MaterialInstanceDynamic.h"
-
+#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION >= 18)
+#include "HAL/PlatformApplicationMisc.h"
+#endif
 #define LOCTEXT_NAMESPACE "FTileCopyCustomizationLayout"
 
 TSharedRef<IPropertyTypeCustomization> FTileCopyCustomizationLayout::MakeInstance()
