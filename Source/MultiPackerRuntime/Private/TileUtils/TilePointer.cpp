@@ -40,7 +40,6 @@ void UTilePointer::GetPointerFromRT()
 void UTilePointer::InitializeSDFFloatArray()
 {
 	TileDataFloat.Empty(TileDimension);
-	//TileDataFloat.Reserve(TileDimension);
 	for (uint32 pixels = 0; pixels < TileDimension; ++pixels)
 	{
 		TileDataFloat.Add(TileData[pixels].R > 18 ? (TileData[pixels].R / 255.0f) : 0.0f);
@@ -329,9 +328,10 @@ void UTilePointer::SDFGenParallel(uint16 Radius, uint16 V_size, uint16 H_size)
 				}
 			}
 			output = (mindist - 0.5f) / (MaxRadius - 0.5f);
-			output *= startSample == 0.0f ? -1.0f : 1.0f;
-			output = (output + 1.0f) * 0.5f;
+			//output *= startSample == 0.0f ? -1.0f : 1.0f;
 			output *= startSample < 0.1f ? -1.0f : 1.0f;
+			output = (output + 1.0f) * 0.5f;
+			FMath::Clamp(output, 0.0f, 1.0f);
 			const uint32 number = (px + py * H_size);
 			TileData[number].R = TileData[number].G = TileData[number].B = TileData[number].A = uint8(output * 255.0f);
 		}
@@ -352,7 +352,6 @@ void UTilePointer::ChangeResolution(uint16 new_width, uint16 new_height, UTilePo
 	TileTexture = UTexture2D::CreateTransient(new_width, new_height, PF_B8G8R8A8);
 	UpdateTextureCanvas();
 }
-
 
 void UTilePointer::SetColorArray(uint16 width, uint16 height, const TArray<FColor>& colorArray)
 {
