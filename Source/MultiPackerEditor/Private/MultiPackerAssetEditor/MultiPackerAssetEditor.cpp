@@ -217,9 +217,9 @@ void FMultiPackerAssetEditor::SaveAsset_Execute()
 	UMultiPackerEdGraph* EdGraph = Cast<UMultiPackerEdGraph>(EditingGraph->EdGraph);
 	if (EdGraph != nullptr)
 	{
-		while (EdGraph->IsRebuilding)
-		{
-		}
+		//while (EdGraph->IsRebuilding) //compiler deletes this cycle or it may be infinite
+		//{
+		//}
 		FAssetEditorToolkit::SaveAsset_Execute();
 	}
 	RebuildGenericGraph();
@@ -417,7 +417,7 @@ FVector2D FMultiPackerAssetEditor::GetAssetDropGridLocation() const
 bool FMultiPackerAssetEditor::IsAssetAcceptableForDrop(const UObject* AssetObject) const 
 {
 	if (!AssetObject) return false;
-	return AssetObject->GetClass()->IsChildOf<UTexture>() | AssetObject->GetClass()->IsChildOf<UMaterial>() | AssetObject->GetClass()->IsChildOf<UMaterialInstance>();
+	return AssetObject->GetClass()->IsChildOf<UTexture>() || AssetObject->GetClass()->IsChildOf<UMaterial>() || AssetObject->GetClass()->IsChildOf<UMaterialInstance>();
 }
 
 void FMultiPackerAssetEditor::CreateInternalWidgets()

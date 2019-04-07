@@ -75,7 +75,7 @@ private:
 	void GetPointerFromRT();
 	void InitializeSDFFloatArray();
 	//void setPixelColor(uint8*& pointer, uint8 red, uint8 green, uint8 blue, uint8 alpha);
-	void setPixelColor(FColor pointer, uint8 red, uint8 green, uint8 blue, uint8 alpha);
+	void setPixelColor(FColor& pointer, uint8 red, uint8 green, uint8 blue, uint8 alpha);
 	void ClearTextureCanvas();
 	void UpdateTextureCanvas();
 	void SetColorArray(uint16 width, uint16 height, const TArray<FColor>& colorArray);

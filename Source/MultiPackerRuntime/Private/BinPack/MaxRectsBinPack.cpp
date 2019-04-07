@@ -345,7 +345,7 @@ bool UMaxRectsBinPack::SplitFreeNode(FRectSizePadding freeNode, const FRectSizeP
 		usedNode.y >= freeNode.y + freeNode.height || usedNode.y + usedNode.height <= freeNode.y)
 		return false;
 
-	if (usedNode.x < freeNode.x + freeNode.width && usedNode.x + usedNode.width > freeNode.x)
+	//if (usedNode.x < freeNode.x + freeNode.width && usedNode.x + usedNode.width > freeNode.x) //always true!
 	{
 		// New node at the top side of the used node.
 		if (usedNode.y > freeNode.y && usedNode.y < freeNode.y + freeNode.height)
@@ -365,7 +365,7 @@ bool UMaxRectsBinPack::SplitFreeNode(FRectSizePadding freeNode, const FRectSizeP
 		}
 	}
 
-	if (usedNode.y < freeNode.y + freeNode.height && usedNode.y + usedNode.height > freeNode.y)
+	//if (usedNode.y < freeNode.y + freeNode.height && usedNode.y + usedNode.height > freeNode.y) //always true!
 	{
 		// New node at the left side of the used node.
 		if (usedNode.x > freeNode.x && usedNode.x < freeNode.x + freeNode.width)

@@ -214,9 +214,9 @@ void FMultiPackerRuntimeAssetEditor::SaveAsset_Execute()
 	UMultiPackerRuntimeEdGraph* EdGraph = Cast<UMultiPackerRuntimeEdGraph>(EditingGraph->EdGraph);
 	if (EdGraph != nullptr)
 	{
-		while (EdGraph->IsRebuilding)
-		{
-		}
+		//while (EdGraph->IsRebuilding)	//compiler deletes this cycle or it may be infinite
+		//{
+		//}
 		FAssetEditorToolkit::SaveAsset_Execute();
 	}
 	RebuildGenericGraph();
@@ -372,7 +372,7 @@ FVector2D FMultiPackerRuntimeAssetEditor::GetAssetDropGridLocation() const
 bool FMultiPackerRuntimeAssetEditor::IsAssetAcceptableForDrop(const UObject* AssetObject) const 
 {
 	if (!AssetObject) return false;
-	return AssetObject->GetClass()->IsChildOf<UMaterial>() | AssetObject->GetClass()->IsChildOf<UMaterialInstance>();
+	return AssetObject->GetClass()->IsChildOf<UMaterial>() || AssetObject->GetClass()->IsChildOf<UMaterialInstance>();
 }
 
 void FMultiPackerRuntimeAssetEditor::CreateInternalWidgets()
@@ -776,7 +776,7 @@ void FMultiPackerRuntimeAssetEditor::OnSelectedNodesChanged(const TSet<class UOb
 				if (EdNode != nullptr)
 				{
 					MatNode = true;
-					Mixcle = TexNode ? true : Mixcle;
+					Mixcle = TexNode ? true : Mixcle;	//TODO:TexNode is always false!
 				}
 				else
 				{

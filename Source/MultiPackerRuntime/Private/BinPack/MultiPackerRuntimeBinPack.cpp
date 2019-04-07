@@ -43,7 +43,7 @@ FMaterialDataBinPack UMultiPackerRuntimeBinPack::AddMaterialToMap(UMaterialInter
 	NewMat.Material = Material;
 	NewMat.Width = Size;
 	NewMat.Height = Size;
-	UTextureRenderTarget2D* RT_new = UMultiPackerBaseEnums::GenerateRenderTarget(Height, Width, Alpha);
+	UTextureRenderTarget2D* RT_new = UMultiPackerBaseEnums::GenerateRenderTarget(Width, Height, Alpha);
 	UKismetRenderingLibrary::DrawMaterialToRenderTarget(WorldContext, RT_new, Material);
 
 	NewMat.RT_Material = RT_new;

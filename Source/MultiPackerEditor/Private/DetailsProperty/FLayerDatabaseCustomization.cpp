@@ -239,12 +239,12 @@ TSharedPtr<FString> FLayerDatabaseCustomizationLayout::InitWidgetContent(bool Is
 	else
 	{
 		FName RowName;
-		const FPropertyAccess::Result RowResult = ColorNamePropertyHandle->GetValue(RowName);
-		ColorRowNames.Empty();
+		const FPropertyAccess::Result RowResult = AlphaNamePropertyHandle->GetValue(RowName);
+		AlphaRowNames.Empty();
 
 		/** Get the properties we wish to work with */
 		UMultiPackerDataBase* MultiPackerDataBase = NULL;
-		ColorDatabasePropertyHandle->GetValue((UObject*&)MultiPackerDataBase);
+		AlphaDatabasePropertyHandle->GetValue((UObject*&)MultiPackerDataBase);
 		if (MultiPackerDataBase != NULL)
 		{
 			/** Extract all the row names from the RowMap */
@@ -252,7 +252,7 @@ TSharedPtr<FString> FLayerDatabaseCustomizationLayout::InitWidgetContent(bool Is
 			{
 				/** Create a simple array of the row names */
 				TSharedRef<FString> RowNameItem = MakeShareable(new FString(Iterator.Key().ToString()));
-				ColorRowNames.Add(RowNameItem);
+				AlphaRowNames.Add(RowNameItem);
 
 				/** Set the initial value to the currently selected item */
 				if (Iterator.Key() == RowName)
@@ -266,7 +266,7 @@ TSharedPtr<FString> FLayerDatabaseCustomizationLayout::InitWidgetContent(bool Is
 		if (RowResult != FPropertyAccess::MultipleValues)
 		{
 			FName NewValue = FName(**InitialValue);
-			ColorNamePropertyHandle->SetValue(NewValue);
+			AlphaNamePropertyHandle->SetValue(NewValue);
 		}
 	}
 	return InitialValue;
