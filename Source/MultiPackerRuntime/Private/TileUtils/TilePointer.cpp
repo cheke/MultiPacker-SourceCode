@@ -46,7 +46,7 @@ void UTilePointer::InitializeSDFFloatArray()
 	}
 }
 
-void UTilePointer::setPixelColor(FColor pointer, uint8 red, uint8 green, uint8 blue, uint8 alpha)
+void UTilePointer::setPixelColor(FColor& pointer, uint8 red, uint8 green, uint8 blue, uint8 alpha)
 {
 	pointer = FColor(red, green, blue, alpha);
 }
@@ -464,9 +464,13 @@ UTilePointer* UTilePointer::GetSplitTile(FRectSizePadding SizePadding)
 
 TArray<UTilePointer*> UTilePointer::TileAtlas(TArray<UTilePointer*> InTileBinPack, bool Alpha)
 {
-	for (UTilePointer* Tile : InTileBinPack)
+	/*for (UTilePointer* Tile : InTileBinPack)
 	{
 		Tile->SetChannelsBinPack(Tile->TileBinPack, Alpha ? EChannelOutput::Channel_RGBA : EChannelOutput::Channel_RGB);
+	}*/
+	for (UTilePointer* Tile : InTileBinPack)
+	{
+		Tile->TileDatabase.ChannelTexture = Alpha ? EChannelOutput::Channel_RGBA : EChannelOutput::Channel_RGB;
 	}
 	return InTileBinPack;
 }
