@@ -1,3 +1,9 @@
+# WIP
+##Done
+Alpha works now!
+##ToDo
+Better sizing, packing, ordering
+
 # MultiPacker
 
 MultiPacker now its free, allowing everyone enjoy and use it; if you want to support MultiPacker you can do it in Patreon.
