@@ -101,7 +101,7 @@ private:
 	TSet< FName > RegisteredPropertyTypes;
 };
 
-IMPLEMENT_MODULE( FMultiPackerEditor, UMultiPackerEditor )
+IMPLEMENT_MODULE( FMultiPackerEditor, MultiPackerEditor )
 
 TSharedPtr<FMultiPackerEditorThumbnail> FMultiPackerEditorThumbnail::Instance;
 
