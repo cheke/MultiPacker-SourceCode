@@ -20,7 +20,7 @@ void UTilePointer::GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTil
 	TileWidth = InTileWidth;
 	TileHeight = InTileHeight;
 	TileDimension = TileWidth * TileHeight;
-	TileTexture = InTileRT->ConstructTexture2D(InTileRT->GetOuter(), InTileRT->GetName().Append("_T"), InTileRT->GetMaskedFlags(), CTF_Default | CTF_Compress | CTF_DeferCompression, NULL);
+	TileTexture = InTileRT->ConstructTexture2D(InTileRT->GetOuter(), InTileRT->GetName().Append("_T"), InTileRT->GetMaskedFlags(),0);
 	TileTexture->UpdateResource();
 	TileTexture->Modify();
 	GetPointerFromRT();
@@ -464,10 +464,6 @@ UTilePointer* UTilePointer::GetSplitTile(FRectSizePadding SizePadding)
 
 TArray<UTilePointer*> UTilePointer::TileAtlas(TArray<UTilePointer*> InTileBinPack, bool Alpha)
 {
-	/*for (UTilePointer* Tile : InTileBinPack)
-	{
-		Tile->SetChannelsBinPack(Tile->TileBinPack, Alpha ? EChannelOutput::Channel_RGBA : EChannelOutput::Channel_RGB);
-	}*/
 	for (UTilePointer* Tile : InTileBinPack)
 	{
 		Tile->TileDatabase.ChannelTexture = Alpha ? EChannelOutput::Channel_RGBA : EChannelOutput::Channel_RGB;

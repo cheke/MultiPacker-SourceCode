@@ -375,7 +375,7 @@ void UMultiPackerProcessCore::SaveTextureFromTile(UTilePointer* InTile, FString 
 	UTexture2D* NewTexture;
 	if (InTile->TileRT)
 	{
-		 NewTexture = InTile->TileRT->ConstructTexture2D(package, *NewPackageName[0], Flags, BaseInput->Alpha ? CTF_Compress : CTF_ForceOpaque, NULL);
+		 NewTexture = InTile->TileRT->ConstructTexture2D(package, *NewPackageName[0], Flags, BaseInput->Alpha ? 0 : CTF_ForceOpaque, NULL);
 	}
 	else
 	if (InTile->TileTexture)
@@ -402,14 +402,13 @@ void UMultiPackerProcessCore::SaveTextureFromTile(UTilePointer* InTile, FString 
 		}
 		else
 		{
-			NewTexture->Filter = BaseInput->ChannelMethod == EChannelTextureSave::CS_Multiple ? TF_Nearest : TF_Bilinear;
+			NewTexture->Filter = BaseInput->ChannelMethod == EChannelTextureSave::CS_Multiple ? TF_Nearest : TF_Default;
 			NewTexture->SRGB = false;
 			NewTexture->AddressX = TA_Clamp;
 			NewTexture->AddressY = TA_Clamp;
 			NewTexture->PowerOfTwoMode = ETexturePowerOfTwoSetting::PadToPowerOfTwo;
 		}
-
-		if (Do_MSDF)
+		//if (Do_MSDF)
 		{
 			NewTexture->CompressionSettings = TC_VectorDisplacementmap;
 		}
@@ -422,7 +421,7 @@ void UMultiPackerProcessCore::SaveTextureFromTile(UTilePointer* InTile, FString 
 
 void UMultiPackerProcessCore::SaveDataBase(FString TargetName, FAssetToolsModule& AssetToolsModule, FContentBrowserModule& ContentBrowserModule, uint16 width, uint16 height)
 {
-	UMultiPackerDataBase* NewDataBase = NewObject<UMultiPackerDataBase>(); //NULL;
+	UMultiPackerDataBase* NewDataBase;// = NewObject<UMultiPackerDataBase>(); //NULL;
 
 	if (BaseInput->DataBase == NULL)
 	{
