@@ -205,7 +205,7 @@ void UMultiPackerProcessCore::CreateMaterialCollection(uint16 width, uint16 heig
 			UWorld* CurrentWorld = *It;
 			CurrentWorld->AddParameterCollectionInstance(BaseInput->MaterialCollection, true);
 			CurrentWorld->SetupParameterCollectionInstances();
-			CurrentWorld->UpdateParameterCollectionInstances(true);
+			CurrentWorld->UpdateParameterCollectionInstances(true, true);
 			CurrentWorld->GetParameterCollectionInstance(BaseInput->MaterialCollection)->PostEditChange();
 		}
 		TSet<FName> ParameterNames;

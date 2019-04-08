@@ -10,7 +10,7 @@
 	"DocsURL": "https://cheke.github.io/MultiPacker/",
 	"MarketplaceURL": "https://ue/marketplace/content/afd1a04001bc4110b4a22460ca09da94",
 	"SupportURL": "https://discord.gg/NbzAZh2",
-	"EngineVersion": "4.16.0",
+	"EngineVersion": "4.22.0",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"Installed": false,
