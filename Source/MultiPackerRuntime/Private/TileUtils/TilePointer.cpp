@@ -345,7 +345,7 @@ void UTilePointer::ChangeResolution(uint16 new_width, uint16 new_height, UTilePo
 	TArray<FColor> OldTextureData = InTile->GetColorArray();
 	TileData.Reset();
 	TileData.AddUninitialized(TileDimension);
-	FImageUtils::ImageResize(InTile->TileWidth, InTile->TileHeight, OldTextureData, new_width, new_height, TileData, true);
+	/*FImageUtils::*/ImageResize(InTile->TileWidth, InTile->TileHeight, OldTextureData, new_width, new_height, TileData, true);
 	TileWidth = new_width;
 	TileHeight = new_height;
 	TileDimension = TileWidth * TileHeight;
@@ -614,6 +614,94 @@ TArray<UTilePointer*> UTilePointer::SortArrayTiles(TArray<UTilePointer*> InTiles
 		}
 	}
 	return Output;
+}
+
+void UTilePointer::ImageResize(int32 SrcWidth, int32 SrcHeight, const TArray<FColor> &SrcData, int32 DstWidth, int32 DstHeight, TArray<FColor> &DstData, bool bLinearSpace)
+{
+	DstData.Empty(DstWidth*DstHeight);
+	DstData.AddZeroed(DstWidth*DstHeight);
+
+	float SrcX = 0;
+	float SrcY = 0;
+
+	const float StepSizeX = SrcWidth / (float)DstWidth;
+	const float StepSizeY = SrcHeight / (float)DstHeight;
+
+	for(int32 Y=0; Y<DstHeight;Y++)
+	{
+		int32 PixelPos = Y * DstWidth;
+		SrcX = 0.0f;	
+
+		for(int32 X=0; X<DstWidth; X++)
+		{
+			int32 PixelCount = 0;
+			float EndX = SrcX + StepSizeX;
+			float EndY = SrcY + StepSizeY;
+
+			// Generate a rectangular region of pixels and then find the average color of the region.
+			int32 PosY = FMath::TruncToInt(SrcY+0.5f);
+			PosY = FMath::Clamp<int32>(PosY, 0, (SrcHeight - 1));
+
+			int32 PosX = FMath::TruncToInt(SrcX+0.5f);
+			PosX = FMath::Clamp<int32>(PosX, 0, (SrcWidth - 1));
+
+			int32 EndPosY = FMath::TruncToInt(EndY+0.5f);
+			EndPosY = FMath::Clamp<int32>(EndPosY, 0, (SrcHeight - 1));
+
+			int32 EndPosX = FMath::TruncToInt(EndX+0.5f);
+			EndPosX = FMath::Clamp<int32>(EndPosX, 0, (SrcWidth - 1));
+
+			FColor FinalColor;
+			if(bLinearSpace)
+			{
+				FLinearColor LinearStepColor(0.0f,0.0f,0.0f,0.0f);
+				for(int32 PixelX = PosX; PixelX <= EndPosX; PixelX++)
+				{
+					for(int32 PixelY = PosY; PixelY <= EndPosY; PixelY++)
+					{
+						int32 StartPixel =  PixelX + PixelY * SrcWidth;
+
+						// Convert from gamma space to linear space before the addition.
+						LinearStepColor += SrcData[StartPixel];
+						PixelCount++;
+					}
+				}
+				LinearStepColor /= (float)PixelCount;
+
+				// Convert back from linear space to gamma space.
+				FinalColor = LinearStepColor.ToFColor(true);
+			}
+			else
+			{
+				FVector StepColor(0,0,0);
+				for(int32 PixelX = PosX; PixelX <= EndPosX; PixelX++)
+				{
+					for(int32 PixelY = PosY; PixelY <= EndPosY; PixelY++)
+					{
+						int32 StartPixel =  PixelX + PixelY * SrcWidth;
+						StepColor.X += (float)SrcData[StartPixel].R;
+						StepColor.Y += (float)SrcData[StartPixel].G;
+						StepColor.Z += (float)SrcData[StartPixel].B;
+						PixelCount++;
+					}
+				}
+				StepColor /= (float)PixelCount;
+				uint8 FinalR = FMath::Clamp(FMath::TruncToInt(StepColor.X), 0, 255);
+				uint8 FinalG = FMath::Clamp(FMath::TruncToInt(StepColor.Y), 0, 255);
+				uint8 FinalB = FMath::Clamp(FMath::TruncToInt(StepColor.Z), 0, 255);
+				FinalColor = FColor(FinalR, FinalG, FinalB);
+			}
+
+			// Store the final averaged pixel color value.
+			//FinalColor.A = 255;
+			DstData[PixelPos] = FinalColor;
+
+			SrcX = EndX;	
+			PixelPos++;
+		}
+
+		SrcY += StepSizeY;
+	}
 }
 
 #undef LOCTEXT_NAMESPACE
