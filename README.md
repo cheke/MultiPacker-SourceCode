@@ -1,7 +1,7 @@
 # WIP
-##Done
+## Done
 Alpha works now!
-##ToDo
+## ToDo
 Better sizing, packing, ordering
 
 # MultiPacker
