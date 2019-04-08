@@ -159,7 +159,7 @@ void UTilePointer::GenerateAndSetArrayTilesOnRenderTarget(UObject* InWorldContex
 	TileRT = OutputTexture;
 	TileBinPack = TileArray;
 	GenerateTextureCanvas(Width, Height);
-	UKismetRenderingLibrary::ClearRenderTarget2D(InWorldContextObject, OutputTexture);
+	UKismetRenderingLibrary::ClearRenderTarget2D(InWorldContextObject, OutputTexture, FLinearColor(0,0,0,0));
 	UCanvas* Canvas;
 	FDrawToRenderTargetContext Context = FDrawToRenderTargetContext();
 	FVector2D Size = FVector2D(Width, Height);
@@ -171,7 +171,7 @@ void UTilePointer::GenerateAndSetArrayTilesOnRenderTarget(UObject* InWorldContex
 		FCanvasTileItem TileItem(FVector2D(Transitional.x, Transitional.y), RenderTextureResource, FVector2D(Transitional.width, Transitional.height), FVector2D(0.0f, 0.0f), FVector2D(0.0f, 0.0f) + FVector2D::UnitVector, FLinearColor::White);
 		TileItem.Rotation = FRotator(0, 0.f, 0);
 		TileItem.PivotPoint = FVector2D(0.5f, 0.5f);
-		TileItem.BlendMode = FCanvas::BlendToSimpleElementBlend(EBlendMode::BLEND_AlphaComposite);
+		TileItem.BlendMode = SE_BLEND_AlphaBlend;
 		Canvas->DrawItem(TileItem);
 	}
 	UKismetRenderingLibrary::EndDrawCanvasToRenderTarget(InWorldContextObject, Context);
