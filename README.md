@@ -1,6 +1,6 @@
 # WIP
 ## Done
-Alpha works now!
+Alpha in RGBA works now!
 ## ToDo
 Better sizing, packing, ordering
 
