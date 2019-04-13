@@ -216,14 +216,15 @@ void UMultiPackerMaterialNode::ProcessTiles()
 		{
 			ProcessPrintByNumber(Prints);
 			UTilePointer* NewTile = NewObject<UTilePointer>(UTilePointer::StaticClass());
-			NewTile->GenerateFromMaterial(GEditor->GetEditorWorldContext().World(), UMultiPackerBaseEnums::GenerateRenderTarget(GetTileSize().X, GetTileSize().Y, false), GetMaterialInstanceDynamic(Prints), GetTileSize().X, GetTileSize().Y);
+			NewTile->GenerateFromMaterial(GEditor->GetEditorWorldContext().World(), UMultiPackerBaseEnums::GenerateRenderTarget(GetTileSize().X, GetTileSize().Y), GetMaterialInstanceDynamic(Prints), GetTileSize().X, GetTileSize().Y);
 			ArrayTiles.Add(NewTile);
 		}
 	}
 	else
 	{
 		UTilePointer* NewTile = NewObject<UTilePointer>(UTilePointer::StaticClass());
-		NewTile->GenerateFromMaterial(GEditor->GetEditorWorldContext().World(), UMultiPackerBaseEnums::GenerateRenderTarget(GetTileSize().X, GetTileSize().Y, false), MultiPackerMatNode->MaterialBaseInput, GetTileSize().X, GetTileSize().Y);
+		FVector2D TileSize = GetTileSize();
+		NewTile->GenerateFromMaterial(GEditor->GetEditorWorldContext().World(), UMultiPackerBaseEnums::GenerateRenderTarget(TileSize.X, TileSize.Y), MultiPackerMatNode->MaterialBaseInput, TileSize.X, TileSize.Y);
 		ArrayTiles.Add(NewTile);
 	}
 	//split stage
