@@ -473,6 +473,9 @@ void UMultiPackerProcessCore::SetGraph(UMultiPacker* EditingGraph)
 
 void UMultiPackerProcessCore::ProcessNodes(UMultiPacker* Graph)
 {
+	FScopedSlowTask	Progress(3.f, NSLOCTEXT("MultiPacker", "MultiPacker_ProcessNodes", "Processing Nodes"));
+	Progress.MakeDialog();
+	Progress.EnterProgressFrame(0.f);
 	//Initial Variables
 	BaseInput = Graph;
 	Output = GetTilesFromNodes();
@@ -494,10 +497,12 @@ void UMultiPackerProcessCore::ProcessNodes(UMultiPacker* Graph)
 		TextureOutputSizeVertical = VTile * Tile_Size;
 		TextureOutputSizeHorizontal = HTile * Tile_Size;
 	}
-	else
+	//else
 	{
-		Output = UTilePointer::SortArrayTiles(Output);
+		Progress.EnterProgressFrame(1.f);
+		Output = UTilePointer::SortArrayTiles(Output, BaseInput->RectangleTiles && BaseInput->bSizeOrder, BaseInput->bGraphOrder);
 	}
+	Progress.EnterProgressFrame(2.f);
 	//BinPack
 	Output = TileBinPack(Output, TextureOutputSizeVertical, TextureOutputSizeHorizontal, Masks);
 	PopulateMap(TextureOutputSizeVertical, TextureOutputSizeHorizontal, Masks);
@@ -561,8 +566,8 @@ TArray<UTilePointer*> UMultiPackerProcessCore::TileBinPack(TArray<UTilePointer*>
 	for (UTilePointer* Tile : InputTiles)
 	{
 		//New Size With Padding
-		uint16 NewTileWidth = Tile->TileWidth + (Tile->TilePadding.Y * 2);
-		uint16 NewTileHeight = Tile->TileHeight + (Tile->TilePadding.X * 2);
+		uint16 NewTileWidth = Tile->TileWidth + (Tile->TilePadding.X * 2);
+		uint16 NewTileHeight = Tile->TileHeight + (Tile->TilePadding.Y * 2);
 		for (uint16 Textures = 0; Textures < A_BinPack.Num(); ++Textures)
 		{
 			Tile->TileDatabase.SizeAndPadding = A_BinPack[Textures]->Insert(NewTileWidth, NewTileHeight, BaseInput->RectangleMethod);
@@ -590,7 +595,7 @@ TArray<UTilePointer*> UMultiPackerProcessCore::TileBinPack(TArray<UTilePointer*>
 	for (uint16 Layer = 0; Layer < A_BinPack.Num(); ++Layer)
 	{
 			UTilePointer* NewTile = NewObject<UTilePointer>();
-			UTextureRenderTarget2D* RT_Layer = UMultiPackerBaseEnums::GenerateRenderTarget(SizeHorizontal, SizeVertical, bAlpha);
+			UTextureRenderTarget2D* RT_Layer = UMultiPackerBaseEnums::GenerateRenderTarget(SizeHorizontal, SizeVertical);
 			TArray<UTilePointer*> TileLayer;
 			for (UTilePointer* Tile : InputTiles)
 			{
@@ -620,8 +625,8 @@ TArray<UTilePointer*> UMultiPackerProcessCore::TileBinPack(TArray<UTilePointer*>
 
 FRectSizePadding UMultiPackerProcessCore::GetSizePaddingWithoutPadding(FRectSizePadding InPadding, FVector2D InTilePadding)
 {
-	InPadding.height = InPadding.height - (InTilePadding.X * 2);
-	InPadding.width = InPadding.width - (InTilePadding.Y * 2);
+	InPadding.height = InPadding.height - (InTilePadding.Y * 2);
+	InPadding.width = InPadding.width - (InTilePadding.X * 2);
 	InPadding.x = InPadding.x + InTilePadding.X;
 	InPadding.y = InPadding.y + InTilePadding.Y;
 	return InPadding;
