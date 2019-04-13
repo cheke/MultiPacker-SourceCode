@@ -31,9 +31,17 @@ public:
 	UPROPERTY(EditAnywhere, Category = "TextureSizeOutput", meta = (EditCondition = "!RectangleTiles"))//meta = (EditCondition = "!PersonalSizeOutput"))
 		ETextureSizeOutput TextureTileSizeOutput = ETextureSizeOutput::EMCE_Option1;
 
+	//Select this if you want to sort by the order of nodes in the graph
+	UPROPERTY(EditAnywhere, Category = "TextureSizeOutput|Tiled Options", meta=(ToolTip="Sort by the order of nodes in the graph"))
+		bool bGraphOrder;
+
 	//Select this to do an Atlas with tiles of different sizes
 	UPROPERTY(EditAnywhere, Category = "TextureSizeOutput|Tiled Options")
-		bool RectangleTiles;
+		bool RectangleTiles = true;
+
+	//Select this if you want to sort by the dimension
+	UPROPERTY(EditAnywhere, Category = "TextureSizeOutput|Tiled Options", meta=(EditCondition = RectangleTiles, ToolTip="Need for better packing"))
+		bool bSizeOrder = true;
 
 	// Specifies the different heuristic rules that can be used when deciding where to place a new rectangle.
 	UPROPERTY(EditDefaultsOnly, Category = "TextureSizeOutput|Tiled Options", meta = (EditCondition = RectangleTiles))
@@ -41,11 +49,11 @@ public:
 
 	//Width for the Output Texture
 	UPROPERTY(EditDefaultsOnly, Category = "TextureSizeOutput|Tiled Options", meta = (EditCondition = RectangleTiles))
-		ETextureSizeOutputPersonal OutputSizeX;
+		ETextureSizeOutputPersonal OutputSizeX = ETextureSizeOutputPersonal::EMCE_Option6;
 
 	//Height for the Output Texture
 	UPROPERTY(EditDefaultsOnly, Category = "TextureSizeOutput|Tiled Options", meta = (EditCondition = RectangleTiles))
-		ETextureSizeOutputPersonal OutputSizeY;
+		ETextureSizeOutputPersonal OutputSizeY= ETextureSizeOutputPersonal::EMCE_Option6;
 
 	//Padding for every Tile, This allows to get out the blur border of the nearest tile
 	//The Padding X work for right and left, and Y for up and down, Advice: control the values will be doubled.
@@ -64,7 +72,7 @@ public:
 
 	//Select this if you want to have the Alpha channel active on Texture Output
 	UPROPERTY(EditAnywhere, Category = "OutputConfig|ChannelsOptions")
-		bool Alpha;
+		bool Alpha = true;
 
 	UPROPERTY(BlueprintReadOnly)
 		int32 TileSize;

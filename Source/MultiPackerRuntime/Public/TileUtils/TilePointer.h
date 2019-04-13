@@ -26,8 +26,15 @@ public:
 
 	UPROPERTY()
 		FTileDatabase TileDatabase;
+
+	UPROPERTY()
+		int32 NodePosX = 0;
+
+	UPROPERTY()
+		int32 NodePosY = 0;
+
 	//From an Input RenderTarget fill the TileData and convert it to a Texture
-	void GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTileWidth, uint16 InTileHeight);
+	void GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTileWidth, uint16 InTileHeight, bool bInvertAplha = false);
 	void GenerateFromMaterial(UObject *InWorldContextObject, UTextureRenderTarget2D* RTMaterial, UMaterialInterface* Material, uint16 new_width, uint16 new_height);
 	void GenerateFromTexture(UTexture2D* Texture, const int InTileWidth, const int InTileHeight);
 	TArray<UTilePointer*> SplitTile(uint16 VerticalSlices, uint16 HorizontalSlices);

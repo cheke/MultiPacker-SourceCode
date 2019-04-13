@@ -15,6 +15,16 @@ UMultiPackerTextureNode::UMultiPackerTextureNode()
 	newTile.TileTexture = nullptr;
 	ATexTileData.Add(newTile);
 	ErrorSize = RectangleSize ? CompareSizes(UMultiPackerBaseEnums::GetTextureSizeOutputEnum(GetGraph()->OutputSizeY), UMultiPackerBaseEnums::GetTextureSizeOutputEnum(GetGraph()->OutputSizeY)) : false;
+	if (TextureInput)
+	{
+		SizeVertical = TextureInput->GetSurfaceHeight();
+		SizeHorizontal = TextureInput->GetSurfaceWidth();
+	}
+	else
+	{
+		SizeVertical = SizeHorizontal = 32;
+	}
+
 }
 
 UMultiPackerTextureNode::~UMultiPackerTextureNode()
@@ -38,18 +48,15 @@ UMultiPacker* UMultiPackerTextureNode::GetGraph() const
 
 bool UMultiPackerTextureNode::NodeCleanErrors() const
 {
-	if (ErrorSize && RectangleSize)
-	{
+	if (ErrorSize && RectangleSize) {
 		return false;
 	}
 
-	if (ErrorTiles)
-	{
+	if (ErrorTiles) {
 		return false;
 	}
 
-	if (!TextureInput->IsValidLowLevel() | !(TilesHorizontal > 0) | !(TilesVertical > 0))
-	{  
+	if (!TextureInput->IsValidLowLevel() | !(TilesHorizontal > 0) | !(TilesVertical > 0)) {
 		return false;
 	}
 
@@ -76,100 +83,81 @@ void UMultiPackerTextureNode::PostEditChangeProperty(struct FPropertyChangedEven
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	FName PropertyName = (PropertyChangedEvent.Property != nullptr) ? PropertyChangedEvent.Property->GetFName() : NAME_None;
-	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerTextureNode, AutoSizeFill)))
-	{
-		switch (AutoSizeFill)
-		{
-		case ESizeTexture::EMCE_Option1:
-			break;
-		case ESizeTexture::EMCE_Option2:
-			AutoSizeFill = ESizeTexture::EMCE_Option1;
-			SizeVertical = TextureInput->GetSurfaceHeight();
-			SizeHorizontal = TextureInput->GetSurfaceWidth();
-			break;
-		default: 
-			break;
+	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerTextureNode, AutoSizeFill))) {
+		switch (AutoSizeFill) {
+			case ESizeTexture::EMCE_Option1:
+				break;
+			case ESizeTexture::EMCE_Option2:
+				AutoSizeFill = ESizeTexture::EMCE_Option1;
+				SizeVertical = TextureInput->GetSurfaceHeight();
+				SizeHorizontal = TextureInput->GetSurfaceWidth();
+				break;
+			default:
+				break;
 		}
 	}
-	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerTextureNode, TextureInput)))
-	{
+	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerTextureNode, TextureInput))) {
 		ChangeBackground(TextureInput == nullptr ? true : false);
 	}
-	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerTextureNode, AutoNameFill)))
-	{
+	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerTextureNode, AutoNameFill))) {
 		FString Name;
-		switch (AutoNameFill)
-		{
-		case ENameTexture::EMCE_Option1:
-			break;
-		case ENameTexture::EMCE_Option2:
-			AutoNameFill = ENameTexture::EMCE_Option1;
-			Name = TextureInput->GetName().Left(16);
-			for (int data = 0; data < ATexTileData.Num(); ++data)
-			{
-				FString numName = Name;
-				if (ATexTileData.Num() > 1)
-				{
-					numName = TextureInput->GetName().Left(14).Append("_" + FString::FromInt(data));
+		switch (AutoNameFill) {
+			case ENameTexture::EMCE_Option1:
+				break;
+			case ENameTexture::EMCE_Option2:
+				AutoNameFill = ENameTexture::EMCE_Option1;
+				Name = TextureInput->GetName().Left(16);
+				for (int data = 0; data < ATexTileData.Num(); ++data) {
+					FString numName = Name;
+					if (ATexTileData.Num() > 1) {
+						numName = TextureInput->GetName().Left(14).Append("_" + FString::FromInt(data));
+					}
+					ATexTileData[data].TileName = FName(*numName);
 				}
-				ATexTileData[data].TileName = FName(*numName);
-			}
-			break;
-		case ENameTexture::EMCE_Option3:
-			AutoNameFill = ENameTexture::EMCE_Option1;
-			Name = TextureInput->GetName().Left(10).Append("_Alpha");
-			for (int data = 0; data < ATexTileData.Num(); ++data)
-			{
-				FString numNameA = Name;
-				if (ATexTileData.Num() > 1)
-				{
-					numNameA = TextureInput->GetName().Left(8).Append("_" + FString::FromInt(data) + "_Alpha");
+				break;
+			case ENameTexture::EMCE_Option3:
+				AutoNameFill = ENameTexture::EMCE_Option1;
+				Name = TextureInput->GetName().Left(10).Append("_Alpha");
+				for (int data = 0; data < ATexTileData.Num(); ++data) {
+					FString numNameA = Name;
+					if (ATexTileData.Num() > 1) {
+						numNameA = TextureInput->GetName().Left(8).Append("_" + FString::FromInt(data) + "_Alpha");
+					}
+					ATexTileData[data].TileName = FName(*numNameA);
 				}
-				ATexTileData[data].TileName = FName(*numNameA);
-			}
-			break;
-		default:
-			AutoNameFill = ENameTexture::EMCE_Option1;
-			break;
+				break;
+			default:
+				AutoNameFill = ENameTexture::EMCE_Option1;
+				break;
 		}
 	}
-	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerTextureNode, SetSizeByParameter)))
-	{
+	if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerTextureNode, SetSizeByParameter))) {
 		SizeVertical = SizeHorizontal = UMultiPackerBaseEnums::GetTextureSizeOutputEnum(SetSizeByParameter);
 	}
-	for (int tile = 0; tile < ATexTileData.Num(); ++tile)
-	{
+	for (int tile = 0; tile < ATexTileData.Num(); ++tile) {
 		ATexTileData[tile].TileName = FName(*(ATexTileData[tile].TileName.ToString().Left(16)));
 	}
 	//combined method to know if the tile size dont fit and its a error
 	ErrorSize = RectangleSize ? CompareSizes(UMultiPackerBaseEnums::GetTextureSizeOutputEnum(GetGraph()->OutputSizeY), UMultiPackerBaseEnums::GetTextureSizeOutputEnum(GetGraph()->OutputSizeY)) : false;
 	numTiles = TilesVertical * TilesHorizontal;
-	if (ATexTileData.Num()>0)
-	{
-		for (int t = 0; t <= numTiles; ++t)
-		{
-			if (t>ATexTileData.Num())
-			{
+	if (ATexTileData.Num() > 0) {
+		for (int t = 0; t <= numTiles; ++t) {
+			if (t > ATexTileData.Num()) {
 				FTileThumbDatabase newTile;
 				newTile.TileName = FName("None");
 				newTile.TileTexture = nullptr;
 				ATexTileData.Add(newTile);
 			}
 		}
-		if (ATexTileData.Num() > numTiles)
-		{
+		if (ATexTileData.Num() > numTiles) {
 			TArray<FTileThumbDatabase> A_NewTexTileData;
-			for (int t = 0; t < numTiles; ++t)
-			{
+			for (int t = 0; t < numTiles; ++t) {
 				A_NewTexTileData.Add(ATexTileData[t]);
 			}
 			ATexTileData = A_NewTexTileData;
 		}
-	}
-	else
-	{
-		for (int t = 0; t < numTiles; ++t)
-		{
+	} else {
+		for (int t = 0; t < numTiles; ++t) {
 			FTileThumbDatabase newTile;
 			newTile.TileName = FName("None");
 			newTile.TileTexture = nullptr;
@@ -186,8 +174,7 @@ void UMultiPackerTextureNode::SetErrorTiles(bool error)
 
 void UMultiPackerTextureNode::SetDataBaseTiles(TArray<UTextureRenderTarget2D*> RT_Array)
 {
-	for (int tile = 0; tile < ATexTileData.Num() ; ++tile)
-	{
+	for (int tile = 0; tile < ATexTileData.Num(); ++tile) {
 		ATexTileData[tile].TileTexture = RT_Array[tile];
 	}
 }
@@ -195,8 +182,7 @@ void UMultiPackerTextureNode::SetDataBaseTiles(TArray<UTextureRenderTarget2D*> R
 void UMultiPackerTextureNode::SetDataBaseTiles(TArray<UTilePointer*> TileThumbs)
 {
 	Thumbnails = TileThumbs;
-	for (int tile = 0; tile < ATexTileData.Num(); ++tile)
-	{
+	for (int tile = 0; tile < ATexTileData.Num(); ++tile) {
 		ATexTileData[tile].TileTexture = TileThumbs[tile]->TileTexture;
 	}
 }

@@ -11,10 +11,11 @@
 #include <CanvasTypes.h>
 #include "Engine/Canvas.h"
 #include <Async/ParallelFor.h>
+#include <ScopedSlowTask.h>
 
 #define LOCTEXT_NAMESPACE "UTilePointer"
 
-void UTilePointer::GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTileWidth, uint16 InTileHeight)
+void UTilePointer::GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTileWidth, uint16 InTileHeight, bool bInvertAplha /*= false*/)
 {
 	TileRT = InTileRT;
 	TileWidth = InTileWidth;
@@ -22,6 +23,17 @@ void UTilePointer::GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTil
 	TileDimension = TileWidth * TileHeight;
 	TileTexture = InTileRT->ConstructTexture2D(InTileRT->GetOuter(), InTileRT->GetName().Append("_T"), InTileRT->GetMaskedFlags(),0);
 	TileTexture->UpdateResource();
+	if (bInvertAplha)
+	{
+		FColor* Pixel = (FColor*)TileTexture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
+		for (uint32 i = 0; i < TileDimension; ++i)
+		{
+			Pixel->A = 255 - Pixel->A;
+			Pixel++;
+		}
+		TileTexture->PlatformData->Mips[0].BulkData.Unlock();
+		TileTexture->UpdateResource();
+	}
 	TileTexture->Modify();
 	GetPointerFromRT();
 }
@@ -94,8 +106,10 @@ uint8 UTilePointer::GetPixelCombinedRGB(uint32 pixel)
 
 void UTilePointer::GenerateFromMaterial(UObject *InWorldContextObject, UTextureRenderTarget2D* RTMaterial, UMaterialInterface* Material, uint16 new_width, uint16 new_height)
 {
+	UKismetRenderingLibrary::ClearRenderTarget2D(InWorldContextObject, RTMaterial, FLinearColor(0,0,0,1));
 	UKismetRenderingLibrary::DrawMaterialToRenderTarget(InWorldContextObject, RTMaterial, Material);
-	GenerateFromRT(RTMaterial, new_width, new_height);
+	EBlendMode BlendMode = Material->GetBlendMode();
+	GenerateFromRT(RTMaterial, new_width, new_height, BlendMode == BLEND_Translucent || BlendMode == BLEND_Masked || BlendMode == BLEND_AlphaComposite);
 	FromRTtoTexture(new_width, new_height);
 }
 
@@ -577,36 +591,23 @@ FTexture* UTilePointer::GetResource()
 	}
 }
 
-TArray<UTilePointer*> UTilePointer::SortArrayTiles(TArray<UTilePointer*> InTiles)
+TArray<UTilePointer*> UTilePointer::SortArrayTiles(TArray<UTilePointer*>& InTiles, bool bSizeOrder, bool bGraphOrder)
 {
-	TArray<UTilePointer*> Output;
-	Output.Reserve(InTiles.Num());
-	for (UTilePointer* Tile : InTiles)
+	TArray<UTilePointer*>& Output = InTiles;
+	if (Output.Num() > 1)
 	{
-		if (Output.Num() == 0)
+		if (!bGraphOrder)
 		{
-			Output.Add(Tile);
+			Output.StableSort([](auto& A, auto& B) { return /*A.TileDimension = B.TileDimension &&*/ A.TileDatabase.TileName < B.TileDatabase.TileName; });
 		}
-		else
+		else 
 		{
-			for (uint16 Num = 0; Num < Output.Num(); ++Num)
-			{
-				if (Tile->TileDimension > Output[Num]->TileDimension)
-				{
-					Output.Insert(Tile, Num);
-					break;
-				}
-				else if (Tile->TileDimension == Output[0]->TileDimension)// this case its when material instances do a array of prints the order isnt affected
-				{
-					Output.Add(Tile);
-					break;
-				}
-				else if (Num + 1 == Output.Num())
-				{
-					Output.Add(Tile);
-					break;
-				}
-			}
+			Output.Sort([](auto& A, auto& B) { return /*A.TileDimension = B.TileDimension &&*/ A.NodePosY < B.NodePosY; });
+			Output.StableSort([](auto& A, auto& B) { return /*A.TileDimension = B.TileDimension &&*/ A.NodePosX < B.NodePosX && FMath::Abs(A.NodePosY - B.NodePosY) < 192; });
+		}
+		if (bSizeOrder) 
+		{
+			Output.StableSort([](auto& A, auto& B) { return A.TileDimension > B.TileDimension; });
 		}
 	}
 	return Output;

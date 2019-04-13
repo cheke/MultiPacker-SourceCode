@@ -58,11 +58,11 @@ public:
 
 	//Size Vertical of the Texture
 	UPROPERTY(EditDefaultsOnly, Category = "TextureNode|Non Square Size", meta = (ClampMin = "1", ClampMax = "8096", UIMin = "1", UIMax = "8096", EditCondition = RectangleSize))
-		int32 SizeVertical = 32;
+		int32 SizeVertical;
 
 	//Size Horizontal of the Texture
 	UPROPERTY(EditDefaultsOnly, Category = "TextureNode|Non Square Size", meta = (ClampMin = "1", ClampMax = "8096", UIMin = "1", UIMax = "8096", EditCondition = RectangleSize))
-		int32 SizeHorizontal = 32;
+		int32 SizeHorizontal;
 
 	//Select to autoFill the names of the DataBase
 	UPROPERTY(EditAnywhere, Category = "TextureNode_TileDatabase")
