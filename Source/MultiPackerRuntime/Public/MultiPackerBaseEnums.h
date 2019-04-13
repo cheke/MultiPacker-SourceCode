@@ -342,7 +342,7 @@ public:
 		return ((uint16)In + 1) * 32;
 	};
 
-	static UTextureRenderTarget2D* GenerateRenderTarget(uint16 Width, uint16 Height, bool Alpha)
+	static UTextureRenderTarget2D* GenerateRenderTarget(uint16 Width, uint16 Height)
 	{
 		UTextureRenderTarget2D* NewRT = NewObject<UTextureRenderTarget2D>();
 		NewRT->bNeedsTwoCopies = false;

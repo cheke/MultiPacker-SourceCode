@@ -34,10 +34,10 @@ UMaterialInstanceDynamic* UMultiPackerDataBase::GetMaterialTile(const FName Key)
 UMaterialInstanceDynamic* UMultiPackerDataBase::GetButtonMaterialState(UObject* WorldContextObject, const FName KeyIcon, const FName KeyBase, const FName KeySelected, int32 size, FLinearColor Color_Base, FLinearColor Color_Icon_Normal, FLinearColor Color_Icon_Press, FLinearColor Color_Ic_Selected, EStateButton EState, bool selected)
 {
 	UMaterialInstanceDynamic* MI_DynTile1 = GetMaterialTile(KeyIcon);//Icon
-	UTextureRenderTarget2D* RT_Tex1 = UMultiPackerBaseEnums::GenerateRenderTarget(size, size, Alpha);
+	UTextureRenderTarget2D* RT_Tex1 = UMultiPackerBaseEnums::GenerateRenderTarget(size, size);
 	UKismetRenderingLibrary::DrawMaterialToRenderTarget(WorldContextObject, RT_Tex1, MI_DynTile1);
 	UMaterialInstanceDynamic* MI_DynTile2 = GetMaterialTile(KeyBase);//Base
-	UTextureRenderTarget2D* RT_Tex2 = UMultiPackerBaseEnums::GenerateRenderTarget(size, size, Alpha);
+	UTextureRenderTarget2D* RT_Tex2 = UMultiPackerBaseEnums::GenerateRenderTarget(size, size);
 	UKismetRenderingLibrary::DrawMaterialToRenderTarget(WorldContextObject, RT_Tex2, MI_DynTile2);
 	UMaterialInterface* MI_Dyn;
 	if (selected)
@@ -72,7 +72,7 @@ UMaterialInstanceDynamic* UMultiPackerDataBase::GetButtonMaterialState(UObject* 
 	if (selected)
 	{
 		UMaterialInstanceDynamic* MI_DynTile3 = GetMaterialTile(KeySelected);//Selected
-		UTextureRenderTarget2D* RT_Tex3 = UMultiPackerBaseEnums::GenerateRenderTarget(size, size, Alpha);
+		UTextureRenderTarget2D* RT_Tex3 = UMultiPackerBaseEnums::GenerateRenderTarget(size, size);
 		UKismetRenderingLibrary::DrawMaterialToRenderTarget(WorldContextObject, RT_Tex3, MI_DynTile3);
 		MI_DynTile->SetVectorParameterValue("Color3", Color_Ic_Selected);
 		MI_DynTile->SetTextureParameterValue("Tex3", RT_Tex3);
@@ -83,7 +83,7 @@ UMaterialInstanceDynamic* UMultiPackerDataBase::GetButtonMaterialState(UObject* 
 UTextureRenderTarget2D* UMultiPackerDataBase::GetTextureTile(UObject* WorldContextObject, const FName Key, int size)
 {
 	UMaterialInstanceDynamic* NewMat = GetMaterialTile(Key);
-	UTextureRenderTarget2D* RT_new = UMultiPackerBaseEnums::GenerateRenderTarget(size, size, Alpha);
+	UTextureRenderTarget2D* RT_new = UMultiPackerBaseEnums::GenerateRenderTarget(size, size);
 	UKismetRenderingLibrary::DrawMaterialToRenderTarget(WorldContextObject, RT_new, NewMat);
 	return RT_new;
 }

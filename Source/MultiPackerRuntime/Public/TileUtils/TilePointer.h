@@ -41,7 +41,7 @@ public:
 	UTexture2D* FillTextureOutput(UObject* Outer, const FString Name, EObjectFlags Flags);
 
 	static TArray<UTilePointer*> DoFinalTextures(TArray<UTilePointer*> InTileBinPack, uint16 InMasks, bool Alpha);
-	static TArray<UTilePointer*> SortArrayTiles(TArray<UTilePointer*> InTiles);
+	static TArray<UTilePointer*> SortArrayTiles(TArray<UTilePointer*>& InTiles, bool bSizeOrder, bool bGraphOrder);
 
 	UPROPERTY(VisibleAnywhere, Transient)
 		TArray<UTilePointer*> TileBinPack;

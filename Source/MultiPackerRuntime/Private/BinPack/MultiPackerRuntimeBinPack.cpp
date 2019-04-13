@@ -43,7 +43,7 @@ FMaterialDataBinPack UMultiPackerRuntimeBinPack::AddMaterialToMap(UMaterialInter
 	NewMat.Material = Material;
 	NewMat.Width = Size;
 	NewMat.Height = Size;
-	UTextureRenderTarget2D* RT_new = UMultiPackerBaseEnums::GenerateRenderTarget(Width, Height, Alpha);
+	UTextureRenderTarget2D* RT_new = UMultiPackerBaseEnums::GenerateRenderTarget(Width, Height);
 	UKismetRenderingLibrary::DrawMaterialToRenderTarget(WorldContext, RT_new, Material);
 
 	NewMat.RT_Material = RT_new;
@@ -69,7 +69,7 @@ int UMultiPackerRuntimeBinPack::MakeNewPage()
 {
 	UMaxRectsBinPack* BinPack = NewObject<UMaxRectsBinPack>();
 	BinPack->Init(Size, Size);
-	RenderTargetPages.Add(UMultiPackerBaseEnums::GenerateRenderTarget(Size, Size, Alpha));
+	RenderTargetPages.Add(UMultiPackerBaseEnums::GenerateRenderTarget(Size, Size));
 	return BinPackPages.Add(BinPack);
 }
 
@@ -79,11 +79,11 @@ TArray<UTextureRenderTarget2D*> UMultiPackerRuntimeBinPack::RuntimePreProcess(UO
 	TArray<UTextureRenderTarget2D*> RT_New;
 	for (int page = 0; page < InPages; page++) 
 	{
-		RT_New.Add(UMultiPackerBaseEnums::GenerateRenderTarget(InSize, InSize, InAlpha));
+		RT_New.Add(UMultiPackerBaseEnums::GenerateRenderTarget(InSize, InSize));
 	}
 	for (auto& Elem : InMaterialMap)
 	{
-		UTextureRenderTarget2D* RT_Mat = UMultiPackerBaseEnums::GenerateRenderTarget(Elem.Value.Height, Elem.Value.Width, InAlpha);
+		UTextureRenderTarget2D* RT_Mat = UMultiPackerBaseEnums::GenerateRenderTarget(Elem.Value.Height, Elem.Value.Width);
 		UKismetRenderingLibrary::DrawMaterialToRenderTarget(WorldContextObject, RT_Mat, Elem.Value.Material);
 		SetRTOnCanvas(RT_New[Elem.Value.NumPage], RT_Mat, Elem.Value.MaterialRect, InSize, InSize);
 	}
