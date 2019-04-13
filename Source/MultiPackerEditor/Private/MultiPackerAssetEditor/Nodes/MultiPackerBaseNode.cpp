@@ -42,6 +42,9 @@ TArray<UTilePointer*> UMultiPackerBaseNode::GetTiles(const uint16 size, FVector2
 	for (UTilePointer* Tile : Tiles)
 	{
 		Tile->TilePadding = InTilePadding;
+		Tile->NodePosX = NodePosX;
+		Tile->NodePosY = NodePosY;
+		Tile->TileDatabase.TileName = *GetNodeTitle(ENodeTitleType::ListView).ToString();
 	}
 	return Tiles;
 }
