@@ -317,15 +317,14 @@ void FMultiPackerAssetEditor::HandleAssetDropped(UObject* AssetObject)
 			UMultiPackerTextureEdNode* GraphNode = NodeCreator.CreateNode(true);
 			GraphNode->SetGenericGraphNode(NewNode);
 			NodeCreator.Finalize();
-
 			GraphNode->SetTextureInput(Cast<UTexture>(AssetObject));
 			GraphNode->NodePosX = Location.X;
 			GraphNode->NodePosY = Location.Y;
 #if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION <= 18)
-			EdNode->FindPin("Output", EGPD_Input)->MakeLinkTo(GraphNode->FindPin("RGB", EGPD_Output));
+			EdNode->FindPin("Output", EGPD_Input)->MakeLinkTo(GraphNode->FindPin("RGBA", EGPD_Output));
 #endif
 #if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION >= 19)
-			EdNode->FindPin(FName("Output"), EGPD_Input)->MakeLinkTo(GraphNode->FindPin(FName("RGB"), EGPD_Output));
+			EdNode->FindPin(FName("Output"), EGPD_Input)->MakeLinkTo(GraphNode->FindPin(FName("RGBA"), EGPD_Output));
 #endif
 			if (EditingGraph->RectangleTiles)
 			{
