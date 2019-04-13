@@ -16,7 +16,7 @@ public:
 	UMultiPackerTextureNode* GenericGraphNode;
 
 	UPROPERTY(EditAnywhere, Category = "TextureNode")
-	EChannelSelectionInput ChannelInput = EChannelSelectionInput::CSI_RGB;
+	EChannelSelectionInput ChannelInput = EChannelSelectionInput::CSI_RGBA;
 	
 	void AllocateDefaultPins() override;
 	void PinConnectionListChanged(UEdGraphPin * Pin) override;

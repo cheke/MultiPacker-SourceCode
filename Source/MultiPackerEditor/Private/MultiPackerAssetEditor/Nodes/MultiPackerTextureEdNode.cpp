@@ -162,7 +162,7 @@ void UMultiPackerTextureEdNode::PostEditChangeProperty(struct FPropertyChangedEv
 		switch (ChannelInput)
 		{
 		default:
-			PinName = UMultiPackerEditorTypes::PinCategory_RGB;
+			PinName = UMultiPackerEditorTypes::PinCategory_RGBA;
 			break;
 		case EChannelSelectionInput::CSI_RGB://rgb
 			PinName = UMultiPackerEditorTypes::PinCategory_RGB;
