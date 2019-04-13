@@ -1,3 +1,14 @@
+# WIP
+## Done
+Alpha in RGBA works now!
+
+Added alphabetical(default) and graph order for packing. Dimensional order is optional now.
+
+Fixed inverted alpha for Material Node.
+
+## ToDo
+Better sizing, packing, ordering
+
 # MultiPacker
 
 MultiPacker now its free, allowing everyone enjoy and use it; if you want to support MultiPacker you can do it in Patreon.
