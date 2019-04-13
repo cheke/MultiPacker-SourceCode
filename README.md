@@ -1,6 +1,8 @@
 # WIP
 ## Done
 Alpha in RGBA works now!
+Added alphabetical(default) and graph order for packing. Dimensional order is optional now.
+Fixed inverted alpha for Material Node.
 ## ToDo
 Better sizing, packing, ordering
 
