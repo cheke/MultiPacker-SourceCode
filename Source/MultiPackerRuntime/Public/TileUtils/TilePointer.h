@@ -87,7 +87,7 @@ private:
 	void UpdateTextureCanvas();
 	void SetColorArray(uint16 width, uint16 height, const TArray<FColor>& colorArray);
 	void FromRTtoTexture(uint16 new_width, uint16 new_height);
-	void ImageResize(int32 SrcWidth, int32 SrcHeight, const TArray<FColor> &SrcData,  int32 DstWidth, int32 DstHeight, TArray<FColor> &DstData, bool bLinearSpace );
+	void ImageResize(int32 SrcWidth, int32 SrcHeight, const TArray<FColor> &SrcData,  int32 DstWidth, int32 DstHeight, TArray<FColor> &DstData );
 
 	//Dont be afraid for this nonsense of numbers, this are the lenght/sqrt(dot()) of the radius,
 	//as the radius start on -64 to 64 are an square of 128x128 equals to 4096 results,
