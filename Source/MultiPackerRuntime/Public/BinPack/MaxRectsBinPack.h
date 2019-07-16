@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 
 /* Based on the work of Jukka Jylanki released as Public Domain*/
 //To solve the warning c4828 the diaeresis are out on the surname of Jukka//

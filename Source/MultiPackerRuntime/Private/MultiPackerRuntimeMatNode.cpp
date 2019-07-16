@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #include "MultiPackerRuntimeMatNode.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include "ImageUtils.h"

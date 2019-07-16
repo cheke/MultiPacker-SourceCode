@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #pragma once
 
 #include "Toolkits/AssetEditorToolkit.h"
@@ -81,8 +81,6 @@ private:
 	void DuplicateNodes();
 	bool CanDuplicateNodes();
 
-	void GotoPatreon();
-	bool CanGotoPatreon();
 	void GraphSettings();
 	bool CanGraphSettings();
 	void ProcessGraph();

@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #pragma once
 #include "CoreMinimal.h"
 #include "Engine/TextureRenderTarget2D.h"
@@ -7,6 +7,7 @@
 
 class UTexture;
 
+/*
 UENUM()
 enum ERenderTargetPixelQuality
 {
@@ -15,7 +16,7 @@ enum ERenderTargetPixelQuality
 	FloatRGB,
 	FloatRGBA, // for exporting materials to .obj/.mtl
 	A2B10G10R10, //Pixel inspector for normal buffer
-};
+};*/
 
 UENUM(BlueprintType)
 enum class EMultiPackerImageLayer : uint8
@@ -347,8 +348,10 @@ public:
 		UTextureRenderTarget2D* NewRT = NewObject<UTextureRenderTarget2D>();
 		NewRT->bNeedsTwoCopies = false;
 		NewRT->InitCustomFormat(Width, Height, PF_B8G8R8A8, true);
-		NewRT->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+		NewRT->CompressionSettings = TextureCompressionSettings::TC_BC7;
 		NewRT->SRGB = 0;
+		NewRT->bForceLinearGamma = true;
+		NewRT->TargetGamma = 1.04f;
 		NewRT->UpdateResourceImmediate(true);
 		return NewRT;
 	};

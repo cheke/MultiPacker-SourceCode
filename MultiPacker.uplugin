@@ -1,38 +1,36 @@
 {
-	"FileVersion": 3,
-	"Version": 13,
-	"VersionName": "1.12.1",
-	"FriendlyName": "MultiPacker",
-	"Description": "Edit and combine Textures easily",
-	"Category": "MultiPacker",
-	"CreatedBy": "@turbocheke",
-	"CreatedByURL": "https://www.patreon.com/EstudioCheke",
-	"DocsURL": "https://cheke.github.io/MultiPacker/",
-	"MarketplaceURL": "https://ue/marketplace/content/afd1a04001bc4110b4a22460ca09da94",
-	"SupportURL": "https://discord.gg/NbzAZh2",
-	"EngineVersion": "4.16.0",
-	"CanContainContent": true,
-	"IsBetaVersion": false,
-	"Installed": false,
-	"Modules": [
-		{
-			"Name": "MultiPackerRuntime",
-			"Type": "Runtime",
-			"LoadingPhase": "PreDefault",
-			"WhitelistPlatforms": [
-				"Android",
-				"Win64",
-				"Win32"
-			]
-		},
-		{
-			"Name": "MultiPackerEditor",
-			"Type": "Editor",
-			"LoadingPhase": "Default",
-			"WhitelistPlatforms": [
-				"Win64",
-				"Win32"
-			]
-		}
-	]
+  "FileVersion": 3,
+  "Version": 15,
+  "VersionName": "2.7.0",
+  "FriendlyName": "MultiPacker",
+  "Description": "Edit and combine Textures easily",
+  "Category": "MultiPacker",
+  "CreatedBy": "@turbocheke",
+  "DocsURL": "https://cheke.github.io/MultiPacker/",
+  "MarketplaceURL": "https://ue/marketplace/content/afd1a04001bc4110b4a22460ca09da94",
+  "EngineVersion": "4.16.0",
+  "CanContainContent": true,
+  "IsBetaVersion": false,
+  "Installed": false,
+  "Modules": [
+    {
+      "Name": "MultiPackerRuntime",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault",
+      "WhitelistPlatforms": [
+        "Android",
+        "Win64",
+        "Win32"
+      ]
+    },
+    {
+      "Name": "MultiPackerEditor",
+      "Type": "Editor",
+      "LoadingPhase": "Default",
+      "WhitelistPlatforms": [
+        "Win64",
+        "Win32"
+      ]
+    }
+  ]
 }

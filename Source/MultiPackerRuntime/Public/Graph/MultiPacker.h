@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #pragma once
 
 #include "CoreMinimal.h"
@@ -128,6 +128,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category = "TileDataBase")
 		TMap<FName, FTileDatabase> TileMap;
+
+	UPROPERTY(VisibleAnywhere, Category = "TileDataBase")
+		TArray<UTilePointer*> TilePointers;
 
 	TArray < TSharedRef<struct FTileDatabase>> NewTileData;
 

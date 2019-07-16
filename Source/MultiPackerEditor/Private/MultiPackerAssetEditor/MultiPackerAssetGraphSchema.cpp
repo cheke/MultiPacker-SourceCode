@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #include "MultiPackerAssetEditor/MultiPackerAssetGraphSchema.h"
 #include "MultiPackerAssetEditor/Nodes/MultiPackerTextureEdNode.h"
 #include "MultiPackerAssetEditor/Nodes/MultiPackerMaterialNode.h"

@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #include "Graph/MultiPackerTextureNode.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "TileUtils/TilePointer.h"

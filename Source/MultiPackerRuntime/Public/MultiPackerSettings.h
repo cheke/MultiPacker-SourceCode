@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #pragma once
 
 #include "Engine/DeveloperSettings.h"
@@ -19,7 +19,6 @@ public:
  
 	UMultiPackerSettings()
 	{
-		PatreonBanner = true;
 		ChannelMethod = EChannelTextureSave::CS_Atlas;
 		SaveMaterialCollection = true;
 		SaveDatabase = true;
@@ -28,12 +27,7 @@ public:
 		TexturePrefix = "T_";
 		MaterialcollectionPrefix = "MC_";
 	}
-
-	FORCEINLINE bool GetPatreonBanner() const
-	{
-		return PatreonBanner;
-	}
-
+	
 	FORCEINLINE EChannelTextureSave GetChannelMethod() const
 	{
 		return ChannelMethod;
@@ -70,10 +64,6 @@ public:
 	}
 
 private:
-	//Shows the Patreon Banner
-	UPROPERTY(config, EditAnywhere, Category = "Patreon")
-		bool PatreonBanner = true;
-
 	//Select between multiples modes for save the texture on channel; 
 	//Multiple saves 3 Textures by Channel
 	//One save 1 Texture on Channel

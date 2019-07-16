@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 
 #include "Styling/SlateStyleRegistry.h"
 #include "Interfaces/IPluginManager.h"
@@ -15,7 +15,7 @@
 #include "MultiPackerAssetEditor/Nodes/SMultiPackerMaterialNode.h"
 #include "MultiPackerAssetEditor/MultiPackerEditorThumbnail.h"
 #include <PropertyEditorModule.h>
-#include <Modules/ModuleManager.h>
+//#include <Modules/ModuleManager.h>
 #include "DetailsProperty/FChannelDatabaseCustomization.h"
 #include "DetailsProperty/FLayerDatabaseCustomization.h"
 #include "DetailsProperty/FTileCopyCustomization.h"
@@ -101,7 +101,7 @@ private:
 	TSet< FName > RegisteredPropertyTypes;
 };
 
-IMPLEMENT_MODULE( FMultiPackerEditor, UMultiPackerEditor )
+IMPLEMENT_MODULE( FMultiPackerEditor, MultiPackerEditor )
 
 TSharedPtr<FMultiPackerEditorThumbnail> FMultiPackerEditorThumbnail::Instance;
 
@@ -121,7 +121,6 @@ void FMultiPackerEditor::StartupModule()
 	FSlateImageBrush* ThumbnailBrushRuntime = new FSlateImageBrush(StyleSet->RootToContentDir(TEXT("Resources/IconRuntime128"), TEXT(".png")), FVector2D(128.f, 128.f));
 	FSlateImageBrush* ThumbnailBrushStyle = new FSlateImageBrush(StyleSet->RootToContentDir(TEXT("Resources/SlateWidgetStyleAsset_64x"), TEXT(".png")), FVector2D(128.f, 128.f));
 	FSlateImageBrush* ThumbnailBrushDatabase = new FSlateImageBrush(StyleSet->RootToContentDir(TEXT("Resources/ObjectLibrary_64x"), TEXT(".png")), FVector2D(128.f, 128.f));
-	FSlateImageBrush* PatreonSupport = new FSlateImageBrush(StyleSet->RootToContentDir(TEXT("Resources/SupportMultiPacker_128"), TEXT(".png")), FVector2D(64.f, 64.f));
 	if (ThumbnailBrush)
 	{
 		//In order to bind the thumbnail to our class we need to type ClassThumbnail.X where X is the name of the C++ class of the asset
@@ -129,7 +128,6 @@ void FMultiPackerEditor::StartupModule()
 		StyleSet->Set("ClassThumbnail.MultiPackerRuntimeGraph", ThumbnailBrushRuntime);
 		StyleSet->Set("ClassThumbnail.MultiPackerLayerDatabase", ThumbnailBrushStyle);
 		StyleSet->Set("ClassThumbnail.MultiPackerDataBase", ThumbnailBrushDatabase);
-		StyleSet->Set("ClassThumbnail.Patreon", PatreonSupport);
 		//Register the created style
 		FSlateStyleRegistry::RegisterSlateStyle(*StyleSet);
 	}

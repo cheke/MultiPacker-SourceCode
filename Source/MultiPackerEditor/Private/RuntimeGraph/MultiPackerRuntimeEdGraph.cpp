@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #include "RuntimeGraph/MultiPackerRuntimeEdGraph.h"
 #include "EdGraph/EdGraphPin.h"
 #include "RuntimeGraph/Nodes/MultiPackerRuntimeOutputNode.h"

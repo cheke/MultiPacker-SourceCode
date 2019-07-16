@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 
 #include "Graph/MultiPackerMatNode.h"
 #include "Graph/MultiPacker.h"

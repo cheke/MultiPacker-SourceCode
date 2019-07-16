@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #include "MultiPackerAssetEditor/MultiPackerAssetEditor.h"
 #include "MultiPackerAssetEditor/MultiPackerAssetEditorToolbar.h"
 #include "MultiPackerAssetEditor/MultiPackerAssetGraphSchema.h"
@@ -468,10 +468,6 @@ void FMultiPackerAssetEditor::BindCommands()
 		FExecuteAction::CreateSP(this, &FMultiPackerAssetEditor::ProcessGraph),
 		FCanExecuteAction::CreateSP(this, &FMultiPackerAssetEditor::CanProcessGraph)
 	);
-	ToolkitCommands->MapAction(FMultiPackerEditorCommands::Get().PatreonButton,
-		FExecuteAction::CreateSP(this, &FMultiPackerAssetEditor::GotoPatreon),
-		FCanExecuteAction::CreateSP(this, &FMultiPackerAssetEditor::CanGotoPatreon)
-	);
 }
 
 void FMultiPackerAssetEditor::CreateEdGraph()
@@ -760,16 +756,6 @@ void FMultiPackerAssetEditor::DuplicateNodes()
 bool FMultiPackerAssetEditor::CanDuplicateNodes()
 {
 	return false;
-}
-
-void FMultiPackerAssetEditor::GotoPatreon()
-{
-	FPlatformProcess::LaunchURL(*FString::Printf(TEXT("https://www.patreon.com/EstudioCheke")), NULL, NULL);
-}
-
-bool FMultiPackerAssetEditor::CanGotoPatreon()
-{
-	return true;
 }
 
 void FMultiPackerAssetEditor::GraphSettings()

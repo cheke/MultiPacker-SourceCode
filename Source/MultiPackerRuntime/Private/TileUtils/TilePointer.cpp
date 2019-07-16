@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #pragma once
 
 #include "TileUtils/TilePointer.h"
@@ -60,7 +60,7 @@ void UTilePointer::GenerateTextureCanvas(const uint16 Width, const uint16 Height
 #if WITH_EDITORONLY_DATA
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
-	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+	TileTexture->CompressionSettings = TextureCompressionSettings::TC_BC7;
 	TileTexture->SRGB = 0;
 	TileTexture->AddToRoot();
 	TileTexture->Filter = TextureFilter::TF_Nearest;
@@ -108,7 +108,7 @@ void UTilePointer::GenerateFromTexture(UTexture2D* Texture, const int InTileWidt
 	TextureMipGenSettings OldMipGenSettings = Texture->MipGenSettings;
 #endif
 	uint32 OldSRGB = Texture->SRGB;
-	Texture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+	Texture->CompressionSettings = TextureCompressionSettings::TC_BC7;
 #if WITH_EDITORONLY_DATA
 	Texture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
@@ -180,7 +180,7 @@ void UTilePointer::GenerateAndSetArrayTilesOnRenderTarget(UObject* InWorldContex
 	TileTexture->Source.Init(TileWidth, TileHeight, /*NumSlices=*/ 1, /*NumMips=*/ 1, TSF_BGRA8, TileTexture->Source.LockMip(0));
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
-	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+	TileTexture->CompressionSettings = TextureCompressionSettings::TC_BC7;
 	TileTexture->SRGB = 0;
 	TileTexture->UpdateResource();
 	UpdateTextureCanvas();
@@ -257,7 +257,7 @@ UTexture2D* UTilePointer::FillTextureOutput(UObject* Outer, const FString Name, 
 	FCreateTexture2DParameters FCT;
 	FCT.bUseAlpha = true;
 	UTexture2D* Output = FImageUtils::CreateTexture2D(TileWidth, TileHeight, TileData, Outer, Name, Flags/* RF_Public | RF_Standalone*/, FCT);
-	Output->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+	Output->CompressionSettings = TextureCompressionSettings::TC_BC7;
 #if WITH_EDITORONLY_DATA
 	Output->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
@@ -366,7 +366,7 @@ void UTilePointer::SetColorArray(uint16 width, uint16 height, const TArray<FColo
 #if WITH_EDITORONLY_DATA
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
-	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+	TileTexture->CompressionSettings = TextureCompressionSettings::TC_BC7;
 	TileTexture->SRGB = 0;
 	TileTexture->AddToRoot();
 	TileTexture->Filter = TextureFilter::TF_Nearest;

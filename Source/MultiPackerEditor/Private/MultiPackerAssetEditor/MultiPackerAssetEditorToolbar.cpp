@@ -1,10 +1,8 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #include "MultiPackerAssetEditor/MultiPackerAssetEditorToolbar.h"
 #include "MultiPackerAssetEditor/MultiPackerAssetEditor.h"
 #include "MultiPackerAssetEditor/MultiPackerEditorCommands.h"
-#include "MultiPackerSettings.h"
 #include <UObject/UObjectGlobals.h>
-
 
 #define LOCTEXT_NAMESPACE "GenericGraphAssetEditorToolbar"
 
@@ -21,8 +19,6 @@ void FMultiPackerAssetEditorToolbar::AddGenericGraphToolbar(TSharedPtr<FExtender
 void FMultiPackerAssetEditorToolbar::FillMultiPackerToolbar(FToolBarBuilder& ToolbarBuilder)
 {
 	check(GenericGraphEditor.IsValid());
-	//TSharedPtr<FMultiPackerAssetEditor> GenericGraphEditorPtr = GenericGraphEditor.Pin();
-
 	ToolbarBuilder.BeginSection("MultiPacker");
 	{
 		const FText GraphSettingsLabelOutput = LOCTEXT("GraphSettings_LabelOut", "Apply");
@@ -43,26 +39,7 @@ void FMultiPackerAssetEditorToolbar::FillMultiPackerToolbar(FToolBarBuilder& Too
 			GraphSettingsTip,
 			GraphSettingsIcon);
 	}
-	ToolbarBuilder.EndSection();
-
-	const UMultiPackerSettings* Settings = GetDefault<UMultiPackerSettings>();
-	if (Settings->GetPatreonBanner())
-	{
-		ToolbarBuilder.BeginSection("Patreon");
-		{
-			const FText GraphPatreonLabelOutput = LOCTEXT("GraphPatreon_LabelOut", "Support");
-			const FText GraphPatreonTipOutput = LOCTEXT("GraphPatreon_ToolTipOut", "Support MultiPacker on Patreon");
-			const FSlateIcon GraphPatreonIconOutput = FSlateIcon("MultiPackerStyle", "ClassThumbnail.Patreon");
-			ToolbarBuilder.SetLabelVisibility(EVisibility::Collapsed);
-			ToolbarBuilder.AddToolBarButton(FMultiPackerEditorCommands::Get().PatreonButton,
-				NAME_None,
-				GraphPatreonLabelOutput,
-				GraphPatreonTipOutput,
-				GraphPatreonIconOutput);
-		}
-		ToolbarBuilder.EndSection();
-	}
-	
+	ToolbarBuilder.EndSection();	
 }
 
 

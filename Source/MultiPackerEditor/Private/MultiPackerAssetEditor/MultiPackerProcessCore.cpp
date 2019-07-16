@@ -1,4 +1,4 @@
-/* Copyright 2018 TurboCheke, Estudio Cheke  - All Rights Reserved */
+/* Copyright 2019 TurboCheke, Estudio Cheke  - All Rights Reserved */
 #pragma once
 
 #include "MultiPackerAssetEditor/MultiPackerProcessCore.h"
@@ -205,7 +205,12 @@ void UMultiPackerProcessCore::CreateMaterialCollection(uint16 width, uint16 heig
 			UWorld* CurrentWorld = *It;
 			CurrentWorld->AddParameterCollectionInstance(BaseInput->MaterialCollection, true);
 			CurrentWorld->SetupParameterCollectionInstances();
+#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION <= 21)
 			CurrentWorld->UpdateParameterCollectionInstances(true);
+#endif
+#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION > 21)
+			CurrentWorld->UpdateParameterCollectionInstances(true, true);
+#endif
 			CurrentWorld->GetParameterCollectionInstance(BaseInput->MaterialCollection)->PostEditChange();
 		}
 		TSet<FName> ParameterNames;
@@ -375,7 +380,7 @@ void UMultiPackerProcessCore::SaveTextureFromTile(UTilePointer* InTile, FString 
 	UTexture2D* NewTexture;
 	if (InTile->TileRT)
 	{
-		 NewTexture = InTile->TileRT->ConstructTexture2D(package, *NewPackageName[0], Flags, BaseInput->Alpha ? CTF_Compress : CTF_ForceOpaque, NULL);
+		 NewTexture = InTile->TileRT->ConstructTexture2D(package, *NewPackageName[0], Flags, BaseInput->Alpha ? CTF_Compress : CTF_ForceOpaque , NULL);
 	}
 	else
 	if (InTile->TileTexture)
@@ -511,6 +516,7 @@ void UMultiPackerProcessCore::ProcessNodes(UMultiPacker* Graph)
 		}
 		SaveTextureFromTile(Output[multipleTextures], AddName, AssetToolsModule);
 	}
+	BaseInput->TilePointers = Output;
 	//search the Outputnode
 	UMultiPackerEdGraph* EdGraph = Cast<UMultiPackerEdGraph>(BaseInput->EdGraph);
 	for (uint16 num = 0; num < EdGraph->Nodes.Num(); ++num)
