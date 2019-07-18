@@ -11,7 +11,7 @@ https://www.unrealengine.com/marketplace/multipacker-texture-and-material-packer
 
 ## This is the Source Code of MultiPacker
 
-This project is developed under the Unreal Engine 4.16 version and verified by builds on every version at almost the last one at this moment 4.21.
+This project is developed under the Unreal Engine 4.16 version and verified by builds on every version at almost the last one at this moment 4.23.
 The code uses some tricks via defines allowed by unreal engine to have the same functionality on all the version by equal.
 
 If you want to compile the code to another version different to 4.16 you need to change on MultiPacker.uplugin the line
