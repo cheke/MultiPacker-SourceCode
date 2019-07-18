@@ -26,6 +26,7 @@ public:
 		DatabasePrefix = "MPDB_";
 		TexturePrefix = "T_";
 		MaterialcollectionPrefix = "MC_";
+		TextureChannelName = "MultiPacker_CP";
 	}
 	
 	FORCEINLINE EChannelTextureSave GetChannelMethod() const
@@ -63,6 +64,10 @@ public:
 		return MaterialcollectionPrefix;
 	}
 
+	FORCEINLINE FString GetTextureChannelName() const
+	{
+		return TextureChannelName;
+	}
 private:
 	//Select between multiples modes for save the texture on channel; 
 	//Multiple saves 3 Textures by Channel
@@ -84,6 +89,9 @@ private:
 	UPROPERTY(config, EditAnywhere, Category = "Location", meta = (RelativeToGameContentDir))
 		FDirectoryPath TargetDirectory;
 
+	UPROPERTY(EditAnywhere, Category = "Output")
+		FString TextureChannelName = "MultiPacker_CP";
+
 	//Prefix for the MultiPacker Database to use with blueprints
 	UPROPERTY(config, EditAnywhere, Category = "Prefix")
 		FString DatabasePrefix = "MPDB_";
@@ -95,5 +103,6 @@ private:
 	//Prefix for the Material Collection
 	UPROPERTY(config, EditAnywhere, Category = "Prefix")
 		FString MaterialcollectionPrefix = "MC_";
+
 
 };

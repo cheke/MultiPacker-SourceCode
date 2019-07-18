@@ -1,0 +1,31 @@
+/* Copyright 2019 @TurboCheke, Estudio Cheke  - All Rights Reserved */
+#pragma once
+
+#include "Widgets/SCompoundWidget.h"
+#include "Widgets/DeclarativeSyntaxSupport.h"
+
+class UTexture2D;
+class SMPTexturePreviewZoomer;
+/**
+* A preview viewport used for 2D Textures
+*/
+class SMPTextureWidget : public SCompoundWidget
+{
+public:
+	SLATE_BEGIN_ARGS(SMPTextureWidget) {}
+	SLATE_END_ARGS()
+
+	void Construct(const FArguments& InArgs, UTexture2D* InPreviewTexture);
+	void SetPreviewTexture(UTexture2D* InPreviewTexture);
+
+private:
+	void OnPreviewXChanged(int32 NewValue);
+	void OnPreviewXCommitted(int32 NewValue, ETextCommit::Type);
+	void OnPreviewYChanged(int32 NewValue);
+	void OnPreviewYCommitted(int32 NewValue, ETextCommit::Type);
+	TOptional<int32> OnGetPreviewXValue() const { return PreviewSize.X; }
+	TOptional<int32> OnGetPreviewYValue() const { return PreviewSize.Y; }
+private:
+	FIntPoint PreviewSize;
+	TSharedPtr<class SMPTexturePreviewZoomer> PreviewZoomer;
+};

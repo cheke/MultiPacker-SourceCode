@@ -516,6 +516,7 @@ void UMultiPackerProcessCore::ProcessNodes(UMultiPacker* Graph)
 		}
 		SaveTextureFromTile(Output[multipleTextures], AddName, AssetToolsModule);
 	}
+	//debug
 	BaseInput->TilePointers = Output;
 	//search the Outputnode
 	UMultiPackerEdGraph* EdGraph = Cast<UMultiPackerEdGraph>(BaseInput->EdGraph);

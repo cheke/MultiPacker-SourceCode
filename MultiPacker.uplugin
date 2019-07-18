@@ -1,7 +1,7 @@
 {
   "FileVersion": 3,
-  "Version": 15,
-  "VersionName": "2.7.0",
+  "Version": 16,
+  "VersionName": "2.7.1",
   "FriendlyName": "MultiPacker",
   "Description": "Edit and combine Textures easily",
   "Category": "MultiPacker",
@@ -25,6 +25,15 @@
     },
     {
       "Name": "MultiPackerEditor",
+      "Type": "Editor",
+      "LoadingPhase": "Default",
+      "WhitelistPlatforms": [
+        "Win64",
+        "Win32"
+      ]
+    },
+    {
+      "Name": "MultiPackerTab",
       "Type": "Editor",
       "LoadingPhase": "Default",
       "WhitelistPlatforms": [

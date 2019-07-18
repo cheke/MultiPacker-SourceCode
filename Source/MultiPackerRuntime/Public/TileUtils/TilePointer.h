@@ -39,6 +39,7 @@ public:
 	void GenerateThumbnailFromTile(UTilePointer* Tile);
 	TArray<FColor> GetColorArray();
 	UTexture2D* FillTextureOutput(UObject* Outer, const FString Name, EObjectFlags Flags);
+	void GenerateTextureCanvas(const uint16 Width, const uint16 Height);
 
 	static TArray<UTilePointer*> DoFinalTextures(TArray<UTilePointer*> InTileBinPack, uint16 InMasks, bool Alpha);
 	static TArray<UTilePointer*> SortArrayTiles(TArray<UTilePointer*> InTiles);
@@ -69,7 +70,6 @@ private:
 	void SetChannels(UTilePointer* InTileChannel, EChannelOutput ChannelTexture);
 	void RegenerateTileData(UTexture2D* Texture = nullptr);
 	FTexture* GetResource();
-	void GenerateTextureCanvas(const uint16 Width, const uint16 Height);
 	void GenerateDefaultVars(const uint16 Width, const uint16 Height);
 	uint8 GetPixelCombinedRGB(uint32 pixel);
 	void GetPointerFromRT();

@@ -60,7 +60,7 @@ void UTilePointer::GenerateTextureCanvas(const uint16 Width, const uint16 Height
 #if WITH_EDITORONLY_DATA
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
-	TileTexture->CompressionSettings = TextureCompressionSettings::TC_BC7;
+	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 	TileTexture->SRGB = 0;
 	TileTexture->AddToRoot();
 	TileTexture->Filter = TextureFilter::TF_Nearest;
@@ -102,21 +102,23 @@ void UTilePointer::GenerateFromMaterial(UObject *InWorldContextObject, UTextureR
 void UTilePointer::GenerateFromTexture(UTexture2D* Texture, const int InTileWidth, const int InTileHeight)
 {
 	GenerateTextureCanvas(InTileWidth, InTileHeight);
+	//TextureSettings
 	TextureCompressionSettings OldCompressionSettings = Texture->CompressionSettings;
-
 #if WITH_EDITORONLY_DATA
 	TextureMipGenSettings OldMipGenSettings = Texture->MipGenSettings;
 #endif
 	uint32 OldSRGB = Texture->SRGB;
-	Texture->CompressionSettings = TextureCompressionSettings::TC_BC7;
+	//SetNewSettings
+	Texture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 #if WITH_EDITORONLY_DATA
 	Texture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
 	Texture->SRGB = 0;
+	//Process
 	Texture->UpdateResource();
 	RegenerateTileData(Texture);
 	UpdateTextureCanvas();
-
+	//SetOldSettings
 	Texture->CompressionSettings = OldCompressionSettings;
 #if WITH_EDITORONLY_DATA
 	Texture->MipGenSettings = OldMipGenSettings;
@@ -144,10 +146,10 @@ void UTilePointer::GenerateAndCombineTexturesOnChannels(uint16 new_width, uint16
 	for (uint32 D = 0; D < TileDimension; ++D)
 	{
 		FColor& CurColor = MipData[D];
-		uint8 TileRedPixelPtr = TileRed == nullptr ? 0 : TileRed->GetPixelCombinedRGB(D);
-		uint8 TileGreenPixelPtr = TileGreen == nullptr ? 0 : TileGreen->GetPixelCombinedRGB(D);
-		uint8 TileBluePixelPtr = TileBlue == nullptr ? 0 : TileBlue->GetPixelCombinedRGB(D);
-		uint8 TileAlphaPixelPtr = TileAlpha == nullptr ? 0 : TileAlpha->GetPixelCombinedRGB(D);
+		uint8 TileRedPixelPtr = TileRed == nullptr ? 255 : TileRed->GetPixelCombinedRGB(D);
+		uint8 TileGreenPixelPtr = TileGreen == nullptr ? 255 : TileGreen->GetPixelCombinedRGB(D);
+		uint8 TileBluePixelPtr = TileBlue == nullptr ? 255 : TileBlue->GetPixelCombinedRGB(D);
+		uint8 TileAlphaPixelPtr = TileAlpha == nullptr ? 255 : TileAlpha->GetPixelCombinedRGB(D);
 		TileData[D] = CurColor = FColor(TileRedPixelPtr, TileGreenPixelPtr, TileBluePixelPtr, TileAlphaPixelPtr);
 	}
 	TileTexture->PlatformData->Mips[0].BulkData.Unlock();
@@ -180,7 +182,7 @@ void UTilePointer::GenerateAndSetArrayTilesOnRenderTarget(UObject* InWorldContex
 	TileTexture->Source.Init(TileWidth, TileHeight, /*NumSlices=*/ 1, /*NumMips=*/ 1, TSF_BGRA8, TileTexture->Source.LockMip(0));
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
-	TileTexture->CompressionSettings = TextureCompressionSettings::TC_BC7;
+	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 	TileTexture->SRGB = 0;
 	TileTexture->UpdateResource();
 	UpdateTextureCanvas();
@@ -257,7 +259,7 @@ UTexture2D* UTilePointer::FillTextureOutput(UObject* Outer, const FString Name, 
 	FCreateTexture2DParameters FCT;
 	FCT.bUseAlpha = true;
 	UTexture2D* Output = FImageUtils::CreateTexture2D(TileWidth, TileHeight, TileData, Outer, Name, Flags/* RF_Public | RF_Standalone*/, FCT);
-	Output->CompressionSettings = TextureCompressionSettings::TC_BC7;
+	Output->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 #if WITH_EDITORONLY_DATA
 	Output->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
@@ -366,7 +368,7 @@ void UTilePointer::SetColorArray(uint16 width, uint16 height, const TArray<FColo
 #if WITH_EDITORONLY_DATA
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
-	TileTexture->CompressionSettings = TextureCompressionSettings::TC_BC7;
+	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 	TileTexture->SRGB = 0;
 	TileTexture->AddToRoot();
 	TileTexture->Filter = TextureFilter::TF_Nearest;
