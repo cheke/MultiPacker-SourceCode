@@ -40,7 +40,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (EditCondition = AlphaChannel))
 		EMPChannelMaskParameterColor MaskTextureAlpha;
 
-	UPROPERTY(EditAnywhere, Category = "Output")
+	UPROPERTY(EditAnywhere, Category = "Output", meta = (RelativeToGameContentDir))
 		FDirectoryPath TargetDirectory;
 	UPROPERTY(EditAnywhere, Category = "Output")
 		FString TextureName = "MultiPacker_CP";
