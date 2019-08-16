@@ -13,9 +13,12 @@
 #include "MultiPackerSettings.h"
 #include "Widgets/SMPTextureWidget.h"
 #include <EditorFontGlyphs.h>
-#include "TilePointer.h"
+#include "TileUtils/TilePointer.h"
 #include "IAssetTools.h"
 #include <AssetToolsModule.h>
+#include <Widgets/Docking/SDockTab.h>
+#include <Widgets/Layout/SBox.h>
+#include <Widgets/Text/STextBlock.h>
 
 #define LOCTEXT_NAMESPACE "UMultiPackerChannelTab"
 
@@ -124,7 +127,8 @@ TSharedRef<class SDockTab> UMultiPackerChannelTab::OnSpawnPluginTab(const class 
 
 FReply UMultiPackerChannelTab::OnClickButton()
 {
-	if (PropertyMPChannel->TextureRed != nullptr || PropertyMPChannel->TextureGreen != nullptr || PropertyMPChannel->TextureBlue != nullptr || PropertyMPChannel->TextureAlpha != nullptr )
+	//if (PropertyMPChannel->TextureRed != nullptr || PropertyMPChannel->TextureGreen != nullptr || PropertyMPChannel->TextureBlue != nullptr || PropertyMPChannel->TextureAlpha != nullptr)
+	if (PropertyMPChannel->TextureRed != nullptr && PropertyMPChannel->TextureGreen != nullptr && PropertyMPChannel->TextureBlue != nullptr && (PropertyMPChannel->AlphaChannel ? PropertyMPChannel->TextureAlpha != nullptr : true) )
 	{
 		const int32 SizeVertical = UMultiPackerBaseEnums::GetTextureSizeOutputEnum(PropertyMPChannel->SizeVertical);
 		const int32 SizeHorizontal = UMultiPackerBaseEnums::GetTextureSizeOutputEnum(PropertyMPChannel->SizeHorizontal);
@@ -147,13 +151,13 @@ FReply UMultiPackerChannelTab::OnClickButton()
 		{
 			// package needs saving
 			NewTexture->MarkPackageDirty();
-			NewTexture->Filter = TF_Bilinear;
-			NewTexture->SRGB = false;
-			NewTexture->AddressX = TA_Clamp;
-			NewTexture->AddressY = TA_Clamp;
-			NewTexture->PowerOfTwoMode = ETexturePowerOfTwoSetting::PadToPowerOfTwo;
+			NewTexture->Filter = PropertyMPChannel->TextureFilter;
+			NewTexture->SRGB = PropertyMPChannel->sRGB;
+			NewTexture->AddressX = PropertyMPChannel->AddressX;
+			NewTexture->AddressY = PropertyMPChannel->AddressY;
+			NewTexture->PowerOfTwoMode = PropertyMPChannel->PowerOfTwoMode;
 			NewTexture->CompressionNoAlpha = !PropertyMPChannel->AlphaChannel;
-			NewTexture->CompressionSettings = PropertyMPChannel->AlphaChannel ? TextureCompressionSettings::TC_VectorDisplacementmap : TextureCompressionSettings::TC_BC7;
+			NewTexture->CompressionSettings = PropertyMPChannel->CompressionSettings;
 			NewTexture->PostEditChange();
 			FAssetRegistryModule::AssetCreated(NewTexture);
 		}
@@ -225,7 +229,8 @@ TArray<FString> UMultiPackerChannelTab::TexturePackageName(FAssetToolsModule& As
 	if (TextureName.Contains("/"))
 		TextureName = TextureName.Mid(TextureName.Find("/", ESearchCase::IgnoreCase, ESearchDir::FromEnd) + 1);
 	int index = 0;//needs a int obligatory
-	FString NewPackageName = TEXT("/Game/") + (importDirectory == "" ? "Textures/" : importDirectory.FindLastChar(*TEXT("/"), index) ? importDirectory : importDirectory + "/") + TextureName;
+	FString NewPackageName = importDirectory.FindLastChar(*TEXT("/"), index) ? importDirectory : importDirectory + "/";
+	NewPackageName = TEXT("/Game/") + (importDirectory == "" ? "Textures/" : NewPackageName) + TextureName;
 	FString Name;
 	FString PackageName;
 	AssetToolsModule.Get().CreateUniqueAssetName(NewPackageName, TextureName, PackageName, Name);

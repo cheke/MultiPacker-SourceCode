@@ -5,6 +5,7 @@
 class FToolBarBuilder;
 class FMenuBuilder;
 class UMultiPackerChannelTab;
+class FExtensibilityManager;
 
 class FMultiPackerTab : public  IModuleInterface
 {

@@ -9,6 +9,8 @@
 #include "Widgets/SMPTextureWidget.h"
 #include <PropertyEditorModule.h>
 #include <EditorFontGlyphs.h>
+#include <Toolkits/AssetEditorToolkit.h>
+#include <Framework/MultiBox/MultiBoxBuilder.h>
 
 static const FName MultiPackerTabName("MultiPacker");
 
