@@ -3,50 +3,44 @@
 #include "Widgets/SMPTexturePreviewZoomer.h"
 #include "Widgets/SMPTextureWidget.h"
 #include "Widgets/Images/SImage.h"
-#include "Templates/SharedPointer.h"
-#include "EditorStyleSet.h"
-#include <Widgets/Input/SNumericEntryBox.h>
 #include <Brushes/SlateImageBrush.h>
+#include <Engine/Texture2D.h>
+#include <SlotBase.h>
+#include <Layout/ArrangedChildren.h>
 
 #define LOCTEXT_NAMESPACE "SMPTexturePreviewZoomer"
 
 void SMPTexturePreviewZoomer::Construct(const FArguments& InArgs, UTexture2D* InPreviewTexture)
 { 
-	//Tint = FLinearColor(1, 1, 1, 1);
 	PreviewBrush = MakeShareable(new FSlateImageBrush(InPreviewTexture, FVector2D(250, 250)));
-
 	ChildSlot
 		[
 			SAssignNew(ImageWidget, SImage)
 			.Image(PreviewBrush.Get())
 		];
-
-	ZoomLevel = 1.0f;
 }
 
 void SMPTexturePreviewZoomer::OnArrangeChildren(const FGeometry& AllottedGeometry, FArrangedChildren& ArrangedChildren) const
 {
 	CachedSize = AllottedGeometry.GetLocalSize();
-
 	const TSharedRef<SWidget>& ChildWidget = ChildSlot.GetWidget();
 	if (ChildWidget->GetVisibility() != EVisibility::Collapsed)
 	{
-		const FVector2D& WidgetDesiredSize = ChildWidget->GetDesiredSize();
-
-		ArrangedChildren.AddWidget(AllottedGeometry.MakeChild(ChildWidget, FVector2D::ZeroVector, WidgetDesiredSize * ZoomLevel));
+		const FVector2D& WidgetDesiredSize =  FVector2D(ChildWidget->GetDesiredSize().Y, ChildWidget->GetDesiredSize().Y);
+		ArrangedChildren.AddWidget(AllottedGeometry.MakeChild(ChildWidget, FVector2D::ZeroVector, WidgetDesiredSize ));
 	}
 }
 
 FVector2D SMPTexturePreviewZoomer::ComputeDesiredSize(float) const
 {
 	FVector2D ThisDesiredSize = FVector2D::ZeroVector;
-
 	const TSharedRef<SWidget>& ChildWidget = ChildSlot.GetWidget();
 	if (ChildWidget->GetVisibility() != EVisibility::Collapsed)
 	{
-		ThisDesiredSize = ChildWidget->GetDesiredSize() * ZoomLevel;
+		const FVector2D  Desired = ChildWidget->GetDesiredSize();
+		const float SmallestSize = Desired.X >= Desired.Y ? Desired.Y : Desired.X;
+		ThisDesiredSize = FVector2D(SmallestSize, SmallestSize);
 	}
-
 	return ThisDesiredSize;
 }
 
@@ -55,34 +49,12 @@ FChildren* SMPTexturePreviewZoomer::GetChildren()
 	return &ChildSlot;
 }
 
-FReply SMPTexturePreviewZoomer::OnMouseWheel(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)
-{
-	ZoomBy(MouseEvent.GetWheelDelta());
-
-	return FReply::Handled();
-}
-
 int32 SMPTexturePreviewZoomer::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry, const FSlateRect& MyClippingRect, FSlateWindowElementList& OutDrawElements, int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const
 {
+	PreviewBrush->ImageSize = CachedSize;
 	LayerId = SPanel::OnPaint(Args, AllottedGeometry, MyClippingRect, OutDrawElements, LayerId, InWidgetStyle, bParentEnabled);
 	return LayerId;
 }
-
-bool SMPTexturePreviewZoomer::ZoomBy(const float Amount)
-{
-	static const float MinZoomLevel = 0.2f;
-	static const float MaxZoomLevel = 4.0f;
-
-	const float PrevZoomLevel = ZoomLevel;
-	ZoomLevel = FMath::Clamp(ZoomLevel + (Amount * 0.05f), MinZoomLevel, MaxZoomLevel);
-	return ZoomLevel != PrevZoomLevel;
-}
-
-float SMPTexturePreviewZoomer::GetZoomLevel() const
-{
-	return ZoomLevel;
-}
-
 
 void SMPTexturePreviewZoomer::SetPreviewSize(const FVector2D PreviewSize)
 {

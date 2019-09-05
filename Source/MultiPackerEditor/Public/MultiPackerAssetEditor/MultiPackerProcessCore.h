@@ -22,11 +22,6 @@ public:
 	uint16 VTile = 1;
 	uint16 HTile = 1;
 	uint16 TileSize = 32;
-#if !UE_BUILD_SHIPPING
-	bool Debug_Log = true;
-	bool Debug_Log_MatCollection = false;
-	bool Debug_Log_MaxRectsBinPack = false;
-#endif
 	bool Do_SDF = false;
 
 	bool Do_MSDF = false;

@@ -17,14 +17,6 @@ public:
 
 	void Construct(const FArguments& InArgs, UTexture2D* InPreviewTexture);
 	void SetPreviewTexture(UTexture2D* InPreviewTexture);
-
-private:
-	void OnPreviewXChanged(int32 NewValue);
-	void OnPreviewXCommitted(int32 NewValue, ETextCommit::Type);
-	void OnPreviewYChanged(int32 NewValue);
-	void OnPreviewYCommitted(int32 NewValue, ETextCommit::Type);
-	TOptional<int32> OnGetPreviewXValue() const { return PreviewSize.X; }
-	TOptional<int32> OnGetPreviewYValue() const { return PreviewSize.Y; }
 private:
 	FIntPoint PreviewSize;
 	TSharedPtr<class SMPTexturePreviewZoomer> PreviewZoomer;

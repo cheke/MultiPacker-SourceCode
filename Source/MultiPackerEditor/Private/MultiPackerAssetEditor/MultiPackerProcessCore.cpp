@@ -35,16 +35,8 @@ void UMultiPackerProcessCore::CreateMaterialCollection(uint16 width, uint16 heig
 	Grid.ParameterName = FName(TEXT("Tiles"));
 	Grid.DefaultValue = FLinearColor(HTile, VTile, width, height);
 	VectorArray.Add(Grid);
-#if !UE_BUILD_SHIPPING
-	if (Debug_Log_MatCollection)
-		UE_LOG(LogTemp, Log, TEXT("UMultiPacker: CreateMaterialCollection is running"));
-#endif
 	for (uint16 data = 0; data < BaseInput->NewTileData.Num(); data++)
 	{
-#if !UE_BUILD_SHIPPING
-		if (Debug_Log_MatCollection)
-			UE_LOG(LogTemp, Log, TEXT("UMultiPacker: data %d"), data);
-#endif
 		FCollectionScalarParameter Tile = FCollectionScalarParameter();
 		FString framestring = (BaseInput->NewTileData[data]->TileName.ToString()).Append(TEXT("_frame"));
 		Tile.ParameterName = FName(*framestring);
@@ -93,18 +85,10 @@ void UMultiPackerProcessCore::CreateMaterialCollection(uint16 width, uint16 heig
 		//Scalar replace or add
 		for (uint16 newScalar = 0; newScalar < ScalarArray.Num(); ++newScalar)
 		{
-#if !UE_BUILD_SHIPPING
-			if (Debug_Log_MatCollection)
-				UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: Scalar replace or add newScalar %d"), newScalar);
-#endif
 			uint16 find = -1;
 			bool isFound = false;
 			for (uint16 oldScalar = 0; oldScalar < BaseInput->MaterialCollection->ScalarParameters.Num(); ++oldScalar)
 			{
-#if !UE_BUILD_SHIPPING
-				if (Debug_Log_MatCollection)
-					UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: Scalar replace or add oldScalar %d"), oldScalar);
-#endif
 				if (BaseInput->MaterialCollection->ScalarParameters[oldScalar].ParameterName == ScalarArray[newScalar].ParameterName)
 				{
 					isFound = true;
@@ -123,17 +107,9 @@ void UMultiPackerProcessCore::CreateMaterialCollection(uint16 width, uint16 heig
 		//Scalar remove
 		for (uint16 oldScalar = 0; oldScalar < BaseInput->MaterialCollection->ScalarParameters.Num(); ++oldScalar)
 		{
-#if !UE_BUILD_SHIPPING
-			if (Debug_Log_MatCollection)
-				UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: Scalar remove oldScalar %d"), oldScalar);
-#endif
 			bool isFound = false;
 			for (uint16 newScalar = 0; newScalar < ScalarArray.Num(); ++newScalar)
 			{
-#if !UE_BUILD_SHIPPING
-				if (Debug_Log_MatCollection)
-					UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: Scalar remove newScalar %d"), newScalar);
-#endif
 				if (ScalarArray[newScalar].ParameterName == BaseInput->MaterialCollection->ScalarParameters[oldScalar].ParameterName)
 				{
 					isFound = true;
@@ -147,18 +123,10 @@ void UMultiPackerProcessCore::CreateMaterialCollection(uint16 width, uint16 heig
 		//vector repace or add
 		for (uint16 newScalar = 0; newScalar < VectorArray.Num(); ++newScalar)
 		{
-#if !UE_BUILD_SHIPPING
-			if (Debug_Log_MatCollection)
-				UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: vector repace or add newScalar %d"), newScalar);
-#endif
 			uint16 find = -1;
 			bool isFound = false;
 			for (uint16 oldScalar = 0; oldScalar < BaseInput->MaterialCollection->VectorParameters.Num(); ++oldScalar)
 			{
-#if !UE_BUILD_SHIPPING
-				if (Debug_Log_MatCollection)
-					UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: vector repace or add oldScalar %d"), oldScalar);
-#endif
 				if (BaseInput->MaterialCollection->VectorParameters[oldScalar].ParameterName == VectorArray[newScalar].ParameterName)
 				{
 					isFound = true;
@@ -177,17 +145,9 @@ void UMultiPackerProcessCore::CreateMaterialCollection(uint16 width, uint16 heig
 		//vector remove
 		for (uint16 oldScalar = 0; oldScalar < BaseInput->MaterialCollection->VectorParameters.Num(); ++oldScalar)
 		{
-#if !UE_BUILD_SHIPPING
-			if (Debug_Log_MatCollection)
-				UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: vector remove oldScalar %d"), oldScalar);
-#endif
 			bool isFound = false;
 			for (uint16 newScalar = 0; newScalar < VectorArray.Num(); ++newScalar)
 			{
-#if !UE_BUILD_SHIPPING
-				if (Debug_Log_MatCollection)
-					UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: vector remove newScalar %d"), newScalar);
-#endif
 				if (VectorArray[newScalar].ParameterName == BaseInput->MaterialCollection->VectorParameters[oldScalar].ParameterName)
 				{
 					isFound = true;
@@ -239,20 +199,12 @@ void UMultiPackerProcessCore::CreateMaterialCollection(uint16 width, uint16 heig
 			{
 				for (uint16 FunctionIndex = 0; FunctionIndex < CurrentMaterial->MaterialParameterCollectionInfos.Num() && !bRecompile; FunctionIndex++)
 				{
-#if !UE_BUILD_SHIPPING
-					if (Debug_Log_MatCollection)
-						UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: FunctionIndex %d"), FunctionIndex);
-#endif
 					if (CurrentMaterial->MaterialParameterCollectionInfos[FunctionIndex].ParameterCollection == BaseInput->MaterialCollection)
 					{
 						TArray<UMaterialExpressionCollectionParameter*> CollectionParameters;
 						CurrentMaterial->GetAllExpressionsInMaterialAndFunctionsOfType(CollectionParameters);
 						for (UMaterialExpressionCollectionParameter* CollectionParameter : CollectionParameters)
 						{
-#if !UE_BUILD_SHIPPING
-							if (Debug_Log_MatCollection)
-								UE_LOG(LogTemp, Log, TEXT("UMultiPacker: cmc: CollectionParameter "));
-#endif
 							if (ParameterNames.Contains(CollectionParameter->ParameterName))
 							{
 								bRecompile = true;

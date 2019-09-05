@@ -413,11 +413,20 @@ void UTilePointer::FromChannelToTexture(EChannelSelectionInput Channel)
 				color = TileData[i].A;
 				break;
 			}
-			if (color > 0)
-				TileData[i] = FColor(color, color, color, color);
+			//if (color > 0)// commented but Maybe I break something
+			TileData[i] = FColor(color, color, color, color);
 		}
 		UpdateTextureCanvas();
 	}
+}
+
+void UTilePointer::InvertAllChannels()
+{
+	for (uint32 i = 0; i < TileDimension; ++i)
+	{
+		TileData[i] = FColor(255 - TileData[i].R, 255 - TileData[i].G, 255 - TileData[i].B, 255 - TileData[i].A);
+	}
+	UpdateTextureCanvas();
 }
 
 TArray<UTilePointer*> UTilePointer::SplitTile(uint16 VerticalSlices, uint16 HorizontalSlices)
