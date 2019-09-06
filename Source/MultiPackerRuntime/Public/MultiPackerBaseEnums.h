@@ -151,9 +151,9 @@ struct FRectSize
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Size")
 		uint16 width = 0;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Size")
 		uint16 height = 0;
 };
 
@@ -163,13 +163,13 @@ struct FRectSizePadding
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Padding")
 		uint16 x = 0;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Padding")
 		uint16 y = 0;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Size")
 		uint16 width = 0;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Size")
 		uint16 height = 0;
 
 	void Initialize(uint16 InX, uint16 InY, uint16 InWidth, uint16 InHeight)
@@ -187,10 +187,10 @@ struct FTileThumbDatabase
 	GENERATED_BODY()
 public:
 	//This is a preview Image to recognize the Tile
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Default")
 		UTexture* TileTexture;
 	//Here you can set the Name for every Tile The number of characters will be chopped to 16 to get a stable dropdown UI 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 		FName TileName;
 };
 
@@ -201,30 +201,30 @@ struct FTileDatabase
 
 public:
 	//Preview of the Tile Texture 
-	UPROPERTY(VisibleAnywhere, Transient)
+	UPROPERTY(VisibleAnywhere, Transient, Category = "Default")
 		UTexture* TileTexture;
-	//This Name will be AutoFilled with the name setted on the Node,
-	//every Tile needs a Different Name for Avoiding Dupications on Name to select later
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//This Name will be AutoFilled with the name settled on the Node,
+	//every Tile needs a Different Name for Avoiding Duplications on Name to select later
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		FName TileName;
 	//Number of the Tile on the Atlas
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "Default")
 		int32 Frame;
 	//Information about the channel where the Tile is
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "Default")
 		EChannelOutput ChannelTexture;
-	//Information about the TextureSize and the Padding on the TextureOutput: This information its only for the Rectangled Method
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//Information about the TextureSize and the Padding on the TextureOutput: This information its only for the Rectangle Method
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		FRectSizePadding SizeAndPadding;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "Default")
 		bool SDFNode;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "Default")
 		bool MSDFNode;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		FLinearColor Channel_vec;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		FLinearColor Layer_vec;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		FLinearColor SizePadding_vec;
 
 public:
@@ -265,24 +265,24 @@ struct FVectorMaterial
 	GENERATED_BODY()
 public:
 	//Name of the Vector Parameter (AutoFilled)
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		FName ParameterName;
 
 	//Vector
 	//The Vector Parameter will be updated with this Value
 	//When ValueChanges is True this is the MinValue
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Default")
 		FLinearColor DefaultVectorValue;
 
 	//Needs NumPrints be bigger than 1 to work
 	//Set true if need to change the values on Print
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Default")
 		bool ValueChangesOnTime = false;
 
 	//Vector
 	//From the DefaultVectorValue every Print the value will increase linearly 
 	//When ValueChanges is True this is the MaxValue
-	UPROPERTY(EditDefaultsOnly, meta = (EditCondition = ValueChangesOnTime))
+	UPROPERTY(EditDefaultsOnly, Category = "Default", meta = (EditCondition = ValueChangesOnTime))
 		FLinearColor MaxVectorValue;
 };
 
@@ -292,11 +292,11 @@ struct FTextureMaterial
 	GENERATED_BODY()
 public:
 	//Name of the Texture Input node
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		FName TileName;
 
 	//Texture To Set on the Material
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Default")
 		UTexture* TileTexture;
 };
 
@@ -307,24 +307,24 @@ struct FTextureScalar
 public:
 
 	//Name of the Scalar Parameter (AutoFilled)
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		FName ParameterName;
 
 	//Float
 	//The Scalar Parameter will be updated with this Value
 	//When ValueChanges is True this is the MinValue
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Default")
 		float DefaultValue;
 
 	//Needs NumPrints be bigger than 1 to work
 	//Set true if need to change the values on Print
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Default")
 		bool ValueChangesOnTime = false;
 
 	//Float
 	//From the DefaultValue every Print the value will increase linearly 
 	//When ValueChanges is True this is the MaxValue
-	UPROPERTY(EditDefaultsOnly, meta = (EditCondition = ValueChangesOnTime))
+	UPROPERTY(EditDefaultsOnly, Category = "Default", meta = (EditCondition = ValueChangesOnTime))
 		float MaxValue;
 };
 

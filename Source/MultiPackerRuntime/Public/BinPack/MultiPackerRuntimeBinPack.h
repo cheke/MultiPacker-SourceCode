@@ -16,17 +16,17 @@ struct FMaterialDataBinPack
 
 public:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		int32 Width;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		int32 Height;
-	UPROPERTY(VisibleAnywhere, Transient)
+	UPROPERTY(VisibleAnywhere, Transient, Category = "Default")
 		UTextureRenderTarget2D* RT_Material;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		UMaterialInterface* Material;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		int32 NumPage;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Default")
 		FRectSizePadding MaterialRect;
 };
 

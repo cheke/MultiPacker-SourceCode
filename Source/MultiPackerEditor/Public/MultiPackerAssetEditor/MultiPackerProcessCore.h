@@ -27,10 +27,10 @@ public:
 	bool Do_MSDF = false;
 	EObjectFlags Flags;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Default")
 		TMap<FName, FTileDatabase> TileMap;
 	UPROPERTY()
-	TArray<UTilePointer*> Output;
+		TArray<UTilePointer*> Output;
 	//old code I must try to change it
 	void SetGraph(UMultiPacker* EditingGraph);
 	uint16 GetNumberTiles();
@@ -48,5 +48,5 @@ public:
 	void SaveTextureFromTile(UTilePointer* InTile, FString TextureNum, FAssetToolsModule& AssetToolsModule);
 	TArray<FString> PackageName(FString Prefix, FString TextureNum, FAssetToolsModule& AssetToolsModule);
 	TArray<FString> TexturePackageName(FString Prefix, FString TextureNum, FAssetToolsModule& AssetToolsModule);
-	void SetDataLinearColors(EChannelOutput ChannelOutput, FLinearColor &Channel, FLinearColor &Layer);
+	void SetDataLinearColors(EChannelOutput ChannelOutput, FLinearColor& Channel, FLinearColor& Layer);
 };

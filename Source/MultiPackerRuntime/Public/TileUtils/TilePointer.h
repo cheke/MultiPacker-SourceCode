@@ -12,9 +12,9 @@ class MULTIPACKERRUNTIME_API UTilePointer : public UObject
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Default")
 		UTextureRenderTarget2D* TileRT;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Default")
 		UTexture2D* TileTexture;
 	UPROPERTY()
 		uint16 TileWidth;
@@ -28,7 +28,7 @@ public:
 		FTileDatabase TileDatabase;
 	//From an Input RenderTarget fill the TileData and convert it to a Texture
 	void GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTileWidth, uint16 InTileHeight);
-	void GenerateFromMaterial(UObject *InWorldContextObject, UTextureRenderTarget2D* RTMaterial, UMaterialInterface* Material, uint16 new_width, uint16 new_height);
+	void GenerateFromMaterial(UObject* InWorldContextObject, UTextureRenderTarget2D* RTMaterial, UMaterialInterface* Material, uint16 new_width, uint16 new_height);
 	void GenerateFromTexture(UTexture2D* Texture, const int InTileWidth, const int InTileHeight);
 	TArray<UTilePointer*> SplitTile(uint16 VerticalSlices, uint16 HorizontalSlices);
 	UTilePointer* GetSplitTile(FRectSizePadding SizePadding);
@@ -45,7 +45,7 @@ public:
 	static TArray<UTilePointer*> DoFinalTextures(TArray<UTilePointer*> InTileBinPack, uint16 InMasks, bool Alpha);
 	static TArray<UTilePointer*> SortArrayTiles(TArray<UTilePointer*> InTiles);
 
-	UPROPERTY(VisibleAnywhere, Transient)
+	UPROPERTY(VisibleAnywhere, Transient, Category = "Default")
 		TArray<UTilePointer*> TileBinPack;
 	//Private side
 private:

@@ -66,7 +66,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "OutputConfig|ChannelsOptions")
 		bool Alpha;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = "Default")
 		int32 TileSize;
 
 	//Make and save the Material Collection
@@ -97,7 +97,7 @@ public:
 	//Prefix for the Material Collection
 	UPROPERTY(EditAnywhere, Category = "OutputConfig|Prefix", meta = (EditCondition = EditPrefix))
 		FString MaterialcollectionPrefix = "MC_";
-	
+
 	//Bool to activate the change of the Texture Output
 	UPROPERTY(EditAnywhere, Category = "OutputConfig|TextureOutput")
 		bool EditTexture = false;
@@ -125,7 +125,7 @@ public:
 	//Material Collection with the Individual Information about 
 	UPROPERTY(VisibleAnywhere, Category = "OutputData", meta = (EditCondition = SaveMaterialCollection))
 		UMaterialParameterCollection* MaterialCollection;
-	
+
 	UPROPERTY(VisibleAnywhere, Category = "TileDataBase")
 		TMap<FName, FTileDatabase> TileMap;
 
