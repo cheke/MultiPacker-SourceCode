@@ -273,7 +273,7 @@ TSharedRef<class SButton> UMultiPackerChannelTab::CreateAndSetButton(FOnClicked 
 				SNew(STextBlock)
 				.TextStyle(FEditorStyle::Get(), "ContentBrowser.TopBar.Font")
 				.Font(FEditorStyle::Get().GetFontStyle("FontAwesome.11"))
-				.Text(InIcon)//FEditorFontGlyphs::Floppy_O
+				.Text(InIcon)
 			]
 			+ SHorizontalBox::Slot()
 			.AutoWidth()

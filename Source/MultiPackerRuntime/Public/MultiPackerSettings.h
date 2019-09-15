@@ -86,7 +86,7 @@ private:
 		bool SaveDatabase = true;
 
 	//Directory to save the Output Texture
-	UPROPERTY(config, EditAnywhere, Category = "Location", meta = (RelativeToGameContentDir))
+	UPROPERTY(config, EditAnywhere, Category = "Location", meta = (RelativeToGameContentDir, ContentDir))
 		FDirectoryPath TargetDirectory;
 
 	UPROPERTY(EditAnywhere, Category = "Output")
