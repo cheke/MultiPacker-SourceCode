@@ -87,28 +87,67 @@ public:
 	UPROPERTY(EditAnywhere, Category = "OutputTexture|Settings")
 		TEnumAsByte<enum TextureMipGenSettings> MipGenSettings;
 	
+	UPROPERTY(VisibleAnywhere, AdvancedDisplay, Category = "OutputTexture|Settings" )
+		bool CanEditSizes = true;
+
 private:
-	bool CanEditSizes = true;
-private:
+
 #if WITH_EDITOR  
 	void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 	{
-		FName PropertyName = (PropertyChangedEvent.Property != nullptr) ? PropertyChangedEvent.Property->GetFName() : NAME_None;
-		if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerDetailPanel, OutputSizeMethod)))
+		switch (OutputSizeMethod)
 		{
-			switch (OutputSizeMethod)
-			{
-			case EMPChannelPackingSizeFromTexture::UserDefined:
-				CanEditSizes = true;
-				break;
-			case EMPChannelPackingSizeFromTexture::BiggestSize:
-			case EMPChannelPackingSizeFromTexture::SmallestSize:
-				CanEditSizes = false;
-				break;
-			}
+		case EMPChannelPackingSizeFromTexture::UserDefined:
+			CanEditSizes = true;
+			break;
+		case EMPChannelPackingSizeFromTexture::BiggestSize:
+			SetSizeByTextures(true);
+			CanEditSizes = false;
+			break;
+		case EMPChannelPackingSizeFromTexture::SmallestSize:
+			SetSizeByTextures(false);
+			CanEditSizes = false;
+			break;
 		}
 	}
 #endif
+
+	void SetSizeByTextures(bool Biggest)
+	{
+		uint8 SizeTextureHorizontal = 0;
+		uint8 SizeTextureVertical = 0;
+		if (TextureRed)
+		{
+			SizeTextureHorizontal = GetSizeAsByte(TextureRed->GetSurfaceWidth(), SizeTextureHorizontal, Biggest);
+			SizeTextureVertical = GetSizeAsByte(TextureRed->GetSurfaceHeight(), SizeTextureVertical, Biggest);
+		}
+		if (TextureGreen)
+		{
+			SizeTextureHorizontal = GetSizeAsByte(TextureGreen->GetSurfaceWidth(), SizeTextureHorizontal, Biggest);
+			SizeTextureVertical = GetSizeAsByte(TextureGreen->GetSurfaceHeight(), SizeTextureVertical, Biggest);
+		}
+		if (TextureBlue)
+		{
+			SizeTextureHorizontal = GetSizeAsByte(TextureBlue->GetSurfaceWidth(), SizeTextureHorizontal, Biggest);
+			SizeTextureVertical = GetSizeAsByte(TextureBlue->GetSurfaceHeight(), SizeTextureVertical, Biggest);
+		}
+		if (AlphaChannel = true && TextureAlpha)
+		{
+			SizeTextureHorizontal = GetSizeAsByte(TextureAlpha->GetSurfaceWidth(), SizeTextureHorizontal, Biggest);
+			SizeTextureVertical = GetSizeAsByte(TextureAlpha->GetSurfaceHeight(), SizeTextureVertical, Biggest);
+		}
+		SizeHorizontal = (ETextureSizeOutputPersonal)SizeTextureHorizontal;
+		SizeVertical = (ETextureSizeOutputPersonal)SizeTextureVertical;
+	}
+
+	uint16 GetSizeAsByte(float InSize, uint8 OldSizeByte, bool Biggest)
+	{
+		//easy way to round up the Texture Size to get a properly texture with power of two
+		uint8 SizeByte = (FMath::CeilToInt(InSize/32) - 1);
+		//by default the byte its zero, this sets a default size via the fist texture processed
+		uint8 NewSizeByte = OldSizeByte == 0 ? SizeByte : OldSizeByte;
+		//sets the size by the method selected
+		SizeByte = Biggest ? FMath::Max(SizeByte, NewSizeByte) : FMath::Min(SizeByte, NewSizeByte);
+		return  SizeByte;
+	}
 };
-
-
