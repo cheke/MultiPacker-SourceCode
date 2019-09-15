@@ -103,6 +103,20 @@ void UTilePointer::GenerateFromTexture(UTexture2D* Texture, const int InTileWidt
 {
 	GenerateTextureCanvas(InTileWidth, InTileHeight);
 	//TextureSettings
+#if (ENGINE_MINOR_VERSION >= 23)
+	if (Texture->IsCurrentlyVirtualTextured())
+	{
+		UObject* UseOuter = GetTransientPackage();
+		FObjectDuplicationParameters Parameters(Texture, UseOuter);
+		Parameters.ApplyFlags |= RF_Transient;
+		Parameters.FlagMask &= ~RF_Transactional;
+		UTexture2D* Tex = CastChecked<UTexture2D>(StaticDuplicateObjectEx(Parameters));
+		Tex->VirtualTextureStreaming = false;
+		Tex->Modify();
+		Tex->PostEditChange();
+		Texture = Tex;
+	}
+#endif
 	TextureCompressionSettings OldCompressionSettings = Texture->CompressionSettings;
 #if WITH_EDITORONLY_DATA
 	TextureMipGenSettings OldMipGenSettings = Texture->MipGenSettings;
