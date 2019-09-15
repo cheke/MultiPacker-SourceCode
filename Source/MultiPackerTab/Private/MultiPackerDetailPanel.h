@@ -15,6 +15,14 @@ enum class EMPChannelMaskParameterColor : uint8
 	Alpha,
 };
 
+UENUM(BlueprintType)
+enum class EMPChannelPackingSizeFromTexture : uint8
+{
+	UserDefined,
+	BiggestSize,
+	SmallestSize,
+};
+
 UCLASS(NonTransient, autoExpandCategories = ("InputTextures|Red", "InputTextures|Green", "InputTextures|Blue", "InputTextures|Alpha"))
 class UMultiPackerDetailPanel : public UObject
 {
@@ -52,14 +60,16 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "OutputTexture")
 		UTexture2D* Texture;
-	UPROPERTY(EditAnywhere, Category = "OutputTexture|Name&Location", meta = (RelativeToGameContentDir))
+	UPROPERTY(EditAnywhere, Category = "OutputTexture|Name&Location", meta = (RelativeToGameContentDir, ContentDir))
 		FDirectoryPath TargetDirectory;
 	UPROPERTY(EditAnywhere, Category = "OutputTexture|Name&Location")
 		FString TextureName = "MultiPacker_CP";
 
 	UPROPERTY(EditAnywhere, Category = "OutputTexture|Settings")
+		EMPChannelPackingSizeFromTexture OutputSizeMethod = EMPChannelPackingSizeFromTexture::UserDefined;
+	UPROPERTY(EditAnywhere, Category = "OutputTexture|Settings", meta = (EditCondition = CanEditSizes))
 		ETextureSizeOutputPersonal SizeVertical = ETextureSizeOutputPersonal::EMCE_Option5;
-	UPROPERTY(EditAnywhere, Category = "OutputTexture|Settings")
+	UPROPERTY(EditAnywhere, Category = "OutputTexture|Settings", meta = (EditCondition = CanEditSizes))
 		ETextureSizeOutputPersonal SizeHorizontal = ETextureSizeOutputPersonal::EMCE_Option5;
 	UPROPERTY(EditAnywhere, Category = "OutputTexture|Settings")
 		TEnumAsByte<enum TextureCompressionSettings> CompressionSettings = TextureCompressionSettings::TC_Default;
@@ -76,6 +86,29 @@ public:
 		TEnumAsByte<enum ETexturePowerOfTwoSetting::Type> PowerOfTwoMode;
 	UPROPERTY(EditAnywhere, Category = "OutputTexture|Settings")
 		TEnumAsByte<enum TextureMipGenSettings> MipGenSettings;
+	
+private:
+	bool CanEditSizes = true;
+private:
+#if WITH_EDITOR  
+	void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+	{
+		FName PropertyName = (PropertyChangedEvent.Property != nullptr) ? PropertyChangedEvent.Property->GetFName() : NAME_None;
+		if ((PropertyName == GET_MEMBER_NAME_CHECKED(UMultiPackerDetailPanel, OutputSizeMethod)))
+		{
+			switch (OutputSizeMethod)
+			{
+			case EMPChannelPackingSizeFromTexture::UserDefined:
+				CanEditSizes = true;
+				break;
+			case EMPChannelPackingSizeFromTexture::BiggestSize:
+			case EMPChannelPackingSizeFromTexture::SmallestSize:
+				CanEditSizes = false;
+				break;
+			}
+		}
+	}
+#endif
 };
 
 
