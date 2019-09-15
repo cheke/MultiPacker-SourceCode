@@ -28,7 +28,7 @@ public:
 	//Select the Size for Every Tile on the Texture Output;
 	//the Size of the Texture Output will depend on this
 	//and on the number of tiles
-	UPROPERTY(EditAnywhere, Category = "TextureSizeOutput", meta = (EditCondition = "!RectangleTiles"))//meta = (EditCondition = "!PersonalSizeOutput"))
+	UPROPERTY(EditAnywhere, Category = "TextureSizeOutput", meta = (EditCondition = "!RectangleTiles"))
 		ETextureSizeOutput TextureTileSizeOutput = ETextureSizeOutput::EMCE_Option1;
 
 	//Select this to do an Atlas with tiles of different sizes
