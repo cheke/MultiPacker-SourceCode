@@ -2,6 +2,9 @@
 #pragma once
 
 #include "MultiPackerAssetEditor/MultiPackerProcessCore.h"
+#include "MultiPackerAssetEditor/Nodes/MultiPackerBaseNode.h"
+#include "MultiPackerAssetEditor/Nodes/MultiPackerOutputNode.h"
+#include "MultiPackerAssetEditor/MultiPackerEdGraph.h"
 #include "BinPack/MaxRectsBinPack.h"
 #include "Graph/MultiPacker.h"
 #include "MultiPackerDataBase.h"
@@ -14,13 +17,10 @@
 #include "Factory/MultiPackerDatabaseFactory.h"
 #include "Factories/MaterialParameterCollectionFactoryNew.h"
 #include <UObject/UObjectGlobals.h>
-#include "MultiPackerAssetEditor/MultiPackerEdGraph.h"
 #include "TileUtils/TilePointer.h"
 #include "AssetRegistryModule.h"
 #include <AssetToolsModule.h>
 #include <ContentBrowserModule.h>
-#include "MultiPackerAssetEditor/Nodes/MultiPackerBaseNode.h"
-#include "MultiPackerAssetEditor/Nodes/MultiPackerOutputNode.h"
 
 UMultiPackerProcessCore::UMultiPackerProcessCore(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -286,6 +286,7 @@ TArray<FString> UMultiPackerProcessCore::PackageName(FString Prefix, FString Tex
 
 void UMultiPackerProcessCore::PopulateMap(uint16 SizeVertical, uint16 SizeHorizontal, uint16 Masks)
 {
+	TileMap.Reset();
 	for (uint16 TileD = 0; TileD < BaseInput->NewTileData.Num(); ++TileD)
 	{
 		if (BaseInput->NewTileData[TileD]->TileName == FName("None"))
@@ -560,6 +561,7 @@ TArray<UTilePointer*> UMultiPackerProcessCore::TileBinPack(TArray<UTilePointer*>
 	//Collapse the RT via Layers if its the way
 	TArray<UTilePointer*> Tiletexture;
 	Tiletexture = UTilePointer::DoFinalTextures(TileBinPack, Masks, BaseInput->Alpha);
+	BaseInput->NewTileData.Reset(TileBinPack.Num());
 	for (UTilePointer* TileBP : TileBinPack)
 	{
 		for (UTilePointer* Tile : TileBP->TileBinPack)
