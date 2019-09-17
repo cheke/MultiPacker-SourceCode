@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/ObjectMacros.h"
+#include "MultiPackerBaseEnums.h"
 #include "MultiPackerProcessCore.generated.h"
 
 class UMultiPacker;
