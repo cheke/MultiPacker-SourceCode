@@ -427,8 +427,11 @@ void UTilePointer::FromChannelToTexture(EChannelSelectionInput Channel)
 				color = TileData[i].A;
 				break;
 			}
-			//if (color > 0)// commented but Maybe I break something
-			TileData[i] = FColor(color, color, color, color);
+			//Fill the FColor with one Channel
+			if (color > 0)
+			{
+				TileData[i] = FColor(color, color, color, color);
+			}
 		}
 		UpdateTextureCanvas();
 	}
