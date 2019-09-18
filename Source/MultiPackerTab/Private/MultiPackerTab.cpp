@@ -3,18 +3,16 @@
 #include "MultiPackerChannelTab.h"
 #include "MultiPackerTabStyle.h"
 #include "MultiPackerCommands.h"
-
 #include "LevelEditor.h"
-
-#include "Widgets/SMPTextureWidget.h"
 #include <PropertyEditorModule.h>
 #include <EditorFontGlyphs.h>
 #include <Toolkits/AssetEditorToolkit.h>
 #include <Framework/MultiBox/MultiBoxBuilder.h>
+#include "MultiPackerSettings.h"
 
 static const FName MultiPackerTabName("MultiPacker");
 
-const FName ViewportTabId(TEXT("MultiPackerTab_Viewport"));
+const FName ViewportTabId(TEXT("MultiPackerChannelTab"));
 #define LOCTEXT_NAMESPACE "MultiPackerTab"
 
 void FMultiPackerTab::StartupModule()
@@ -50,11 +48,6 @@ void FMultiPackerTab::StartupModule()
 		
 		LevelEditorModule.GetToolBarExtensibilityManager()->AddExtender(ToolbarExtender);
 	}
-	
-	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(MultiPackerTabName, FOnSpawnTab::CreateRaw(this, &FMultiPackerTab::OnSpawnPluginTab))
-		.SetDisplayName(LOCTEXT("FMultiPackerTabTitle", "MultiPackerTab"))
-		.SetMenuType(ETabSpawnerMenuType::Hidden);
-
 }
 
 void FMultiPackerTab::ShutdownModule()
@@ -72,19 +65,15 @@ void FMultiPackerTab::ShutdownModule()
 
 void FMultiPackerTab::PluginButtonClicked()
 {
-	TabSpawn = NewObject<UMultiPackerChannelTab>(UMultiPackerChannelTab::StaticClass());
-	TabSpawn->InitializeTab();
-	FGlobalTabmanager::Get()->InvokeTab(MultiPackerTabName);
+	TSharedPtr<IToolkitHost> EditWithinLevelEditor;
+	EToolkitMode::Type Mode = EditWithinLevelEditor.IsValid() ? EToolkitMode::WorldCentric : EToolkitMode::Standalone;
+	TSharedRef<FMultiPackerChannelTab> NewGraphEditor(new FMultiPackerChannelTab());
+	NewGraphEditor->InitGenericGraphAssetEditor(Mode, EditWithinLevelEditor);
 }
 
 void FMultiPackerTab::AddMenuExtension(FMenuBuilder& Builder)
 {
 	Builder.AddMenuEntry(FMultiPackerCommands::Get().OpenPluginWindow);
-}
-
-TSharedRef<class SDockTab> FMultiPackerTab::OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs)
-{
-	return TabSpawn->OnSpawnPluginTab(SpawnTabArgs);
 }
 
 void FMultiPackerTab::AddToolbarExtension(FToolBarBuilder& Builder)

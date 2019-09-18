@@ -4,7 +4,6 @@
 
 class FToolBarBuilder;
 class FMenuBuilder;
-class UMultiPackerChannelTab;
 class FExtensibilityManager;
 
 class FMultiPackerTab : public  IModuleInterface
@@ -18,8 +17,6 @@ public:
 	void PluginButtonClicked();
 	
 private:
-
-	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
 	void AddToolbarExtension(FToolBarBuilder& Builder);
 	void AddMenuExtension(FMenuBuilder& Builder);
 		
@@ -30,6 +27,4 @@ private:
 	TSharedPtr<FExtensibilityManager> ToolBarExtensibilityManager;
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
-
-	UMultiPackerChannelTab* TabSpawn;
 };

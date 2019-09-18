@@ -130,7 +130,6 @@ void FMultiPackerAssetEditor::InitGenericGraphAssetEditor(const EToolkitMode::Ty
 				)
 			)
 		);
-
 	const bool bCreateDefaultStandaloneMenu = true;
 	const bool bCreateDefaultToolbar = true;
 	FAssetEditorToolkit::InitAssetEditor(Mode, InitToolkitHost, GenericGraphEditorAppName, StandaloneDefaultLayout, bCreateDefaultStandaloneMenu, bCreateDefaultToolbar, EditingGraph, false);

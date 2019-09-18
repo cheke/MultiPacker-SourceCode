@@ -15,7 +15,7 @@ namespace UnrealBuildTool.Rules
                 {
                     "Core",
                     "EditorWidgets",
-                "AssetTools",
+                    "AssetTools",
                     "MultiPackerRuntime",
                 }
                 );
@@ -33,6 +33,7 @@ namespace UnrealBuildTool.Rules
                     "SlateCore",
                     "EditorStyle",
                     "RenderCore",
+                    "PropertyEditor",
                 }
 				);
           

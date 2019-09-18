@@ -148,6 +148,6 @@ private:
 		uint8 NewSizeByte = OldSizeByte == 0 ? SizeByte : OldSizeByte;
 		//sets the size by the method selected
 		SizeByte = Biggest ? FMath::Max(SizeByte, NewSizeByte) : FMath::Min(SizeByte, NewSizeByte);
-		return  SizeByte;
+		return SizeByte;
 	}
 };

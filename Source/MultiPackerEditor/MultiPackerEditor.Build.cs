@@ -48,17 +48,9 @@ namespace UnrealBuildTool.Rules
                     "Projects",
                     "RenderCore",
                     "MultiPackerRuntime",
+                    "ApplicationCore",
                 }
 				);
-
-#if UE_4_18_OR_LATER
-            PrivateDependencyModuleNames.AddRange(
-                new string[]
-				{
-                "ApplicationCore"
-                }
-            );
-#endif
         }
     }
 }

@@ -1,149 +1,272 @@
 /* Copyright 2019 @TurboCheke, Estudio Cheke  - All Rights Reserved */
 #include "MultiPackerChannelTab.h"
-#include <PropertyEditorModule.h>
-#include <Widgets/Input/SButton.h>
-#include <IDetailsView.h>
 #include "MultiPackerDetailPanel.h"
+#include "MultiPackerSettings.h"
+#include "TileUtils/TilePointer.h"
+#include <PropertyEditorModule.h>
+#include <IDetailsView.h>
 #include <Framework/Docking/TabManager.h>
 #include <AssetToolsModule.h>
 #include <AssetRegistryModule.h>
 #include <ImageUtils.h>
 #include <Engine/TextureRenderTarget2D.h>
 #include <Editor.h>
-#include "MultiPackerSettings.h"
-#include "Widgets/SMPTextureWidget.h"
 #include <EditorFontGlyphs.h>
-#include "TileUtils/TilePointer.h"
 #include "IAssetTools.h"
 #include <AssetToolsModule.h>
+#include <Brushes/SlateImageBrush.h>
+#include <Widgets/Input/SButton.h>
 #include <Widgets/Docking/SDockTab.h>
 #include <Widgets/Layout/SBox.h>
 #include <Widgets/Text/STextBlock.h>
+#include "Widgets/Images/SImage.h"
 
-#define LOCTEXT_NAMESPACE "UMultiPackerChannelTab"
+#define LOCTEXT_NAMESPACE "FMultiPackerChannelTab"
 
-void UMultiPackerChannelTab::InitializeTab()
+const FName MPChannelTabsEditor = FName(TEXT("MPChannelTabsEditor"));
+
+struct FMultiPackerChannelTabs
+{
+	// Tab identifiers
+	static const FName DetailsID;
+	static const FName ViewportID;
+	static const FName ButtonsID;
+};
+
+const FName FMultiPackerChannelTabs::DetailsID(TEXT("Details"));
+const FName FMultiPackerChannelTabs::ViewportID(TEXT("Viewport"));
+const FName FMultiPackerChannelTabs::ButtonsID(TEXT("Buttons"));
+
+FMultiPackerChannelTab::FMultiPackerChannelTab()
+{
+}
+
+FMultiPackerChannelTab::~FMultiPackerChannelTab()
+{
+}
+
+void FMultiPackerChannelTab::InitGenericGraphAssetEditor(const EToolkitMode::Type Mode, const TSharedPtr< IToolkitHost >& InitToolkitHost)
 {
 	FDetailsViewArgs Args;
 	Args.bHideSelectionTip = true;
-	Args.bShowScrollBar = true;
-
-	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
-	PropertyWidget = PropertyModule.CreateDetailView(Args);
-	PropertyWidget->HideFilterArea(true);
+	Args.bAllowSearch = false;
 
 	const UMultiPackerSettings* Settings = GetDefault<UMultiPackerSettings>();
-	if (PropertyMPChannel == nullptr)
-	{
-		PropertyMPChannel = NewObject<UMultiPackerDetailPanel>(UMultiPackerDetailPanel::StaticClass());
-		PropertyMPChannel->TargetDirectory = Settings->GetTargetDirectory();
-		PropertyMPChannel->TextureName = Settings->GetTextureChannelName();
-		PropertyMPChannel->AddToRoot();
-		PropertyWidget->SetObject(PropertyMPChannel);
-	}
-	PreviewTextureViewport = SNew(SMPTextureWidget, nullptr);
+	PropertyMPChannel = NewObject<UMultiPackerDetailPanel>(UMultiPackerDetailPanel::StaticClass());
+	PropertyMPChannel->TargetDirectory = Settings->GetTargetDirectory();
+	PropertyMPChannel->TextureName = Settings->GetTextureChannelName();
+	PropertyMPChannel->AddToRoot();
+
+	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+	PropertyWidget = PropertyModule.CreateDetailView(Args); 
+	PropertyWidget->SetObject(PropertyMPChannel, true);
+	// Layout
+	const TSharedRef<FTabManager::FLayout> StandaloneDefaultLayout = FTabManager::NewLayout("MultiPackerChannelTabs_Editor")
+		->AddArea
+		(
+			FTabManager::NewPrimaryArea()->SetOrientation(Orient_Vertical)
+			->Split
+			(
+				FTabManager::NewStack()
+				->SetSizeCoefficient(0.10f)
+				->SetHideTabWell(true)
+				->AddTab(FMultiPackerChannelTabs::ButtonsID, ETabState::OpenedTab)
+			)
+			->Split				//Buttons
+			(
+				FTabManager::NewSplitter()
+				->SetOrientation(Orient_Horizontal)
+				->SetSizeCoefficient(0.90f)
+				->Split
+				(
+					FTabManager::NewStack()
+					->SetHideTabWell(true)
+					->AddTab(FMultiPackerChannelTabs::ViewportID, ETabState::OpenedTab)
+				)
+				->Split
+				(
+					FTabManager::NewStack()
+					->SetSizeCoefficient(0.37f)
+					->SetHideTabWell(true)
+					->AddTab(FMultiPackerChannelTabs::DetailsID, ETabState::OpenedTab)
+				)
+			)
+		);
+	const bool bCreateDefaultStandaloneMenu = true;
+	const bool bCreateDefaultToolbar = true;
+	FAssetEditorToolkit::InitAssetEditor(Mode, InitToolkitHost, MPChannelTabsEditor, StandaloneDefaultLayout, bCreateDefaultStandaloneMenu, bCreateDefaultToolbar, PropertyMPChannel, false);
 }
 
-TSharedRef<class SDockTab> UMultiPackerChannelTab::OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs)
+void FMultiPackerChannelTab::RegisterTabSpawners(const TSharedRef<FTabManager>& InTabManager)
 {
-	//FText ProcessText = FText::FromString("Process");
-	FText ProcessTooltip = FText::FromString("Make a new Channel Texture");
+	WorkspaceMenuCategory = InTabManager->AddLocalWorkspaceMenuCategory(LOCTEXT("WorkspaceMenu_MultiPackerChannelTab", "ChannelTabEditor"));
+	auto WorkspaceMenuCategoryRef = WorkspaceMenuCategory.ToSharedRef();
+
+	FAssetEditorToolkit::RegisterTabSpawners(InTabManager);
+
+	InTabManager->RegisterTabSpawner(FMultiPackerChannelTabs::ViewportID, FOnSpawnTab::CreateSP(this, &FMultiPackerChannelTab::SpawnTab_Viewport))
+		.SetDisplayName(LOCTEXT("GraphCanvasTab", "Viewport"))
+		.SetGroup(WorkspaceMenuCategoryRef)
+		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "GraphEditor.EventGraph_16x"));
+
+	InTabManager->RegisterTabSpawner(FMultiPackerChannelTabs::DetailsID, FOnSpawnTab::CreateSP(this, &FMultiPackerChannelTab::SpawnTab_Details))
+		.SetDisplayName(LOCTEXT("DetailsTab", "Details"))
+		.SetGroup(WorkspaceMenuCategoryRef)
+		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "GraphEditor.Tabs.Details"));
+
+	InTabManager->RegisterTabSpawner(FMultiPackerChannelTabs::ButtonsID, FOnSpawnTab::CreateSP(this, &FMultiPackerChannelTab::SpawnTab_Buttons))
+		.SetDisplayName(LOCTEXT("ButtonsTab", "Buttons"))
+		.SetGroup(WorkspaceMenuCategoryRef)
+		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "GraphEditor.Tabs.Details"));
+}
+
+void FMultiPackerChannelTab::UnregisterTabSpawners(const TSharedRef<FTabManager>& InTabManager)
+{
+	FAssetEditorToolkit::UnregisterTabSpawners(InTabManager);
+
+	InTabManager->UnregisterTabSpawner(FMultiPackerChannelTabs::ViewportID);
+	InTabManager->UnregisterTabSpawner(FMultiPackerChannelTabs::DetailsID);
+	InTabManager->UnregisterTabSpawner(FMultiPackerChannelTabs::ButtonsID);
+}
+
+FName FMultiPackerChannelTab::GetToolkitFName() const
+{
+	return FName("FMultiPackerChannelTab");
+}
+
+FText FMultiPackerChannelTab::GetBaseToolkitName() const
+{
+	return LOCTEXT("MultiPackerChannelTabLabel", "MultiPackerChannelTabEditor");
+}
+
+FString FMultiPackerChannelTab::GetWorldCentricTabPrefix() const
+{
+	return TEXT("MPChannelTab");
+}
+
+FLinearColor FMultiPackerChannelTab::GetWorldCentricTabColorScale() const
+{
+	return FLinearColor::White;
+}
+
+void FMultiPackerChannelTab::AddReferencedObjects(FReferenceCollector& Collector)
+{
+	Collector.AddReferencedObject(PropertyMPChannel);
+}
+
+TSharedRef<SDockTab> FMultiPackerChannelTab::SpawnTab_Viewport(const FSpawnTabArgs& Args)
+{
+	check(Args.GetTabId() == FMultiPackerChannelTabs::ViewportID);
+
+	PreviewBrush = MakeShareable(new FSlateImageBrush(PropertyMPChannel->TextureRed, FVector2D(250, 250)));
 	return SNew(SDockTab)
-		.TabRole(ETabRole::NomadTab)
+		.Label(LOCTEXT("ViewportTab_Title", "Viewport"))
+		.OnCanCloseTab(false)
 		[
-			SNew(SBox)
-			.HAlign(HAlign_Fill)
-			.VAlign(VAlign_Fill)
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot()
+			.Padding(3.0f)
+			.AutoHeight()
+			[
+				SNew(STextBlock)
+				.TextStyle(FEditorStyle::Get(), "ContentBrowser.TopBar.Font")
+				.Text(LOCTEXT("Output", "Output Texture"))
+			]
+			+ SVerticalBox::Slot()
+			.Padding(3.0f)
+			[
+				SAssignNew(PreviewWidget, SBorder)
+				.HAlign(HAlign_Fill)//HAlign_Fill HAlign_Center
+				.VAlign(VAlign_Fill)
+				.BorderImage(FEditorStyle::GetBrush("BlackBrush"))
+				[
+					SNew(SBorder)
+					.HAlign(HAlign_Center)//HAlign_Fill HAlign_Center
+					.VAlign(VAlign_Center)
+					[
+						SAssignNew(ImageWidget, SImage)
+						.Image(PreviewBrush.Get())
+					]
+				]
+			]
+		];
+}
+
+TSharedRef<SDockTab> FMultiPackerChannelTab::SpawnTab_Details(const FSpawnTabArgs& Args)
+{
+	check(Args.GetTabId() == FMultiPackerChannelTabs::DetailsID);
+
+	return SNew(SDockTab)
+		.Icon(FEditorStyle::GetBrush("LevelEditor.Tabs.Details"))
+		.Label(LOCTEXT("Details_Title", "Details"))
+		.ShouldAutosize(true)
+		.OnCanCloseTab(false)
+		[
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot()
+			.Padding(3.0f)
+			[
+				PropertyWidget.ToSharedRef()
+			]
+		];
+}
+
+TSharedRef<SDockTab> FMultiPackerChannelTab::SpawnTab_Buttons(const FSpawnTabArgs& Args)
+{
+	check(Args.GetTabId() == FMultiPackerChannelTabs::ButtonsID);
+
+	return SNew(SDockTab)
+		.Icon(FEditorStyle::GetBrush("LevelEditor.Tabs.Details"))
+		.Label(LOCTEXT("Buttons_Title", "Buttons"))
+		.ShouldAutosize(true)
+		.OnCanCloseTab(false)
+		[
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot()
+			.Padding(3.f)
+			.MaxHeight(30.0f)
 			[
 				SNew(SHorizontalBox)
 				+ SHorizontalBox::Slot()
-				.VAlign(VAlign_Fill)
-				.Padding(3.0f)
-				.FillWidth(75.0f)
 				[
-					SNew(SVerticalBox)
-					+ SVerticalBox::Slot()
-					.Padding(3.0f)
-					.AutoHeight()
-					[
-						SNew(STextBlock)
-						.TextStyle(FEditorStyle::Get(), "ContentBrowser.TopBar.Font")
-						.Text(LOCTEXT("Output", "Output Texture"))
-					]
-					+ SVerticalBox::Slot()
-					.Padding(3.0f)
-					[
-						SNew(SBorder)
-						.HAlign(HAlign_Fill)//HAlign_Fill HAlign_Center
-						.VAlign(VAlign_Fill)
-						.BorderImage(FEditorStyle::GetBrush("BlackBrush"))
-						[
-							//TODO center the preview, for some reason its always gets an left padding exaggerated
-							PreviewTextureViewport.ToSharedRef()
-						]
-					]
-					]
-					+ SHorizontalBox::Slot()
-					.VAlign(VAlign_Fill)
-					.Padding(3.0f)
-					.AutoWidth()
-					[
-						SNew(SVerticalBox)
-						+ SVerticalBox::Slot()
-						.Padding(3.0f)
-						.AutoHeight()
-						[
-							PropertyWidget.ToSharedRef()
-						]
-						+ SVerticalBox::Slot()
-						.Padding(15.f)
-						.MaxHeight(50.0f)
-						[
-							SNew(SHorizontalBox)
-							+ SHorizontalBox::Slot()
-							[
-								CreateAndSetButton(FOnClicked::CreateUObject(this, &UMultiPackerChannelTab::PreviewRedTexture),
-								FEditorFontGlyphs::File_Image_O,
-								LOCTEXT("PreviewRT", "Preview Red Texture"),
-								LOCTEXT("PreviewR", "Preview Red"))
-							]
-							+ SHorizontalBox::Slot()
-							[
-								CreateAndSetButton(FOnClicked::CreateUObject(this, &UMultiPackerChannelTab::PreviewGreenTexture),
-								FEditorFontGlyphs::File_Image_O,
-								LOCTEXT("PreviewGT", "Preview Green Texture"),
-								LOCTEXT("PreviewG", "Preview Green"))
-							]
-							+ SHorizontalBox::Slot()
-							[
-								CreateAndSetButton(FOnClicked::CreateUObject(this, &UMultiPackerChannelTab::PreviewBlueTexture),
-								FEditorFontGlyphs::File_Image_O,
-								LOCTEXT("PreviewBT", "Preview Blue Texture"),
-								LOCTEXT("PreviewB", "Preview Blue"))
-							]
-							+ SHorizontalBox::Slot()
-							[
-								CreateAndSetButton(FOnClicked::CreateUObject(this, &UMultiPackerChannelTab::PreviewAlphaTexture),
-								FEditorFontGlyphs::File_Image_O,
-								LOCTEXT("PreviewAT", "Preview Alpha Texture"),
-								LOCTEXT("PreviewA", "Preview Alpha"))
-							]
-						]
-						+ SVerticalBox::Slot()
-						.Padding(15.f)
-						.MaxHeight(50.0f)
-						[
-							CreateAndSetButton(FOnClicked::CreateUObject(this, &UMultiPackerChannelTab::OnClickButton),
-							FEditorFontGlyphs::Floppy_O,
-							LOCTEXT("ProcessTooltip", "Process TextureMake a new Channel Texture"),
-							LOCTEXT("ProcessCS", "Process Texture"))
-						]
-					]
+					CreateAndSetButton(FOnClicked::CreateSP(this, &FMultiPackerChannelTab::OnClickButton),
+					FEditorFontGlyphs::Floppy_O,
+					LOCTEXT("ProcessTooltip", "Process TextureMake a new Channel Texture"),
+					LOCTEXT("ProcessCS", "Process Texture"))
 				]
-			];
+				+ SHorizontalBox::Slot()
+				[
+					CreateAndSetButton(FOnClicked::CreateSP(this, &FMultiPackerChannelTab::PreviewRedTexture),
+					FEditorFontGlyphs::File_Image_O,
+					LOCTEXT("PreviewRT", "Preview Red Texture"),
+					LOCTEXT("PreviewR", "Preview Red"))
+				]
+				+ SHorizontalBox::Slot()
+				[
+					CreateAndSetButton(FOnClicked::CreateSP(this, &FMultiPackerChannelTab::PreviewGreenTexture),
+					FEditorFontGlyphs::File_Image_O,
+					LOCTEXT("PreviewGT", "Preview Green Texture"),
+					LOCTEXT("PreviewG", "Preview Green"))
+				]
+				+ SHorizontalBox::Slot()
+				[
+					CreateAndSetButton(FOnClicked::CreateSP(this, &FMultiPackerChannelTab::PreviewBlueTexture),
+					FEditorFontGlyphs::File_Image_O,
+					LOCTEXT("PreviewBT", "Preview Blue Texture"),
+					LOCTEXT("PreviewB", "Preview Blue"))
+				]
+				+ SHorizontalBox::Slot()
+				[
+					CreateAndSetButton(FOnClicked::CreateSP(this, &FMultiPackerChannelTab::PreviewAlphaTexture),
+					FEditorFontGlyphs::File_Image_O,
+					LOCTEXT("PreviewAT", "Preview Alpha Texture"),
+					LOCTEXT("PreviewA", "Preview Alpha"))
+				]
+			]
+		];
 }
 
-FReply UMultiPackerChannelTab::OnClickButton()
+FReply FMultiPackerChannelTab::OnClickButton()
 {
 	if (PropertyMPChannel->TextureRed != nullptr && PropertyMPChannel->TextureGreen != nullptr && PropertyMPChannel->TextureBlue != nullptr && (PropertyMPChannel->AlphaChannel ? PropertyMPChannel->TextureAlpha != nullptr : true) )
 	{
@@ -179,12 +302,12 @@ FReply UMultiPackerChannelTab::OnClickButton()
 			FAssetRegistryModule::AssetCreated(NewTexture);
 		}
 		PropertyMPChannel->Texture = NewTexture;
-		PreviewTextureViewport->SetPreviewTexture(NewTexture);	
+		SetPreviewTexture(NewTexture);
 	}
 	return FReply::Handled();
 }
 
-EChannelSelectionInput UMultiPackerChannelTab::GetChannelEnum(EMPChannelMaskParameterColor InEnum)
+EChannelSelectionInput FMultiPackerChannelTab::GetChannelEnum(EMPChannelMaskParameterColor InEnum)
 {
 	switch (InEnum)
 	{
@@ -207,7 +330,7 @@ EChannelSelectionInput UMultiPackerChannelTab::GetChannelEnum(EMPChannelMaskPara
 	return EChannelSelectionInput::CSI_Red;
 }
 
-UTilePointer* UMultiPackerChannelTab::ProcessTextureChannel(UTexture2D* InTexture, const int32 InSizeVertical, const int32 InSizeHorizontal, EMPChannelMaskParameterColor InChannel)
+UTilePointer* FMultiPackerChannelTab::ProcessTextureChannel(UTexture2D* InTexture, const int32 InSizeVertical, const int32 InSizeHorizontal, EMPChannelMaskParameterColor InChannel)
 {
 	EChannelSelectionInput InEnum = GetChannelEnum(InChannel);
 	//set the data from the Node UTexture
@@ -227,7 +350,7 @@ UTilePointer* UMultiPackerChannelTab::ProcessTextureChannel(UTexture2D* InTextur
 	return Resized;
 }
 
-TArray<FString> UMultiPackerChannelTab::TexturePackageName(FAssetToolsModule& AssetToolsModule)
+TArray<FString> FMultiPackerChannelTab::TexturePackageName(FAssetToolsModule& AssetToolsModule)
 {
 	FString importDirectory = PropertyMPChannel->TargetDirectory.Path;
 	FString ObjectName = PropertyMPChannel->TextureName;
@@ -255,7 +378,7 @@ TArray<FString> UMultiPackerChannelTab::TexturePackageName(FAssetToolsModule& As
 	return NamesOut;
 }
 
-TSharedRef<class SButton> UMultiPackerChannelTab::CreateAndSetButton(FOnClicked InOnClicked, const TAttribute<FText>& InIcon, const TAttribute<FText>& InTooltip, const TAttribute<FText>& InButton)
+TSharedRef<class SButton> FMultiPackerChannelTab::CreateAndSetButton(FOnClicked InOnClicked, const TAttribute<FText>& InIcon, const TAttribute<FText>& InTooltip, const TAttribute<FText>& InButton)
 {
 	return SNew(SButton)
 		.ButtonStyle(FEditorStyle::Get(), "FlatButton")
@@ -287,7 +410,7 @@ TSharedRef<class SButton> UMultiPackerChannelTab::CreateAndSetButton(FOnClicked 
 		];
 }
 
-FReply UMultiPackerChannelTab::PreviewRedTexture()
+FReply FMultiPackerChannelTab::PreviewRedTexture()
 {
 	if (PropertyMPChannel && PropertyMPChannel->TextureRed)
 	{
@@ -296,7 +419,7 @@ FReply UMultiPackerChannelTab::PreviewRedTexture()
 	return FReply::Handled();
 }
 
-FReply UMultiPackerChannelTab::PreviewGreenTexture()
+FReply FMultiPackerChannelTab::PreviewGreenTexture()
 {
 	if (PropertyMPChannel && PropertyMPChannel->TextureGreen)
 	{
@@ -305,7 +428,7 @@ FReply UMultiPackerChannelTab::PreviewGreenTexture()
 	return FReply::Handled();
 }
 
-FReply UMultiPackerChannelTab::PreviewBlueTexture()
+FReply FMultiPackerChannelTab::PreviewBlueTexture()
 {
 	if (PropertyMPChannel && PropertyMPChannel->TextureBlue)
 	{
@@ -314,7 +437,7 @@ FReply UMultiPackerChannelTab::PreviewBlueTexture()
 	return FReply::Handled();
 }
 
-FReply UMultiPackerChannelTab::PreviewAlphaTexture()
+FReply FMultiPackerChannelTab::PreviewAlphaTexture()
 {
 	if (PropertyMPChannel && PropertyMPChannel->TextureAlpha)
 	{
@@ -323,7 +446,7 @@ FReply UMultiPackerChannelTab::PreviewAlphaTexture()
 	return FReply::Handled();
 }
 
-void UMultiPackerChannelTab::PreviewTexture(EMPChannelMaskParameterColor InEnum, UTexture2D* InTexture, bool InvertColors)
+void FMultiPackerChannelTab::PreviewTexture(EMPChannelMaskParameterColor InEnum, UTexture2D* InTexture, bool InvertColors)
 {
 	EChannelSelectionInput InChannel = GetChannelEnum(InEnum);
 	UTexture2D* Texture = Cast<UTexture2D>(InTexture);
@@ -332,7 +455,15 @@ void UMultiPackerChannelTab::PreviewTexture(EMPChannelMaskParameterColor InEnum,
 	InTile->FromChannelToTexture(InChannel);
 	if (InvertColors)
 		InTile->InvertAllChannels();
-	PreviewTextureViewport->SetPreviewTexture(InTile->TileTexture);
+	SetPreviewTexture(InTile->TileTexture);
+}
+
+void FMultiPackerChannelTab::SetPreviewTexture(UTexture2D* InPreviewTexture)
+{
+	const FGeometry GeoWidget = PreviewWidget->GetCachedGeometry();
+	const float SizeSquared = FMath::Min(GeoWidget.GetLocalSize().X, GeoWidget.GetLocalSize().Y);
+	PreviewBrush = MakeShareable(new FSlateImageBrush(InPreviewTexture, FVector2D(SizeSquared, SizeSquared)));
+	ImageWidget->SetImage(PreviewBrush.Get());
 }
 
 #undef LOCTEXT_NAMESPACE
