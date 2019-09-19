@@ -3,14 +3,13 @@
 #include "Framework/Commands/Commands.h"
 #include "MultiPackerTabStyle.h"
 
-#define LOCTEXT_NAMESPACE "FMultiPackerCommands"
 
-class FMultiPackerCommands : public TCommands<FMultiPackerCommands>
+class FMultiPackerCTCommands : public TCommands<FMultiPackerCTCommands>
 {
 public:
 
-	FMultiPackerCommands()
-		: TCommands<FMultiPackerCommands>(TEXT("MultiPacker"), NSLOCTEXT("Compile", "MultiPacker", "MultiPacker Plugin"), NAME_None, FMultiPackerTabStyle::GetStyleSetName())
+	FMultiPackerCTCommands()
+		: TCommands<FMultiPackerCTCommands>(TEXT("MultiPacker"), NSLOCTEXT("Compile", "MultiPacker", "MultiPacker Plugin"), NAME_None, FMultiPackerTabStyle::GetStyleSetName())
 	{
 	}
 
@@ -19,4 +18,9 @@ public:
 
 public:
 	TSharedPtr< FUICommandInfo > OpenPluginWindow;
+	TSharedPtr< FUICommandInfo > ProcessTexture;
+	TSharedPtr< FUICommandInfo > PreviewRed;
+	TSharedPtr< FUICommandInfo > PreviewGreen;
+	TSharedPtr< FUICommandInfo > PreviewBlue;
+	TSharedPtr< FUICommandInfo > PreviewAlpha;
 };
