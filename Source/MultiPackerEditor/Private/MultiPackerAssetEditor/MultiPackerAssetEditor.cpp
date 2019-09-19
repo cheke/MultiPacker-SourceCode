@@ -28,9 +28,7 @@
 #include "Layout/SlateRect.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include "MultiPackerAssetEditor/SMultiPackerAssetEditorDrop.h"
-#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION >= 18)
 #include "HAL/PlatformApplicationMisc.h"
-#endif
 
 #define LOCTEXT_NAMESPACE "MultiPackerAssetEditor"
 
