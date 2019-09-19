@@ -23,12 +23,13 @@ void FMultiPackerTab::StartupModule()
 	PluginCommands = MakeShareable(new FUICommandList);
 
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	
 	FMultiPackerTabStyle::Initialize();
 	FMultiPackerTabStyle::ReloadTextures();
-	FMultiPackerCTCommands::Register();
+	FMultiPackerCommands::Register();
 	
 	PluginCommands->MapAction(
-		FMultiPackerCTCommands::Get().OpenPluginWindow,
+		FMultiPackerCommands::Get().OpenPluginWindow,
 		FExecuteAction::CreateRaw(this, &FMultiPackerTab::PluginButtonClicked),
 		FCanExecuteAction());
 		
@@ -58,7 +59,7 @@ void FMultiPackerTab::ShutdownModule()
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
 	FMultiPackerTabStyle::Shutdown();
-	FMultiPackerCTCommands::Unregister();
+	FMultiPackerCommands::Unregister();
 	FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(MultiPackerTabName);
 }
 
@@ -72,12 +73,12 @@ void FMultiPackerTab::PluginButtonClicked()
 
 void FMultiPackerTab::AddMenuExtension(FMenuBuilder& Builder)
 {
-	Builder.AddMenuEntry(FMultiPackerCTCommands::Get().OpenPluginWindow);
+	Builder.AddMenuEntry(FMultiPackerCommands::Get().OpenPluginWindow);
 }
 
 void FMultiPackerTab::AddToolbarExtension(FToolBarBuilder& Builder)
 {
-	Builder.AddToolBarButton(FMultiPackerCTCommands::Get().OpenPluginWindow);
+	Builder.AddToolBarButton(FMultiPackerCommands::Get().OpenPluginWindow);
 }
 
 #undef LOCTEXT_NAMESPACE

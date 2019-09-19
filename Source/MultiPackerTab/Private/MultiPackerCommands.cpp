@@ -2,16 +2,11 @@
 
 #include "MultiPackerCommands.h"
 
-#define LOCTEXT_NAMESPACE "FMultiPackerCTCommands"
+#define LOCTEXT_NAMESPACE "FMultiPackerCommands"
 
-void FMultiPackerCTCommands::RegisterCommands()
+void FMultiPackerCommands::RegisterCommands()
 {
-	UI_COMMAND(OpenPluginWindow, "MultiPacker", "Bring up MultiPacker Channel Pack Tab", EUserInterfaceActionType::Button, FInputChord());
-	UI_COMMAND(ProcessTexture, "MultiPackerChannelTab", "Process the Channel Pack", EUserInterfaceActionType::Button, FInputChord());
-	UI_COMMAND(PreviewRed, "MultiPackerChannelTab", "Preview the Red Texture filtered by Channel Selected", EUserInterfaceActionType::Button, FInputChord());
-	UI_COMMAND(PreviewGreen, "MultiPackerChannelTab", "Preview the Green Texture filtered by Channel Selected", EUserInterfaceActionType::Button, FInputChord());
-	UI_COMMAND(PreviewBlue, "MultiPackerChannelTab", "Preview the Blue Texture filtered by Channel Selected", EUserInterfaceActionType::Button, FInputChord());
-	UI_COMMAND(PreviewAlpha, "MultiPackerChannelTab", "Preview the Alpha Texture filtered by Channel Selected", EUserInterfaceActionType::Button, FInputChord());
+	UI_COMMAND(OpenPluginWindow, "MultiPacker", "Bring up MultiPacker Channel Pack Tab", EUserInterfaceActionType::Button, FInputGesture());
 }
 
 #undef LOCTEXT_NAMESPACE
