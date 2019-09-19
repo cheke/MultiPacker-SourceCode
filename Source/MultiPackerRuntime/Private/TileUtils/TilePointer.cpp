@@ -113,7 +113,9 @@ void UTilePointer::GenerateFromTexture(UTexture2D* Texture, const int InTileWidt
 		UTexture2D* Tex = CastChecked<UTexture2D>(StaticDuplicateObjectEx(Parameters));
 		Tex->VirtualTextureStreaming = false;
 		Tex->Modify();
+#if WITH_EDITOR
 		Tex->PostEditChange();
+#endif
 		Texture = Tex;
 	}
 #endif
