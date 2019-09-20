@@ -93,7 +93,7 @@ void FMultiPackerChannelTab::InitGenericGraphAssetEditor(const EToolkitMode::Typ
 			)
 		);
 	const bool bCreateDefaultStandaloneMenu = true;
-	const bool bCreateDefaultToolbar = true;
+	const bool bCreateDefaultToolbar = false;
 	FAssetEditorToolkit::InitAssetEditor(Mode, InitToolkitHost, MPChannelTabsEditor, StandaloneDefaultLayout, bCreateDefaultStandaloneMenu, bCreateDefaultToolbar, PropertyMPChannel, false);
 }
 
