@@ -58,7 +58,7 @@ void UTilePointer::GenerateTextureCanvas(const uint16 Width, const uint16 Height
 	TileTexture->AddToRoot();
 	TileTexture->Filter = TextureFilter::TF_Nearest;
 #if WITH_EDITORONLY_DATA
-	TileTexture->Source.Init(Width, Height, /*NumSlices=*/ 1, /*NumMips=*/ 1, TSF_BGRA8);
+	TileTexture->Source.Init(Width, Height, 1, 1, TSF_BGRA8);
 #endif
 	TileTexture->UpdateResource();
 
@@ -185,13 +185,13 @@ void UTilePointer::GenerateAndSetArrayTilesOnRenderTarget(UObject* InWorldContex
 		FCanvasTileItem TileItem(FVector2D(Transitional.x, Transitional.y), RenderTextureResource, FVector2D(Transitional.width, Transitional.height), FVector2D(0.0f, 0.0f), FVector2D(0.0f, 0.0f) + FVector2D::UnitVector, FLinearColor::White);
 		TileItem.Rotation = FRotator(0, 0.f, 0);
 		TileItem.PivotPoint = FVector2D(0.5f, 0.5f);
-		TileItem.BlendMode = SE_BLEND_Translucent;// FCanvas::BlendToSimpleElementBlend(EBlendMode::BLEND_Opaque);
+		TileItem.BlendMode = SE_BLEND_Translucent;
 		Canvas->DrawItem(TileItem);
 	}
 	UKismetRenderingLibrary::EndDrawCanvasToRenderTarget(InWorldContextObject, Context);
 	GenerateFromRT(OutputTexture, Width, Height);
 #if WITH_EDITORONLY_DATA
-	TileTexture->Source.Init(TileWidth, TileHeight, /*NumSlices=*/ 1, /*NumMips=*/ 1, TSF_BGRA8, TileTexture->Source.LockMip(0));
+	TileTexture->Source.Init(TileWidth, TileHeight, 1, 1, TSF_BGRA8, TileTexture->Source.LockMip(0));
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
 	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
@@ -361,8 +361,6 @@ void UTilePointer::ChangeResolution(uint16 new_width, uint16 new_height, UTilePo
 	NameUTile = "ChangeResolution";
 	TileBinPack.Add(InTile);//add a reference from the old TilePointer to Debug
 	GenerateDefaultVars(new_width, new_height);
-	//UE_LOG(LogTemp, Log, TEXT("UTilePointer: ChangeResolution new_width: %d  InTile->TileWidth: %d"), new_width, InTile->TileWidth);
-	//UE_LOG(LogTemp, Log, TEXT("UTilePointer: ChangeResolution new_height: %d  InTile->TileHeight: %d"), new_height, InTile->TileHeight);
 	if ( ((new_width - InTile->TileWidth) == 0) && ((new_width == InTile->TileHeight) == 0) )//fix for the blur on texture output
 	{
 		TileData = InTile->GetColorArray();
