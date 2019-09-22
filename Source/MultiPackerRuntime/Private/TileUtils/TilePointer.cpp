@@ -16,10 +16,9 @@
 
 void UTilePointer::GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTileWidth, uint16 InTileHeight)
 {
+	NameUTile = "GeneratedFromRT";
 	TileRT = InTileRT;
-	TileWidth = InTileWidth;
-	TileHeight = InTileHeight;
-	TileDimension = TileWidth * TileHeight;
+	GenerateDefaultVars(InTileWidth, InTileHeight);
 	TileTexture = InTileRT->ConstructTexture2D(InTileRT->GetOuter(), InTileRT->GetName().Append("_T"), InTileRT->GetMaskedFlags(), CTF_Default | CTF_Compress | CTF_DeferCompression, NULL);
 	TileTexture->UpdateResource();
 	TileTexture->Modify();
@@ -29,11 +28,7 @@ void UTilePointer::GenerateFromRT(UTextureRenderTarget2D* InTileRT, uint16 InTil
 void UTilePointer::GetPointerFromRT()
 {
 	FRenderTarget* RenderTarget = TileRT->GameThread_GetRenderTargetResource();
-	TileWidth = TileRT->GetSurfaceWidth();
-	TileHeight = TileRT->GetSurfaceHeight();
-	TileDimension = TileWidth * TileHeight;
-	TileData.Reset();
-	TileData.AddUninitialized(TileDimension);
+	GenerateDefaultVars(TileRT->GetSurfaceWidth(), TileRT->GetSurfaceHeight());
 	RenderTarget->ReadPixels(TileData);
 }
 
@@ -53,26 +48,22 @@ void UTilePointer::setPixelColor(FColor pointer, uint8 red, uint8 green, uint8 b
 
 void UTilePointer::GenerateTextureCanvas(const uint16 Width, const uint16 Height)
 {
-	TileWidth = Width;
-	TileHeight = Height;
-	TileDimension = TileWidth * TileHeight;
-	TileTexture = UTexture2D::CreateTransient(TileWidth, TileHeight);
+	TileTexture = UTexture2D::CreateTransient(Width, Height);
 #if WITH_EDITORONLY_DATA
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
 	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 	TileTexture->SRGB = 0;
+	TileTexture->CompressionNoAlpha = false;
 	TileTexture->AddToRoot();
 	TileTexture->Filter = TextureFilter::TF_Nearest;
 #if WITH_EDITORONLY_DATA
-	TileTexture->Source.Init(TileWidth, TileHeight, /*NumSlices=*/ 1, /*NumMips=*/ 1, TSF_BGRA8);
+	TileTexture->Source.Init(Width, Height, /*NumSlices=*/ 1, /*NumMips=*/ 1, TSF_BGRA8);
 #endif
 	TileTexture->UpdateResource();
 
-	echoUpdateTextureRegion = TUniquePtr<FUpdateTextureRegion2D>(new FUpdateTextureRegion2D(0, 0, 0, 0, TileWidth, TileHeight));
-
-	TileData.Reset();
-	TileData.AddUninitialized(TileDimension);
+	echoUpdateTextureRegion = TUniquePtr<FUpdateTextureRegion2D>(new FUpdateTextureRegion2D(0, 0, 0, 0, Width, Height));
+	GenerateDefaultVars(Width, Height);
 	RegenerateTileData();
 	ClearTextureCanvas();
 }
@@ -94,6 +85,7 @@ uint8 UTilePointer::GetPixelCombinedRGB(uint32 pixel)
 
 void UTilePointer::GenerateFromMaterial(UObject *InWorldContextObject, UTextureRenderTarget2D* RTMaterial, UMaterialInterface* Material, uint16 new_width, uint16 new_height)
 {
+	NameUTile = "GeneratedFromMaterial";
 	UKismetRenderingLibrary::DrawMaterialToRenderTarget(InWorldContextObject, RTMaterial, Material);
 	GenerateFromRT(RTMaterial, new_width, new_height);
 	FromRTtoTexture(new_width, new_height);
@@ -101,6 +93,7 @@ void UTilePointer::GenerateFromMaterial(UObject *InWorldContextObject, UTextureR
 
 void UTilePointer::GenerateFromTexture(UTexture2D* Texture, const int InTileWidth, const int InTileHeight)
 {
+	NameUTile = "GeneratedFromTexture";
 	GenerateTextureCanvas(InTileWidth, InTileHeight);
 	//TextureSettings
 #if (ENGINE_MINOR_VERSION >= 23)
@@ -140,6 +133,9 @@ void UTilePointer::GenerateFromTexture(UTexture2D* Texture, const int InTileWidt
 	Texture->MipGenSettings = OldMipGenSettings;
 #endif
 	Texture->SRGB = OldSRGB;
+#if WITH_EDITOR
+	Texture->UpdateResource();
+#endif
 }
 
 void UTilePointer::GenerateAndCombineTexturesOnChannels(uint16 new_width, uint16 new_height, UTilePointer* TileRed, UTilePointer* TileGreen, UTilePointer* TileBlue, UTilePointer* TileAlpha)
@@ -189,7 +185,7 @@ void UTilePointer::GenerateAndSetArrayTilesOnRenderTarget(UObject* InWorldContex
 		FCanvasTileItem TileItem(FVector2D(Transitional.x, Transitional.y), RenderTextureResource, FVector2D(Transitional.width, Transitional.height), FVector2D(0.0f, 0.0f), FVector2D(0.0f, 0.0f) + FVector2D::UnitVector, FLinearColor::White);
 		TileItem.Rotation = FRotator(0, 0.f, 0);
 		TileItem.PivotPoint = FVector2D(0.5f, 0.5f);
-		TileItem.BlendMode = FCanvas::BlendToSimpleElementBlend(EBlendMode::BLEND_AlphaComposite);
+		TileItem.BlendMode = SE_BLEND_Translucent;// FCanvas::BlendToSimpleElementBlend(EBlendMode::BLEND_Opaque);
 		Canvas->DrawItem(TileItem);
 	}
 	UKismetRenderingLibrary::EndDrawCanvasToRenderTarget(InWorldContextObject, Context);
@@ -200,6 +196,8 @@ void UTilePointer::GenerateAndSetArrayTilesOnRenderTarget(UObject* InWorldContex
 #endif
 	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 	TileTexture->SRGB = 0;
+	TileTexture->Filter = TextureFilter::TF_Nearest;
+	TileTexture->CompressionNoAlpha = false;
 	TileTexture->UpdateResource();
 	UpdateTextureCanvas();
 }
@@ -360,27 +358,30 @@ void UTilePointer::SDFGenParallel(uint16 Radius, uint16 V_size, uint16 H_size)
 
 void UTilePointer::ChangeResolution(uint16 new_width, uint16 new_height, UTilePointer* InTile)
 {
-	TArray<FColor> OldTextureData = InTile->GetColorArray();
-	TileData.Reset();
-	TileData.AddUninitialized(TileDimension);
-	FImageUtils::ImageResize(InTile->TileWidth, InTile->TileHeight, OldTextureData, new_width, new_height, TileData, true);
-	TileWidth = new_width;
-	TileHeight = new_height;
-	TileDimension = TileWidth * TileHeight;
+	NameUTile = "ChangeResolution";
+	TileBinPack.Add(InTile);//add a reference from the old TilePointer to Debug
+	GenerateDefaultVars(new_width, new_height);
+	//UE_LOG(LogTemp, Log, TEXT("UTilePointer: ChangeResolution new_width: %d  InTile->TileWidth: %d"), new_width, InTile->TileWidth);
+	//UE_LOG(LogTemp, Log, TEXT("UTilePointer: ChangeResolution new_height: %d  InTile->TileHeight: %d"), new_height, InTile->TileHeight);
+	if ( ((new_width - InTile->TileWidth) == 0) && ((new_width == InTile->TileHeight) == 0) )//fix for the blur on texture output
+	{
+		TileData = InTile->GetColorArray();
+	}
+	else
+	{
+		TArray<FColor> OldTextureData = InTile->GetColorArray();
+		FImageUtils::ImageResize(InTile->TileWidth, InTile->TileHeight, OldTextureData, new_width, new_height, TileData, true);
+	}
 	TileTexture = UTexture2D::CreateTransient(new_width, new_height, PF_B8G8R8A8);
 	UpdateTextureCanvas();
 }
 
 void UTilePointer::SetColorArray(uint16 width, uint16 height, const TArray<FColor>& colorArray)
 {
-	TileWidth = width;
-	TileHeight = height;
-
-	TileDimension = TileWidth * TileHeight;
-
+	GenerateDefaultVars(width, height);
 	FCreateTexture2DParameters FCT;
 	FCT.bUseAlpha = true;
-	TileTexture = FImageUtils::CreateTexture2D(width, height, colorArray, NULL, *TileTexture->GetName(), RF_Transient/* RF_Public | RF_Standalone*/, FCT); //UTexture2D::CreateTransient(TileWidth, TileHeight);
+	TileTexture = FImageUtils::CreateTexture2D(width, height, colorArray, NULL, *TileTexture->GetName(), RF_Transient, FCT);
 #if WITH_EDITORONLY_DATA
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif

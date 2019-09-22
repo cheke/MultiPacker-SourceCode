@@ -16,6 +16,7 @@
 #include "Factory/MultiPackerFactory.h"
 #include "Factory/MultiPackerDatabaseFactory.h"
 #include "Factories/MaterialParameterCollectionFactoryNew.h"
+#include <UObject/Object.h>
 #include <UObject/UObjectGlobals.h>
 #include "TileUtils/TilePointer.h"
 #include "AssetRegistryModule.h"

@@ -348,10 +348,11 @@ public:
 		UTextureRenderTarget2D* NewRT = NewObject<UTextureRenderTarget2D>();
 		NewRT->bNeedsTwoCopies = false;
 		NewRT->InitCustomFormat(Width, Height, PF_B8G8R8A8, true);
-		NewRT->CompressionSettings = TextureCompressionSettings::TC_BC7;
+		NewRT->Filter = TextureFilter::TF_Nearest;
+		NewRT->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 		NewRT->SRGB = 0;
-		NewRT->bForceLinearGamma = true;
 		NewRT->TargetGamma = 1.04f;
+		NewRT->CompressionNoAlpha = !Alpha;
 		NewRT->UpdateResourceImmediate(true);
 		return NewRT;
 	};

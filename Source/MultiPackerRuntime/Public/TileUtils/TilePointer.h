@@ -15,7 +15,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Default")
 		UTextureRenderTarget2D* TileRT;
 	UPROPERTY(VisibleAnywhere, Category = "Default")
-		UTexture2D* TileTexture;
+		UTexture2D* TileTexture; 
+	UPROPERTY(VisibleAnywhere, Category = "DebugName")
+		FString NameUTile = "Default";
 	UPROPERTY()
 		uint16 TileWidth;
 	UPROPERTY()
