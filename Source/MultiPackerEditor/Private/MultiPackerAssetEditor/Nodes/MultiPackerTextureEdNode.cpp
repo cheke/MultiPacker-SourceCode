@@ -19,21 +19,6 @@ UMultiPackerTextureEdNode::UMultiPackerTextureEdNode(const FObjectInitializer& O
 void UMultiPackerTextureEdNode::AllocateDefaultPins()
 {
 	FEdGraphPinType newPin = FEdGraphPinType();
-#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION <= 18)
-	newPin.PinCategory = UMultiPackerEditorTypes::PinCategory_RGB;
-	CreatePin(EGPD_Output, newPin, UMultiPackerEditorTypes::PinCategory_RGB, 0);
-	newPin.PinCategory = UMultiPackerEditorTypes::PinCategory_Red;
-	CreatePin(EGPD_Output, newPin, UMultiPackerEditorTypes::PinCategory_Red, 1);
-	newPin.PinCategory = UMultiPackerEditorTypes::PinCategory_Green;
-	CreatePin(EGPD_Output, newPin, UMultiPackerEditorTypes::PinCategory_Green, 2);
-	newPin.PinCategory = UMultiPackerEditorTypes::PinCategory_Blue;
-	CreatePin(EGPD_Output, newPin, UMultiPackerEditorTypes::PinCategory_Blue, 3);
-	newPin.PinCategory = UMultiPackerEditorTypes::PinCategory_Alpha;
-	CreatePin(EGPD_Output, newPin, UMultiPackerEditorTypes::PinCategory_Alpha, 4);
-	newPin.PinCategory = UMultiPackerEditorTypes::PinCategory_RGBA;
-	CreatePin(EGPD_Output, newPin, UMultiPackerEditorTypes::PinCategory_RGBA, 5);
-#endif
-#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION > 18)
 	newPin.PinCategory = FName(*UMultiPackerEditorTypes::PinCategory_RGB);
 	CreatePin(EGPD_Output, newPin, FName(*UMultiPackerEditorTypes::PinCategory_RGB), 0);
 	newPin.PinCategory = FName(*UMultiPackerEditorTypes::PinCategory_Red);
@@ -46,7 +31,6 @@ void UMultiPackerTextureEdNode::AllocateDefaultPins()
 	CreatePin(EGPD_Output, newPin, FName(*UMultiPackerEditorTypes::PinCategory_Alpha), 4);
 	newPin.PinCategory = FName(*UMultiPackerEditorTypes::PinCategory_RGBA);
 	CreatePin(EGPD_Output, newPin, FName(*UMultiPackerEditorTypes::PinCategory_RGBA), 5);
-#endif
 }
 
 void UMultiPackerTextureEdNode::PinConnectionListChanged(UEdGraphPin * Pin)
@@ -183,12 +167,7 @@ void UMultiPackerTextureEdNode::PostEditChangeProperty(struct FPropertyChangedEv
 			PinName = UMultiPackerEditorTypes::PinCategory_RGBA;
 			break;
 		}
-#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION <= 18)
-		EdNode->FindPin("Output", EGPD_Input)->MakeLinkTo(FindPin(PinName, EGPD_Output));
-#endif
-#if (ENGINE_MAJOR_VERSION == 4) && (ENGINE_MINOR_VERSION >= 19)
 		EdNode->FindPin(FName("Output"), EGPD_Input)->MakeLinkTo(FindPin(FName(*PinName), EGPD_Output));
-#endif
 	}
 	PrepareTextureToWork();
 }
