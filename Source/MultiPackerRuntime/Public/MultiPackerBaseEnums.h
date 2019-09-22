@@ -7,17 +7,6 @@
 
 class UTexture;
 
-/*
-UENUM()
-enum ERenderTargetPixelQuality
-{
-	B8G8R8A8,
-	A16B16G16R16,
-	FloatRGB,
-	FloatRGBA, // for exporting materials to .obj/.mtl
-	A2B10G10R10, //Pixel inspector for normal buffer
-};*/
-
 UENUM(BlueprintType)
 enum class EMultiPackerImageLayer : uint8
 {
@@ -352,7 +341,9 @@ public:
 		NewRT->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 		NewRT->SRGB = 0;
 		NewRT->TargetGamma = 1.04f;
+#if WITH_EDITORONLY_DATA
 		NewRT->CompressionNoAlpha = !Alpha;
+#endif
 		NewRT->UpdateResourceImmediate(true);
 		return NewRT;
 	};

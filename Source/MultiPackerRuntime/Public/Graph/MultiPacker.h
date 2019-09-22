@@ -126,10 +126,10 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "OutputData", meta = (EditCondition = SaveMaterialCollection))
 		UMaterialParameterCollection* MaterialCollection;
 
-	UPROPERTY(VisibleAnywhere, Category = "TileDataBaseDebugOnly")
+	UPROPERTY(VisibleAnywhere, Transient, Category = "TileDataBaseDebugOnly")
 		TMap<FName, FTileDatabase> TileMap;
 
-	UPROPERTY(VisibleAnywhere, Category = "TileDataBaseDebugOnly")
+	UPROPERTY(VisibleAnywhere, Transient, Category = "TileDataBaseDebugOnly")
 		TArray<UTilePointer*> TilePointers;
 
 	TArray < TSharedRef<struct FTileDatabase>> NewTileData;

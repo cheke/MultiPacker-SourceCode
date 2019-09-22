@@ -51,10 +51,10 @@ void UTilePointer::GenerateTextureCanvas(const uint16 Width, const uint16 Height
 	TileTexture = UTexture2D::CreateTransient(Width, Height);
 #if WITH_EDITORONLY_DATA
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+	TileTexture->CompressionNoAlpha = false;
 #endif
 	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 	TileTexture->SRGB = 0;
-	TileTexture->CompressionNoAlpha = false;
 	TileTexture->AddToRoot();
 	TileTexture->Filter = TextureFilter::TF_Nearest;
 #if WITH_EDITORONLY_DATA
@@ -193,11 +193,11 @@ void UTilePointer::GenerateAndSetArrayTilesOnRenderTarget(UObject* InWorldContex
 #if WITH_EDITORONLY_DATA
 	TileTexture->Source.Init(TileWidth, TileHeight, 1, 1, TSF_BGRA8, TileTexture->Source.LockMip(0));
 	TileTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+	TileTexture->CompressionNoAlpha = false;
 #endif
 	TileTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
 	TileTexture->SRGB = 0;
 	TileTexture->Filter = TextureFilter::TF_Nearest;
-	TileTexture->CompressionNoAlpha = false;
 	TileTexture->UpdateResource();
 	UpdateTextureCanvas();
 }
