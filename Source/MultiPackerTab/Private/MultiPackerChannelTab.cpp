@@ -37,13 +37,9 @@ const FName FMultiPackerChannelTabs::DetailsID(TEXT("Details"));
 const FName FMultiPackerChannelTabs::ViewportID(TEXT("Viewport"));
 const FName FMultiPackerChannelTabs::ButtonsID(TEXT("Buttons"));
 
-FMultiPackerChannelTab::FMultiPackerChannelTab()
-{
-}
+FMultiPackerChannelTab::FMultiPackerChannelTab() {}
 
-FMultiPackerChannelTab::~FMultiPackerChannelTab()
-{
-}
+FMultiPackerChannelTab::~FMultiPackerChannelTab() {}
 
 void FMultiPackerChannelTab::InitGenericGraphAssetEditor(const EToolkitMode::Type Mode, const TSharedPtr< IToolkitHost >& InitToolkitHost)
 {
@@ -272,10 +268,10 @@ FReply FMultiPackerChannelTab::OnClickButton()
 	{
 		const int32 SizeVertical = UMultiPackerBaseEnums::GetTextureSizeOutputEnum(PropertyMPChannel->SizeVertical);
 		const int32 SizeHorizontal = UMultiPackerBaseEnums::GetTextureSizeOutputEnum(PropertyMPChannel->SizeHorizontal);
-		UTilePointer* TileRed = ProcessTextureChannel(PropertyMPChannel->TextureRed, SizeVertical, SizeHorizontal, PropertyMPChannel->MaskTextureRed);
-		UTilePointer* TileGreen = ProcessTextureChannel(PropertyMPChannel->TextureGreen, SizeVertical, SizeHorizontal, PropertyMPChannel->MaskTextureGreen);
-		UTilePointer* TileBlue = ProcessTextureChannel(PropertyMPChannel->TextureBlue, SizeVertical, SizeHorizontal, PropertyMPChannel->MaskTextureBlue);
-		UTilePointer* TileAlpha = ProcessTextureChannel(PropertyMPChannel->TextureAlpha, SizeVertical, SizeHorizontal, PropertyMPChannel->MaskTextureAlpha);
+		UTilePointer* TileRed = ProcessTextureChannel(PropertyMPChannel->TextureRed, SizeVertical, SizeHorizontal, PropertyMPChannel->MaskTextureRed, PropertyMPChannel->InvertRed);
+		UTilePointer* TileGreen = ProcessTextureChannel(PropertyMPChannel->TextureGreen, SizeVertical, SizeHorizontal, PropertyMPChannel->MaskTextureGreen, PropertyMPChannel->InvertGreen);
+		UTilePointer* TileBlue = ProcessTextureChannel(PropertyMPChannel->TextureBlue, SizeVertical, SizeHorizontal, PropertyMPChannel->MaskTextureBlue, PropertyMPChannel->InvertBlue);
+		UTilePointer* TileAlpha = ProcessTextureChannel(PropertyMPChannel->TextureAlpha, SizeVertical, SizeHorizontal, PropertyMPChannel->MaskTextureAlpha, PropertyMPChannel->InvertAlpha);
 		
 		//Texture Output
 		TArray<UTilePointer*> OutArray = UTilePointer::DoFinalTextures({ TileRed, TileGreen, TileBlue, TileAlpha }, 4, PropertyMPChannel->AlphaChannel);
@@ -330,7 +326,7 @@ EChannelSelectionInput FMultiPackerChannelTab::GetChannelEnum(EMPChannelMaskPara
 	return EChannelSelectionInput::CSI_Red;
 }
 
-UTilePointer* FMultiPackerChannelTab::ProcessTextureChannel(UTexture2D* InTexture, const int32 InSizeVertical, const int32 InSizeHorizontal, EMPChannelMaskParameterColor InChannel)
+UTilePointer* FMultiPackerChannelTab::ProcessTextureChannel(UTexture2D* InTexture, const int32 InSizeVertical, const int32 InSizeHorizontal, EMPChannelMaskParameterColor InChannel, bool InvertColors)
 {
 	EChannelSelectionInput InEnum = GetChannelEnum(InChannel);
 	//set the data from the Node UTexture
@@ -346,6 +342,8 @@ UTilePointer* FMultiPackerChannelTab::ProcessTextureChannel(UTexture2D* InTextur
 		InTile->GenerateFromTexture(Texture, Texture->GetSurfaceWidth(), Texture->GetSurfaceHeight());
 		InTile->FromChannelToTexture(InEnum);
 		Resized->ChangeResolution(InSizeHorizontal, InSizeVertical, InTile);
+		if (InvertColors)
+			Resized->InvertAllChannels();
 	}
 	return Resized;
 }
@@ -353,6 +351,7 @@ UTilePointer* FMultiPackerChannelTab::ProcessTextureChannel(UTexture2D* InTextur
 TArray<FString> FMultiPackerChannelTab::TexturePackageName(FAssetToolsModule& AssetToolsModule)
 {
 	FString importDirectory = PropertyMPChannel->TargetDirectory.Path;
+	importDirectory = importDirectory == "" ? "Textures/" : importDirectory;
 	FString ObjectName = PropertyMPChannel->TextureName;
 	// last minute sanitizing, just in case we missed one
 	ObjectName = ObjectName.Replace(TEXT("*"), TEXT("X"));
@@ -366,9 +365,12 @@ TArray<FString> FMultiPackerChannelTab::TexturePackageName(FAssetToolsModule& As
 		TextureName = "MultiPacker";
 	if (TextureName.Contains("/"))
 		TextureName = TextureName.Mid(TextureName.Find("/", ESearchCase::IgnoreCase, ESearchDir::FromEnd) + 1);
-	int index = 0;//needs a int obligatory
-	FString NewPackageName = importDirectory.FindLastChar(*TEXT("/"), index) ? importDirectory : importDirectory + "/";
-	NewPackageName = TEXT("/Game/") + (importDirectory == "" ? "Textures/" : NewPackageName) + TextureName;
+	FString NewPackageName = importDirectory.EndsWith( TEXT("/"), ESearchCase::IgnoreCase) ? importDirectory : importDirectory + "/";
+	NewPackageName = NewPackageName + TextureName;
+	if (!NewPackageName.StartsWith(TEXT("/Game/"), ESearchCase::IgnoreCase))
+	{
+		NewPackageName = TEXT("/Game/") + NewPackageName;
+	}
 	FString Name;
 	FString PackageName;
 	AssetToolsModule.Get().CreateUniqueAssetName(NewPackageName, TextureName, PackageName, Name);

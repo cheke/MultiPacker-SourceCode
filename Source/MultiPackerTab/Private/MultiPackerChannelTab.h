@@ -42,14 +42,16 @@ private:
 	TSharedRef<SDockTab> SpawnTab_Viewport(const FSpawnTabArgs& Args);
 	TSharedRef<SDockTab> SpawnTab_Details(const FSpawnTabArgs& Args);
 	TSharedRef<SDockTab> SpawnTab_Buttons(const FSpawnTabArgs& Args);
-	TSharedPtr<class IDetailsView> PropertyWidget; 
+	TSharedPtr<class IDetailsView> PropertyWidget;
+	//Preview Variables
 	TSharedPtr<FSlateImageBrush> PreviewBrush;
 	TSharedPtr<SImage> ImageWidget;
 	TSharedPtr<SBorder> PreviewWidget;
+
 	FReply OnClickButton();
 
 	EChannelSelectionInput GetChannelEnum(EMPChannelMaskParameterColor InEnum);
-	UTilePointer* ProcessTextureChannel(UTexture2D* InTexture, const int32 InSizeVertical, const int32 InSizeHorizontal, EMPChannelMaskParameterColor InChannel);
+	UTilePointer* ProcessTextureChannel(UTexture2D* InTexture, const int32 InSizeVertical, const int32 InSizeHorizontal, EMPChannelMaskParameterColor InChannel, bool InvertColors);
 	TArray<FString> TexturePackageName(FAssetToolsModule& AssetToolsModule);
 	TSharedRef<class SButton> CreateAndSetButton(FOnClicked InOnClicked, const TAttribute<FText>& InIcon, const TAttribute<FText>& InTooltip, const TAttribute<FText>& InButton);
 	FReply PreviewRedTexture();
