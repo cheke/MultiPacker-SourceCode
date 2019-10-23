@@ -280,9 +280,9 @@ FReply FMultiPackerChannelTab::OnClickButton()
 		TArray<FString> NewPackageName = TexturePackageName(AssetToolsModule);
 		UPackage* package = CreatePackage(NULL, *NewPackageName[1]);
 		package->FullyLoad();
-		package->Modify();
+		package->Modify(); 
 		UTexture2D* NewTexture = OutArray[0]->FillTextureOutput(package, *NewPackageName[0], RF_Public | RF_Standalone);
-		NewTexture->PostEditChange();
+		//NewTexture->PostEditChange();
 		if (NewTexture)
 		{
 			// package needs saving

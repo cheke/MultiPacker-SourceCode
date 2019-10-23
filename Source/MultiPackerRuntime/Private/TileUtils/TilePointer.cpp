@@ -272,13 +272,15 @@ UTexture2D* UTilePointer::FillTextureOutput(UObject* Outer, const FString Name, 
 {
 	FCreateTexture2DParameters FCT;
 	FCT.bUseAlpha = true;
-	UTexture2D* Output = FImageUtils::CreateTexture2D(TileWidth, TileHeight, TileData, Outer, Name, Flags/* RF_Public | RF_Standalone*/, FCT);
-	Output->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+	FCT.bSRGB = false;
+	FCT.CompressionSettings = TextureCompressionSettings::TC_BC7;
+	UTexture2D* Output = FImageUtils::CreateTexture2D(TileWidth, TileHeight, TileData, Outer, Name, Flags, FCT);
+	//Output->CompressionSettings = TextureCompressionSettings::TC_BC7;//TC_VectorDisplacementmap
 #if WITH_EDITORONLY_DATA
-	Output->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+	//Output->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 #endif
-	Output->SRGB = 0;
-	Output->UpdateResource();
+	//Output->SRGB = 0;
+//	Output->UpdateResource();
 	return Output;
 }
 
